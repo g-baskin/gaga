@@ -8,6 +8,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-10-07
+
 ### Fixed
 
 - Pages with more words than fit no longer get cut off at the bottom. The words shrink to fit (down to a readable size) on screen, in PDFs, and in e-books, and the Designer shows "Shrunk to 18 pt so all the words fit". If the words still don't fit, it says so.
@@ -104,7 +106,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Saving several settings at once no longer risks losing one of the changes.
 - An ISBN is only stored if its check digit is correct.
 
-[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/g-baskin/gaga/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/g-baskin/gaga/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/g-baskin/gaga/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/g-baskin/gaga/compare/v0.3.0...v0.4.0
