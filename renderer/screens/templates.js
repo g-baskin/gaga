@@ -72,7 +72,7 @@
     drawResults();
     host.replaceChildren(h('div', { class: 'templates-main' },
       h('header', { class: 'templates-head' },
-        h('div', {}, h('h1', {}, 'Templates'),
+        h('div', {}, h('h1', {}, 'Featured Stories'),
           h('p', { class: 'muted' }, 'Pick a look for your pages, or start from a short story.')),
         search),
       chips, results));

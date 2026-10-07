@@ -47,9 +47,10 @@ api.onBeforeClose(async () => {
 // ---------- screens and navigation ----------
 const screens = new Map();
 const APP_NAV = [
-  ['home', 'Home', '⌂'], ['bookshelf', 'Bookshelf', '▥'], ['templates', 'Templates', '❖'],
-  ['coloring', 'Coloring', '✎'], ['orders', 'Print orders', '⎙'], ['account', 'Account', '◉'],
+  ['home', 'Create', '✦'], ['bookshelf', 'My Library', '▥'], ['templates', 'Catalogue', '❖'],
+  ['coloring', 'Colorburst', '✎'], ['orders', 'Orders', '⎙'], ['account', 'Account', '☺'],
 ];
+const NAV_ORDER = ['home', 'templates', 'bookshelf', 'coloring', 'orders'];
 const BOOK_TABS = [
   ['story-builder', 'Story builder'], ['manuscript', 'Manuscript'], ['designer', 'Designer'], ['studio', 'Studio'], ['export', 'Export'],
 ];
@@ -103,12 +104,25 @@ async function navigate(name, params = {}) {
   }
 }
 
+function navButton(item, label, icon) {
+  const current = item === state.screen;
+  return h('button', {
+    class: `app-nav-item${current ? ' active' : ''}${item === 'account' ? ' account-orb' : ''}`,
+    type: 'button', 'data-nav': item, 'aria-current': current ? 'page' : null,
+    'aria-label': item === 'account' ? 'Account' : null,
+    onclick: () => run(() => navigate(item)),
+  },
+  h('span', { class: 'app-nav-icon', 'aria-hidden': 'true' }, icon),
+  item === 'account' ? null : label,
+  item === 'coloring' ? h('span', { class: 'nav-addon' }, 'ADDON') : null);
+}
+
 function renderShell(scope, name) {
   const host = h('main', { class: `screen-host screen-${name}`, id: 'screen', 'data-screen': name });
   if (scope === 'book') {
     const { book } = state;
     const bar = h('header', { class: 'topbar book-bar' },
-      h('button', { class: 'btn ghost', id: 'back-to-shelf', onclick: () => run(() => navigate('bookshelf')) }, '← Bookshelf'),
+      h('button', { class: 'btn ghost', id: 'back-to-shelf', onclick: () => run(() => navigate('bookshelf')) }, '← My Library'),
       h('div', { class: 'title-fields' },
         h('input', {
           id: 'book-title', class: 'title-input', value: book.title, 'aria-label': 'Book title', maxlength: '200',
@@ -126,14 +140,24 @@ function renderShell(scope, name) {
       h('span', { id: 'save-status', class: 'muted save-status' }, pendingSave ? 'Editing…' : 'All changes saved'));
     root.replaceChildren(bar, host);
   } else {
-    const nav = h('nav', { class: 'app-nav', 'aria-label': 'Storyloom' },
+    const byId = Object.fromEntries(APP_NAV.map(([id, label, icon]) => [id, [label, icon]]));
+    const pills = [];
+    for (const id of NAV_ORDER) {
+      pills.push(navButton(id, byId[id][0], byId[id][1]));
+      if (id === 'bookshelf') {
+        pills.push(h('button', {
+          class: 'app-nav-item', type: 'button', id: 'open-studio',
+          onclick: () => run(openLatestStudio),
+        }, 'Studio', h('span', { class: 'nav-addon' }, 'ADDON')));
+      }
+    }
+    const account = APP_NAV.find(([item]) => item === 'account');
+    const nav = h('header', { class: 'sky-nav app-nav', 'aria-label': 'Storyloom' },
       h('div', { class: 'brand' }, h('span', { class: 'brand-mark', 'aria-hidden': 'true' }), 'Storyloom'),
-      h('button', { class: 'btn primary block', id: 'new-book', onclick: () => run(createBlankBook) }, '+ New book'),
-      h('div', { class: 'app-nav-list' }, APP_NAV.map(([item, label, icon]) =>
-        h('button', {
-          class: `app-nav-item${item === name ? ' active' : ''}`, 'data-nav': item, 'aria-current': item === name ? 'page' : null,
-          onclick: () => run(() => navigate(item)),
-        }, h('span', { class: 'app-nav-icon', 'aria-hidden': 'true' }, icon), label))));
+      h('div', { class: 'app-nav-list' }, pills),
+      h('div', { class: 'sky-nav-end' },
+        h('button', { class: 'btn primary', id: 'new-book', type: 'button', onclick: () => run(createBlankBook) }, 'New book'),
+        navButton(account[0], account[1], account[2])));
     root.replaceChildren(h('div', { class: 'app-shell' }, nav, host));
   }
 }
@@ -163,6 +187,16 @@ async function createBlankBook() {
   const profile = await api.getProfile().catch(() => ({ authorName: '' }));
   const book = await api.createBook({ title: 'Untitled story', author: profile.authorName || '', pages: [{ layout: 'cover', text: '', fontSize: 48 }] });
   await openBook(book.id);
+}
+
+async function openLatestStudio() {
+  const books = await api.listBooks();
+  const latest = [...(books || [])].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0];
+  if (!latest) {
+    toast('Make a book first, then open it in Studio');
+    return navigate('home');
+  }
+  return openBook(latest.id, 'studio');
 }
 
 window.__storyloom = { screens: () => [...screens.keys()], current: () => state.screen };

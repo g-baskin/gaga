@@ -8,8 +8,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- A children's storybook look, and `npm run preview`, which opens that look in a browser at http://127.0.0.1:4173. The desktop app is unchanged: the preview fills in a stand-in library so the pages can be clicked without Electron.
+
 ### Changed
 
+- The app navigation, Create page, library, and catalogue use a soft picture-book look: a lavender sky, pill buttons, and books standing on shelves.
 - Download file names now say which Mac they're for: "Intel" or "Apple-Silicon".
 
 ## [0.1.0] - 2026-10-07

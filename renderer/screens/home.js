@@ -89,19 +89,46 @@
       await openBook(book.id, 'story-builder');
     };
 
+    const fill = (idea) => { prompt.value = idea; error.hidden = true; prompt.focus(); };
     return h('section', { class: 'home-hero' },
-      h('h1', {}, 'What’s your story about?'),
-      h('p', { class: 'muted home-sub' }, 'Start with a sentence. You’ll shape characters, style, and pages next.'),
-      prompt,
-      h('div', { class: 'home-chips', role: 'list', 'aria-label': 'Quick ideas' }, IDEAS.map((idea) =>
-        h('button', { class: 'home-chip', type: 'button', role: 'listitem', onclick: () => { prompt.value = idea; error.hidden = true; prompt.focus(); } }, idea))),
-      h('div', { class: 'home-hero-row' },
+      h('div', { class: 'sky-art', 'aria-hidden': 'true' }),
+      h('h1', {}, 'Create a custom kids book in minutes'),
+      h('p', { class: 'muted home-sub' }, 'A sentence is enough. Next you will shape the characters, the look, and the pages.'),
+      h('div', { class: 'home-card' },
+        h('label', { class: 'field-label', for: 'home-prompt' }, 'What is the story about?'),
+        prompt,
+        h('div', { class: 'home-card-tools' },
+          h('button', {
+            class: 'btn ghost', type: 'button', id: 'home-generate-idea',
+            onclick: () => fill(IDEAS[Math.floor(Math.random() * IDEAS.length)]),
+          }, 'Generate idea'),
+          h('button', { class: 'btn ghost', type: 'button', id: 'home-import', onclick: () => run(importStory) }, 'Upload your story'),
+          h('button', {
+            class: 'btn ghost', type: 'button', id: 'home-from-drawing',
+            onclick: () => document.querySelector('[data-unavailable="drawing-to-story"]')?.scrollIntoView({ block: 'center' }),
+          }, 'Generate from drawing')),
+        h('p', { class: 'home-sparks-label' }, 'Or tap a story spark'),
+        h('div', { class: 'home-chips', role: 'list', 'aria-label': 'Quick ideas' }, IDEAS.map((idea) =>
+          h('button', { class: 'home-chip', type: 'button', role: 'listitem', onclick: () => fill(idea) }, idea))),
         h('label', { class: 'home-star-field' }, h('span', { class: 'field-label' }, 'Star of the story (optional)'), star),
-        h('button', { class: 'btn primary large', id: 'home-start', onclick: () => run(start) }, 'Start building')),
-      error,
-      h('div', { class: 'home-alt' },
-        h('button', { class: 'btn ghost', id: 'home-import', onclick: () => run(importStory) }, 'Import a story (.txt, .md)'),
-        h('button', { class: 'btn ghost', id: 'home-blank', onclick: () => run(createBlankBook) }, 'Blank book')));
+        error,
+        h('button', { class: 'btn primary large home-begin', type: 'button', id: 'home-start', onclick: () => run(start) }, 'Begin the Adventure'),
+        h('button', { class: 'btn ghost home-blank', type: 'button', id: 'home-blank', onclick: () => run(createBlankBook) }, 'Blank book')),
+      h('div', { class: 'home-or', 'aria-hidden': 'true' }, 'OR'),
+      premade());
+  }
+
+  function premade() {
+    return h('button', {
+      class: 'home-premade', type: 'button', id: 'home-premade',
+      onclick: () => run(() => navigate('templates')),
+    },
+    h('span', { class: 'home-premade-copy' },
+      h('span', { class: 'home-premade-title' }, 'Choose a pre-made story'),
+      h('span', { class: 'home-premade-text' }, 'Pick a colorful look or a short starter, then make it yours.')),
+    h('span', { class: 'home-premade-books', 'aria-hidden': 'true' },
+      h('span', { class: 'mini-book mini-a' }),
+      h('span', { class: 'mini-book mini-b' })));
   }
 
   // ---------- recent ----------
@@ -139,7 +166,7 @@
         h('span', { class: 'home-theme-name' }, 'Browse templates'),
         h('span', { class: 'muted' }, 'Ready-made looks for covers and pages'));
     return h('section', { class: 'home-section' },
-      h('div', { class: 'home-section-head' }, h('h2', {}, 'Templates'),
+      h('div', { class: 'home-section-head' }, h('h2', {}, 'Starter looks'),
         h('button', { class: 'btn ghost small', onclick: go }, 'All templates')),
       body);
   }
