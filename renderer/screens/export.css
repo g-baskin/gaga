@@ -1,0 +1,49 @@
+/* Shared by Export, Print orders, and Account. */
+.screen-export, .screen-orders, .screen-account { overflow: auto; }
+.export-main { max-width: 920px; margin: 0 auto; padding: 32px 32px 64px; display: grid; gap: 20px; align-content: start; }
+.account-main { max-width: 720px; }
+.export-head { display: grid; gap: 6px; }
+.export-head h1 { font-size: 28px; }
+.export-head p { margin: 0; }
+.export-panel { display: grid; gap: 20px; }
+.export-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.export-card, .export-details {
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 18px 20px; display: grid; gap: 10px; align-content: start;
+}
+.export-card h3, .export-details h3 { font-size: 16px; }
+.export-details h2 { font-size: 18px; }
+.export-card p, .export-details p { margin: 0; }
+.export-card > .btn { justify-self: start; margin-top: 4px; }
+.export-details .form { padding: 0; }
+.export-warning { background: #fff4dc; color: #7a5410; border-radius: 8px; padding: 8px 10px; font-size: 13px; }
+.export-error { color: #b2382a; font-size: 13px; min-height: 0; }
+.export-error:empty { display: none; }
+.export-isbn-row { display: flex; gap: 10px; align-items: center; }
+.export-isbn-row input { max-width: 260px; flex: 1; }
+.export-isbn-row input[aria-invalid="true"] { border-color: #b2382a; }
+.export-saved { font-size: 12px; }
+.export-unavailable {
+  border: 1px dashed #d6cbbb; border-radius: 10px; background: var(--paper); padding: 10px 12px; font-size: 13px; color: var(--muted);
+}
+.export-unavailable strong { color: var(--ink); }
+.export-unavailable-large { padding: 20px 22px; display: grid; gap: 8px; font-size: 14px; }
+.export-unavailable-large h2 { font-size: 18px; color: var(--ink); }
+.export-unavailable-large p { margin: 0; }
+.export-checklist { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.export-checklist li { display: grid; gap: 2px; padding-left: 26px; position: relative; }
+.export-checklist li::before {
+  content: "✓"; position: absolute; left: 0; top: 1px; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--teal-soft); color: var(--teal); font-size: 11px; display: grid; place-items: center; font-weight: 700;
+}
+.export-start { justify-content: flex-start; }
+.export-book-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 50vh; overflow: auto; }
+.export-book-pick {
+  width: 100%; text-align: left; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); padding: 10px 12px; cursor: pointer;
+}
+.export-book-pick:hover { border-color: var(--teal); }
+.account-form { gap: 12px; }
+.account-form .form-actions { align-items: center; }
+.account-path { display: block; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 12px; overflow-wrap: anywhere; }
+.modal.export-modal { width: min(880px, 94vw); max-height: 90vh; }
+.export-modal .export-panel { padding: 16px 20px 20px; }

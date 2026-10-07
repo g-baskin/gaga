@@ -1,0 +1,34 @@
+.modal.crop-dialog { width: min(600px, 94vw); }
+.crop-wrap {
+  display: grid; place-items: center; min-height: 300px; padding: 16px; border-radius: 12px; overflow: hidden;
+  background: repeating-conic-gradient(#efe7da 0 25%, #f7f2ea 0 50%) 0 0 / 20px 20px;
+}
+.crop-stage { position: relative; user-select: none; touch-action: none; }
+.crop-image { display: block; width: 100%; height: 100%; pointer-events: none; }
+.crop-box {
+  position: absolute; box-sizing: border-box; border: 2px solid #fff; cursor: move; touch-action: none;
+  box-shadow: 0 0 0 1px rgba(42, 36, 51, .5), 0 0 0 9999px rgba(42, 36, 51, .45);
+}
+
+.crop-box:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.crop-handle {
+  position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--teal); box-sizing: border-box; touch-action: none;
+}
+.crop-handle[data-dir="-1,-1"], .crop-handle[data-dir="1,1"] { cursor: nwse-resize; }
+.crop-handle[data-dir="1,-1"], .crop-handle[data-dir="-1,1"] { cursor: nesw-resize; }
+.crop-handle[data-dir="0,-1"], .crop-handle[data-dir="0,1"] { cursor: ns-resize; }
+.crop-handle[data-dir="-1,0"], .crop-handle[data-dir="1,0"] { cursor: ew-resize; }
+.crop-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.crop-aspects { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.crop-aspect { border: 0; background: var(--panel); padding: 6px 12px; font: inherit; cursor: pointer; }
+.crop-aspect + .crop-aspect { border-left: 1px solid var(--line); }
+.crop-aspect[aria-pressed="true"] { background: var(--teal-soft); color: var(--teal); font-weight: 600; }
+.crop-actions { align-items: center; }
+.crop-spacer { flex: 1; }
+
+.crop-extras { display: grid; gap: 8px; }
+.crop-unavailable {
+  font-size: 12px; line-height: 1.4; color: var(--muted); padding: 8px 10px; border: 1px dashed var(--line); border-radius: 8px;
+}
+.crop-unavailable strong { color: var(--ink); }

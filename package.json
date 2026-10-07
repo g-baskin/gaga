@@ -1,0 +1,18 @@
+{
+  "name": "storyloom",
+  "productName": "Storyloom",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Create, illustrate, and export picture books on your own computer",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.cjs",
+    "self-test": "electron . --self-test",
+    "package": "node package.mjs"
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "electron": "44.6.0"
+  }
+}

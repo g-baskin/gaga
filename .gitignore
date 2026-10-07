@@ -1,0 +1,5 @@
+node_modules/
+releases/
+# Per-run screenshot folders from `npm run self-test -- --only=...`
+verification/*/
+.DS_Store
