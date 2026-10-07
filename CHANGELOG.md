@@ -8,6 +8,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-07
+
 ### Added
 
 - fal.ai for AI pictures: paste a fal.ai key, and Storyloom picks a picture model from fal.ai's live list to match your budget (Best quality, Balanced, or Lowest cost), with a clean line-art model for coloring pages.
@@ -47,5 +49,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Saving several settings at once no longer risks losing one of the changes.
 - An ISBN is only stored if its check digit is correct.
 
-[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/g-baskin/gaga/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/g-baskin/gaga/releases/tag/v0.1.0

@@ -1,7 +1,7 @@
 {
   "name": "storyloom",
   "productName": "Storyloom",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Create, illustrate, and export picture books on your own computer",
   "main": "main.cjs",
