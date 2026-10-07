@@ -8,6 +8,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-07
+
 ### Added
 
 - `npm run preview`, which opens Storyloom's screens in a browser at http://127.0.0.1:4173 with a sample library, so the look can be checked without building the app.
@@ -59,6 +61,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Saving several settings at once no longer risks losing one of the changes.
 - An ISBN is only stored if its check digit is correct.
 
-[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/g-baskin/gaga/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/g-baskin/gaga/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/g-baskin/gaga/releases/tag/v0.1.0
