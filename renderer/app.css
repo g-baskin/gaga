@@ -389,3 +389,8 @@ textarea:focus, .field input:focus, .field select:focus { border-color: var(--te
 .ai-writer-note { display: inline; }
 .ai-picture-note { margin: 0; line-height: 1.45; }
 .ai-picture-note-missing { color: #7a5410; background: #fff4dc; border-radius: 8px; padding: 8px 10px; }
+
+/* Designer: "shrunk to fit" note under the text size */
+.page-fit-note { margin: -4px 0 0; font-size: 12px; color: var(--muted); }
+.page-fit-note:empty { display: none; }
+.page-fit-note.warn { color: #9a3412; background: #fff1e6; border-radius: 6px; padding: 6px 8px; }

@@ -115,11 +115,12 @@
     const isCover = page.layout === 'cover';
     const words = isCover ? (String(page.text || '').trim() || book.title) : page.text;
     if (page.layout !== 'blank' && (words || isCover)) {
+      const size = fitPageText(page, book).size; // shrunk to fit, the same as on screen and in PDFs
       const byline = isCover && book.author
-        ? `<p class="sl-byline" style="${style({ 'font-size': px(Math.max(12, Math.round(page.fontSize * 0.4))) })}">by ${xmlText(book.author)}</p>` : '';
+        ? `<p class="sl-byline" style="${style({ 'font-size': px(Math.max(12, Math.round(size * 0.4))) })}">by ${xmlText(book.author)}</p>` : '';
       const titleStyle = isCover && FONTS[page.titleFont] ? ` style="${style({ 'font-family': FONTS[page.titleFont] })}"` : '';
       parts.push(`<div class="sl-text" style="${style({
-        'font-family': FONTS[page.font] || FONTS.serif, 'font-size': px(page.fontSize), 'text-align': page.align, color: page.color,
+        'font-family': FONTS[page.font] || FONTS.serif, 'font-size': px(size), 'text-align': page.align, color: page.color,
       })}">${words ? `<p${titleStyle}>${xmlText(words)}</p>` : ''}${byline}</div>`);
     }
     if (page.frame && page.frame !== 'none') parts.push(`<div class="sl-frame frame-${attr(page.frame)}" style="${style({ 'border-color': page.frameColor })}"></div>`);
@@ -172,6 +173,7 @@
 
   async function epub() {
     await saveNow();
+    await loadFonts(bookFontKeys(state.book));
     const name = await api.exportEpub(buildEpubInput(state.book, addCopyright));
     if (name) toast(`Exported “${name}”`, { label: 'Show in Finder', run: () => api.revealExport() });
   }

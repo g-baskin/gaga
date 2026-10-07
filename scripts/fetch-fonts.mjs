@@ -104,7 +104,7 @@ async function download() {
           const data = await get(url, 'buffer');
           const file = `${font.key}-${weight}-${style}-${subset}.woff2`;
           await writeFile(path.join(outDir, file), data);
-          files.push({ file, weight, style, subset, sha256: sha256(data), size: data.length, url });
+          files.push({ file, weight, style, subset, unicodeRange: RANGES[subset], sha256: sha256(data), size: data.length, url });
         }
       }
     }

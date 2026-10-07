@@ -586,7 +586,7 @@ async function bundledFontsFor(keys) {
     if (!font?.cssFamily) continue;
     for (const f of font.files) {
       if (!/^[a-z0-9-]+\.woff2$/.test(f.file)) continue;
-      out.push({ family: font.cssFamily, weight: f.weight, style: f.style, file: f.file, data: await fs.readFile(path.join(RENDERER, 'fonts', f.file)) });
+      out.push({ family: font.cssFamily, weight: f.weight, style: f.style, file: f.file, unicodeRange: f.unicodeRange, data: await fs.readFile(path.join(RENDERER, 'fonts', f.file)) });
     }
   }
   return out;

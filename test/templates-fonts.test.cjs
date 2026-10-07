@@ -87,7 +87,7 @@ test('applying a theme sets both fonts on every page', () => {
 
 test('an e-book embeds the font files it uses, with matching @font-face rules', () => {
   const font = manifest.fonts.find((f) => f.key === 'andika');
-  const fonts = font.files.map((f) => ({ family: font.cssFamily, weight: f.weight, style: f.style, file: f.file, data: fs.readFileSync(path.join(fontsDir, f.file)) }));
+  const fonts = font.files.map((f) => ({ family: font.cssFamily, weight: f.weight, style: f.style, file: f.file, unicodeRange: f.unicodeRange, data: fs.readFileSync(path.join(fontsDir, f.file)) }));
   const epub = buildEpub({ book: { id: 'b1', title: 'T', language: 'en' }, pages: [{ body: '<p>Hi</p>' }], css: '', width: 600, height: 600, fonts });
   const files = Object.fromEntries(unzip(epub)); // unzip returns a Map of name → data
   for (const f of font.files) assert.ok(files[`OEBPS/fonts/${f.file}`], `${f.file} is in the e-book`);
@@ -95,6 +95,9 @@ test('an e-book embeds the font files it uses, with matching @font-face rules', 
   assert.match(opf, /href="fonts\/andika-400-normal-latin\.woff2" media-type="font\/woff2"/);
   const css = files['OEBPS/book.css'].toString('utf8');
   assert.match(css, /@font-face \{ font-family: "Storyloom Andika"; src: url\("fonts\/andika-400-normal-latin\.woff2"\)/);
+  // Each file says which characters it covers, so e-readers don't try the extended-Latin file for plain text.
+  assert.match(css, /andika-400-normal-latin\.woff2"\)[^}]*unicode-range: U\+0000-00FF/);
+  assert.match(css, /andika-400-normal-latin-ext\.woff2"\)[^}]*unicode-range: U\+0100-02BA/);
   // Names that could break out of the stylesheet or the package are never embedded.
   const unsafe = buildEpub({ book: { id: 'b1', title: 'T', language: 'en' }, pages: [{ body: '<p>Hi</p>' }], css: '', width: 600, height: 600,
     fonts: [{ family: 'X"; } body { display:none', weight: 400, style: 'normal', file: '../evil.woff2', data: Buffer.from('x') }] });

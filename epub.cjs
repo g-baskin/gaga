@@ -101,7 +101,8 @@ const MIME = { png: 'image/png', jpg: 'image/jpeg', webp: 'image/webp', gif: 'im
 function buildEpub({ book, pages, css, width, height, images = [], fonts = [] }) {
   const fontFiles = fonts.filter((f) => /^[a-z0-9-]+\.woff2$/.test(f.file) && /^[\w ]{1,80}$/.test(f.family));
   const fontCss = fontFiles.map((f) => `@font-face { font-family: "${f.family}"; src: url("fonts/${f.file}") format("woff2"); `
-    + `font-weight: ${Number(f.weight) || 400}; font-style: ${f.style === 'italic' ? 'italic' : 'normal'}; }`).join('\n');
+    + `font-weight: ${Number(f.weight) || 400}; font-style: ${f.style === 'italic' ? 'italic' : 'normal'};`
+    + `${typeof f.unicodeRange === 'string' && /^[U+0-9A-Fa-f, -]{1,600}$/.test(f.unicodeRange) ? ` unicode-range: ${f.unicodeRange};` : ''} }`).join('\n');
   if (!Array.isArray(pages) || pages.length === 0) throw new Error('The book has no pages');
   const identifier = book.isbn ? `urn:isbn:${book.isbn.replace(/[\s-]/g, '')}` : `urn:uuid:${book.id}`;
   const modified = (book.modified || new Date()).toISOString().replace(/\.\d+Z$/, 'Z');

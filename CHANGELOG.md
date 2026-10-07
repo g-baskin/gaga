@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Fixed
+
+- Pages with more words than fit no longer get cut off at the bottom. The words shrink to fit (down to a readable size) on screen, in PDFs, and in e-books, and the Designer shows "Shrunk to 18 pt so all the words fit". If the words still don't fit, it says so.
+- E-books tell e-readers which characters each font file covers, so stricter readers use the right font instead of a fallback.
+
 ## [0.6.0] - 2026-10-07
 
 ### Added

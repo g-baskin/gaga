@@ -198,6 +198,7 @@ function renderCanvas() {
     class: 'page-frame editing', style: { width: `${wPt * PT_PX * scale}px`, height: `${hPt * PT_PX * scale}px` },
   }, pageEl, overlay));
   drawSelection();
+  updateFitNote();
 }
 
 const elementNode = (id) => document.querySelector(`#page .el[data-id="${id}"]`);
@@ -681,6 +682,7 @@ function renderInspector() {
   if (!inspector) return;
   const el = selectedElement();
   inspector.replaceChildren(h('div', { class: 'inspector-inner' }, el ? elementInspector(el) : pageInspector(), layersPanel()));
+  updateFitNote(); // the page panel was just rebuilt, so fill in its fit note
 }
 
 function pageInspector() {
@@ -712,6 +714,7 @@ function pageInspector() {
       page.layout === 'cover' ? field('Title font', h('select', { id: 'page-title-font', onchange: change('titleFont') },
         h('option', { value: '', selected: !page.titleFont }, 'Same as the page font'), fontOptions(page.titleFont))) : null,
       slider('Size', page.fontSize, 10, 96, 1, ' pt', (v) => { checkpoint('page:fontSize'); page.fontSize = v; refreshPage(); scheduleSave(); }),
+      h('p', { class: 'page-fit-note', id: 'page-fit-note', role: 'status' }),
       segmented('Text alignment', [['left', 'Left'], ['center', 'Center'], ['right', 'Right']], page.align, (v) => set('align', v)),
       field('Text color', h('input', { type: 'color', value: page.color, oninput: change('color') }))),
     h('section', {},
@@ -871,6 +874,17 @@ function refreshThumb() {
   const thumb = document.querySelectorAll('#page-list .thumb')[state.pageIndex];
   thumb?.firstChild.replaceWith(scaledPage(currentPage(), state.book, 190, 150));
 }
+// Tells the author when the page's words were shrunk to fit, or still don't fit.
+function updateFitNote() {
+  const note = document.getElementById('page-fit-note');
+  const page = currentPage();
+  if (!note || !page || page.layout === 'blank') return;
+  const fit = fitPageText(page, state.book);
+  note.classList.toggle('warn', !fit.fits);
+  note.textContent = !fit.fits
+    ? `These words don’t fit the page, even at ${fit.size} pt. Shorten them, or pick the Text only layout for more room.`
+    : fit.shrunk ? `Shrunk to ${fit.size} pt so all the words fit.` : '';
+}
 function refreshPage() {
   renderCanvas();
   refreshThumb();
@@ -943,6 +957,8 @@ async function choosePagePicture() {
 async function exportPdf({ mode = 'digital' } = {}) {
   if (state.screen === 'designer') stopEditing();
   await saveNow();
+  // Fonts first: pages measure their words to fit, and that needs the real fonts.
+  await loadFonts(bookFontKeys(state.book));
   const printRoot = document.getElementById('print-root');
   printRoot.className = mode === 'print' ? 'print-bleed' : '';
   printRoot.replaceChildren(...state.book.pages.map((page) => {
@@ -952,10 +968,7 @@ async function exportPdf({ mode = 'digital' } = {}) {
     sheet.classList.remove('print-page');
     return h('div', { class: `print-page bleed-sheet size-${state.book.size}-bleed`, style: { backgroundColor: page.background } }, sheet);
   }));
-  await Promise.all([
-    ...[...printRoot.querySelectorAll('img')].map((img) => img.decode().catch(() => {})),
-    loadFonts(bookFontKeys(state.book)),
-  ]);
+  await Promise.all([...printRoot.querySelectorAll('img')].map((img) => img.decode().catch(() => {})));
   try {
     const name = await api.exportPdf({ title: state.book.title, size: state.book.size, mode });
     if (name) toast(`Exported “${name}”`, { label: 'Show in Finder', run: () => api.revealExport() });

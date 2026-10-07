@@ -159,7 +159,65 @@ function cropViewBox(crop) {
 }
 
 // ---------- page rendering ----------
-function renderPage(page, book, { print = false } = {}) {
+// ---------- fit page words ----------
+// Page words shrink to fit their text area, down to a readable minimum, so nothing is cut off on screen,
+// in PDFs, or in e-books. The saved font size never changes: shorten the words and the text grows back.
+const FIT_MIN_RATIO = 0.6; // never below 60% of the chosen size…
+const FIT_MIN_PT = 12; // …or below 12 pt
+const fitCache = new Map();
+let fitHost = null;
+// A font that finishes loading changes how much fits, so measure again.
+document.fonts?.addEventListener('loadingdone', () => fitCache.clear());
+
+function textFits(pageEl) {
+  const box = pageEl.querySelector('.page-text');
+  const kids = box ? [...box.children] : [];
+  if (!kids.length) return true;
+  const cs = getComputedStyle(box);
+  const padding = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+  const content = kids.at(-1).getBoundingClientRect().bottom - kids[0].getBoundingClientRect().top;
+  // A full-picture page's text box grows upward, so its limit is the page, less a margin top and bottom.
+  const room = pageEl.classList.contains('layout-image-full')
+    ? pageEl.getBoundingClientRect().height - 48 * PT_PX - padding
+    : box.clientHeight - padding;
+  return content <= room + 0.5;
+}
+
+// → { size, fits, shrunk }: the largest font size (pt) at which the page's words fit.
+function fitPageText(page, book) {
+  const want = Number(page.fontSize) || 24;
+  if (page.layout === 'blank' || !document.body) return { size: want, fits: true, shrunk: false };
+  const key = JSON.stringify([book.size, book.title, book.author, page.layout, page.text, page.font, page.titleFont, want, page.align]);
+  if (fitCache.has(key)) return fitCache.get(key);
+  if (!fitHost) {
+    fitHost = h('div', { 'aria-hidden': 'true', style: { position: 'fixed', left: '-100000px', top: '0', visibility: 'hidden', pointerEvents: 'none' } });
+    document.body.append(fitHost);
+  }
+  const fitsAt = (size) => {
+    const el = renderPage(page, book, { print: true, textSize: size });
+    fitHost.replaceChildren(el);
+    return textFits(el);
+  };
+  let result;
+  if (fitsAt(want)) {
+    result = { size: want, fits: true, shrunk: false };
+  } else {
+    const min = Math.min(want, Math.max(FIT_MIN_PT, Math.round(want * FIT_MIN_RATIO)));
+    let lo = min;
+    let hi = want - 1;
+    let best = null;
+    while (lo <= hi) { // largest whole size that fits
+      const mid = Math.floor((lo + hi) / 2);
+      if (fitsAt(mid)) { best = mid; lo = mid + 1; } else hi = mid - 1;
+    }
+    result = best === null ? { size: min, fits: false, shrunk: min < want } : { size: best, fits: true, shrunk: true };
+  }
+  fitHost.replaceChildren();
+  fitCache.set(key, result);
+  return result;
+}
+
+function renderPage(page, book, { print = false, textSize } = {}) {
   const [width, height] = PAGE_PT[book.size];
   const el = h('div', {
     class: `page layout-${page.layout} size-${book.size}${print ? ' print-page' : ''}`,
@@ -175,13 +233,14 @@ function renderPage(page, book, { print = false } = {}) {
   const isCover = page.layout === 'cover';
   const words = isCover ? (page.text.trim() || book.title) : page.text;
   if (page.layout !== 'blank' && (words || isCover)) {
+    const size = textSize ?? fitPageText(page, book).size;
     el.append(h('div', {
       class: 'page-text',
-      style: { fontFamily: FONTS[page.font] || FONTS.serif, fontSize: `${page.fontSize}pt`, textAlign: page.align, color: page.color },
+      style: { fontFamily: FONTS[page.font] || FONTS.serif, fontSize: `${size}pt`, textAlign: page.align, color: page.color },
     },
     // A cover's title can use its own font (a theme's title font); the byline keeps the page font.
     words ? h('p', isCover && FONTS[page.titleFont] ? { class: 'cover-title', style: { fontFamily: FONTS[page.titleFont] } } : {}, words) : null,
-    isCover && book.author ? h('p', { class: 'byline', style: { fontSize: `${Math.max(12, Math.round(page.fontSize * 0.4))}pt` } }, `by ${book.author}`) : null));
+    isCover && book.author ? h('p', { class: 'byline', style: { fontSize: `${Math.max(12, Math.round(size * 0.4))}pt` } }, `by ${book.author}`) : null));
   }
   if (page.frame && page.frame !== 'none') {
     el.append(h('div', { class: `page-border frame-${page.frame}`, style: { borderColor: page.frameColor } }));

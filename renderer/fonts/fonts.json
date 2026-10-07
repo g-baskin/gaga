@@ -16,6 +16,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "dd6bb7266c94cd2fc5d797886050e4bb17bf2375c26b3f28c8474018d8c81b73",
           "size": 19208,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/andika@5.3.0/files/andika-latin-400-normal.woff2"
@@ -25,6 +26,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "3b5fd6ac2e3881c8a033440c2220b72c48a2af820413a7c38cd0e37d217cddaa",
           "size": 81416,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/andika@5.3.0/files/andika-latin-ext-400-normal.woff2"
@@ -34,6 +36,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "4a57d92a37d664cdd3ea93a117e18b12153534feae9e73cd3083b285eeaf73ef",
           "size": 20896,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/andika@5.3.0/files/andika-latin-400-italic.woff2"
@@ -43,6 +46,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "5288a0b32127b3a50230ad87c98a916242d9839264cadc87912ff175a932d52f",
           "size": 86388,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/andika@5.3.0/files/andika-latin-ext-400-italic.woff2"
@@ -52,6 +56,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "61c90acb5f966627a0970d5742df8d9a212c2528f88caeed3cb7832234c7ee99",
           "size": 19472,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/andika@5.3.0/files/andika-latin-700-normal.woff2"
@@ -61,6 +66,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "60bde176a34bcfe68f00ae1c7bf9b3677ed4e1e8054fd396968411d9e86c5e69",
           "size": 81428,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/andika@5.3.0/files/andika-latin-ext-700-normal.woff2"
@@ -70,6 +76,7 @@
           "weight": 700,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "4725766c14fbac24dfdca64300477048ce1659a748d6d9dd64a6276fb19f97df",
           "size": 20944,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/andika@5.3.0/files/andika-latin-700-italic.woff2"
@@ -79,6 +86,7 @@
           "weight": 700,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "d1412bd5934f71ba6d8125eca1665d8fe0b912e7c0d6e7016e1e495e0f5bdb47",
           "size": 88124,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/andika@5.3.0/files/andika-latin-ext-700-italic.woff2"
@@ -102,6 +110,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "d64ba838ef5472bba248620ec4fd8b5aa7cf0db2908e0bb230600caf279ba7bc",
           "size": 17208,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/atkinson-hyperlegible@5.3.0/files/atkinson-hyperlegible-latin-400-normal.woff2"
@@ -111,6 +120,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "61eeb0eb8b881a84d069e67be1723f5b353b0b9b866ad8e7ad9dba66cdc4dabd",
           "size": 9384,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/atkinson-hyperlegible@5.3.0/files/atkinson-hyperlegible-latin-ext-400-normal.woff2"
@@ -120,6 +130,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "bc8825fd435d4aa8e31449937826d583a7daaae15a83832c91b38375131ebf08",
           "size": 18292,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/atkinson-hyperlegible@5.3.0/files/atkinson-hyperlegible-latin-400-italic.woff2"
@@ -129,6 +140,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "90d887d541fe6e912d15f826aae6ca1190efcf172b65401704472475ed771049",
           "size": 9796,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/atkinson-hyperlegible@5.3.0/files/atkinson-hyperlegible-latin-ext-400-italic.woff2"
@@ -138,6 +150,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "140e2bd25a7315c8a062508391426b0d8c3297400c947b8d847be28f73a199f0",
           "size": 17524,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/atkinson-hyperlegible@5.3.0/files/atkinson-hyperlegible-latin-700-normal.woff2"
@@ -147,6 +160,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "840ced16f975d8abc2594b436d0206649e0c2a7327e36750ff849d3d37c3c02e",
           "size": 9372,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/atkinson-hyperlegible@5.3.0/files/atkinson-hyperlegible-latin-ext-700-normal.woff2"
@@ -156,6 +170,7 @@
           "weight": 700,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "73e0c9e1e284128dda599558f7c15bd5f3c056442c31dfae950528a16b3835cf",
           "size": 18484,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/atkinson-hyperlegible@5.3.0/files/atkinson-hyperlegible-latin-700-italic.woff2"
@@ -165,6 +180,7 @@
           "weight": 700,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "43471ea6265ba9619c8c12d3f9f53c9e1741fa3af69f6b658100a841b09398c8",
           "size": 9920,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/atkinson-hyperlegible@5.3.0/files/atkinson-hyperlegible-latin-ext-700-italic.woff2"
@@ -188,6 +204,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "a5906e15ceb68f73d3b2c2076b4057c3f6ed401186d56283b45ce12944ca0735",
           "size": 16316,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.3.0/files/nunito-latin-400-normal.woff2"
@@ -197,6 +214,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "67250a41de218bef49c04ea88c3d73c5756ad750a182209a560e1a521323a680",
           "size": 15888,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.3.0/files/nunito-latin-ext-400-normal.woff2"
@@ -206,6 +224,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "983e9c4b4a8f3bb81190009facbccbe5ecf9f55a758ae95c4759a00f715312d1",
           "size": 17140,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.3.0/files/nunito-latin-400-italic.woff2"
@@ -215,6 +234,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "dc974662eb582e44aef9f36fcb97513555127d11e25ade94cff6ffdba7d15941",
           "size": 16864,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.3.0/files/nunito-latin-ext-400-italic.woff2"
@@ -224,6 +244,7 @@
           "weight": 800,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "2363d3ed037283ebb961e8c4b4917e40a8bc8853cf9965cf1ea7b4daa1df630a",
           "size": 16520,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.3.0/files/nunito-latin-800-normal.woff2"
@@ -233,6 +254,7 @@
           "weight": 800,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "39f54b55b83547df294894bdf68d75c11e2ac626bc0c88b73ba8993422de2fe7",
           "size": 16284,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.3.0/files/nunito-latin-ext-800-normal.woff2"
@@ -242,6 +264,7 @@
           "weight": 800,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "24c88b08dae454cc6f5868daeea323c3ad9a347c0f4a83698f0c13338ab3ceca",
           "size": 17484,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.3.0/files/nunito-latin-800-italic.woff2"
@@ -251,6 +274,7 @@
           "weight": 800,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "0eadcc9e0dcee867dabb5722f8b3ee25269925909619993b39285e0455880296",
           "size": 17436,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.3.0/files/nunito-latin-ext-800-italic.woff2"
@@ -274,6 +298,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "fee25690fddfdf52d7c88f8460260998c523b762e1a53fc91561b179835e3316",
           "size": 15776,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/quicksand@5.3.0/files/quicksand-latin-400-normal.woff2"
@@ -283,6 +308,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "db0347bb53f618c0d932a128ee262d847a6e7243110e31f869611d1b63450505",
           "size": 15288,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/quicksand@5.3.0/files/quicksand-latin-ext-400-normal.woff2"
@@ -292,6 +318,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "00bfba44dde0dd81d9296cacc53f0ffa3ceff85997e69abd2891cbb9518ff40e",
           "size": 15124,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/quicksand@5.3.0/files/quicksand-latin-700-normal.woff2"
@@ -301,6 +328,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "7add3c83f45bfcf4a8d727923089c8a9f2efb3c1d62f49743f6deb402bf7387e",
           "size": 14592,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/quicksand@5.3.0/files/quicksand-latin-ext-700-normal.woff2"
@@ -324,6 +352,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "9cf74f703532ef61311d6c6dd32a582b6e410727f5fce1dbf5570cbe6b023c2f",
           "size": 16076,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.3.0/files/fredoka-latin-400-normal.woff2"
@@ -333,6 +362,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "fe97fe966d090d46c2bf2fe89faee6ac64d6f4b0a3a9cc3b74df38e3266b3399",
           "size": 2628,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.3.0/files/fredoka-latin-ext-400-normal.woff2"
@@ -342,6 +372,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "ee61b48acab42fcfee4e1c398b03bbae7e09d1be8471779c440a97dc85118c16",
           "size": 15900,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.3.0/files/fredoka-latin-700-normal.woff2"
@@ -351,6 +382,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "e5272989e860007c4dbb922c687aeea68d74ac0f4bcc6c052f1c21cffaec637d",
           "size": 2676,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.3.0/files/fredoka-latin-ext-700-normal.woff2"
@@ -374,6 +406,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "18ebcf63cd353f8472583e8261755fd527cddf0fdb5caa89dd2e60b4a9e4ba1c",
           "size": 18920,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/baloo-2@5.3.0/files/baloo-2-latin-400-normal.woff2"
@@ -383,6 +416,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "5d48a624eacfeae18274ef93558f06d48d3455ac03c06168e9ce51372c0da2c7",
           "size": 15212,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/baloo-2@5.3.0/files/baloo-2-latin-ext-400-normal.woff2"
@@ -392,6 +426,7 @@
           "weight": 800,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "3e36c57e37bda5b5f28cf10636d6d3aed4de5250df923f1b203b64ad857c79a7",
           "size": 18632,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/baloo-2@5.3.0/files/baloo-2-latin-800-normal.woff2"
@@ -401,6 +436,7 @@
           "weight": 800,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "d73eb61f07d8895ca21f6c334630fc2ba889ad84d61e0401ea24b5d8b1928d0d",
           "size": 15068,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/baloo-2@5.3.0/files/baloo-2-latin-ext-800-normal.woff2"
@@ -424,6 +460,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "ac079950fd9885261c0f73d9e87233f31b5427333ce0eb20e26c119458493c40",
           "size": 21148,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/lora@5.3.0/files/lora-latin-400-normal.woff2"
@@ -433,6 +470,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "525551030c504c0eb42d71b48ce10027e4431bd405d6cd04c468a535ce8d961b",
           "size": 12016,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/lora@5.3.0/files/lora-latin-ext-400-normal.woff2"
@@ -442,6 +480,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "723cc14fe86bc9fadb2f5f34efb421d246edb240a18d2a7828d2edc041d79996",
           "size": 22756,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/lora@5.3.0/files/lora-latin-400-italic.woff2"
@@ -451,6 +490,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "3bb65e234cd07a69127592cafd08ce4242a1a4ace24dcc4c466881693fc74867",
           "size": 12460,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/lora@5.3.0/files/lora-latin-ext-400-italic.woff2"
@@ -460,6 +500,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "c05fd5289492ed310ed882259b944ca5287e76e572a65d92d3941f9f44f0342a",
           "size": 21044,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/lora@5.3.0/files/lora-latin-700-normal.woff2"
@@ -469,6 +510,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "eacd7ecd09a1b5cc2706867f2505fb139825c3db70b17123538565fb723d0000",
           "size": 11968,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/lora@5.3.0/files/lora-latin-ext-700-normal.woff2"
@@ -478,6 +520,7 @@
           "weight": 700,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "5be7722fced443a25698c6f77d12a04a2cffa921771d81f2d6f5516a381f134b",
           "size": 22256,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/lora@5.3.0/files/lora-latin-700-italic.woff2"
@@ -487,6 +530,7 @@
           "weight": 700,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "c722b8661fe24d9e8b5a4461b686cd9168fd2cf6ebcc1c8bc9191ba6eca2ef7d",
           "size": 12260,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/lora@5.3.0/files/lora-latin-ext-700-italic.woff2"
@@ -510,6 +554,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "a60c193b55766b68b922e2327e15c2d8c145532f283a27c3411b9c47a8583d18",
           "size": 20420,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/literata@5.3.0/files/literata-latin-400-normal.woff2"
@@ -519,6 +564,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "726e1239ef9ece4c26f06475f1d35419932e8b0ce0084451110a739dd36c7a14",
           "size": 17616,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/literata@5.3.0/files/literata-latin-ext-400-normal.woff2"
@@ -528,6 +574,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "1e98bfbbb4eb8177b9c21b3fd526e1118c4835d21ff870c0d1c25b1ef4409fba",
           "size": 21148,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/literata@5.3.0/files/literata-latin-400-italic.woff2"
@@ -537,6 +584,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "3c5b9d0314198a54521c8ad5e418f608d6b1ed20d576f93bcbb7a498889b0083",
           "size": 17576,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/literata@5.3.0/files/literata-latin-ext-400-italic.woff2"
@@ -546,6 +594,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "1f2985e0fc368aac76f95b847cd05ef6ec4bac2733a648098c62edf990756cf5",
           "size": 22004,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/literata@5.3.0/files/literata-latin-700-normal.woff2"
@@ -555,6 +604,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "559ab7b701f4d2e40d3d78832fb199a0bcb6a6ce50dfbcb1319b904827214c39",
           "size": 19080,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/literata@5.3.0/files/literata-latin-ext-700-normal.woff2"
@@ -564,6 +614,7 @@
           "weight": 700,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "8a42dbed45f1855e2dcad9709173019013991c32aa71356e80a1e0ee9bb76763",
           "size": 22900,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/literata@5.3.0/files/literata-latin-700-italic.woff2"
@@ -573,6 +624,7 @@
           "weight": 700,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "07ed1258c20de131a05459468f60d9aaf1a513cac0aaa0ef4fde5d09d9474176",
           "size": 19184,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/literata@5.3.0/files/literata-latin-ext-700-italic.woff2"
@@ -596,6 +648,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "66f5bd22d738a801a9e58d71920559743b0baaced04be299e3c4feca3dce3556",
           "size": 49168,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/merriweather@5.3.0/files/merriweather-latin-400-normal.woff2"
@@ -605,6 +658,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "be42f8d64ab6410fd300c4d352d9a0943cc1c3b4eb74016b73bcf6b252d74ac5",
           "size": 42952,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/merriweather@5.3.0/files/merriweather-latin-ext-400-normal.woff2"
@@ -614,6 +668,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "051559ee0644cd647c8f654cffea1d1a5ce601e573af21d0984528563fb476f6",
           "size": 51836,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/merriweather@5.3.0/files/merriweather-latin-400-italic.woff2"
@@ -623,6 +678,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "ac83208e33a7c529dcb22b5f72951bab1e129db035176a584c8f5d68597e6098",
           "size": 44924,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/merriweather@5.3.0/files/merriweather-latin-ext-400-italic.woff2"
@@ -632,6 +688,7 @@
           "weight": 800,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "234916daa3dd072625fad30f1ae31d989c101bcd73ae8f29023cfbbc9a711c8a",
           "size": 48672,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/merriweather@5.3.0/files/merriweather-latin-800-normal.woff2"
@@ -641,6 +698,7 @@
           "weight": 800,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "288f7029dddca0d07d3c3961f6729b66bb6dd7b9b5e511122a02b700d2aef482",
           "size": 42836,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/merriweather@5.3.0/files/merriweather-latin-ext-800-normal.woff2"
@@ -650,6 +708,7 @@
           "weight": 800,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "261847cb920265f499ecd341a970aa1353289587d289da5967f2325a80f419c9",
           "size": 51256,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/merriweather@5.3.0/files/merriweather-latin-800-italic.woff2"
@@ -659,6 +718,7 @@
           "weight": 800,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "757c669fe92c7ddf1ebb05d75f7454c38473a940993b5bdcb12c1094ab8c1ae8",
           "size": 44700,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/merriweather@5.3.0/files/merriweather-latin-ext-800-italic.woff2"
@@ -682,6 +742,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "1fe9ad5d8b2ebd8ecb8fbd05bed1e3fdfa52dae3f1a04e1c219918442fe9394d",
           "size": 21856,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.3.0/files/playfair-display-latin-400-normal.woff2"
@@ -691,6 +752,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "b13dce34203d893eb00980383bc5abf8b75c9eb1f59c3a630e9fc8baf2e9984f",
           "size": 12336,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.3.0/files/playfair-display-latin-ext-400-normal.woff2"
@@ -700,6 +762,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "eabce94d4a69e439cd050755c31f9894ac8a78f93e58b063c6c01f370474e1de",
           "size": 21884,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.3.0/files/playfair-display-latin-400-italic.woff2"
@@ -709,6 +772,7 @@
           "weight": 400,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "b02fdf18a2d7b09f409b01a1ab4afe7b5f7d08926b3c867187398765ea0fb3f1",
           "size": 13668,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.3.0/files/playfair-display-latin-ext-400-italic.woff2"
@@ -718,6 +782,7 @@
           "weight": 800,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "576ff9c33a472cc36e3975f24811db2234b0a10872939b04c0ba9b915e9c2b3f",
           "size": 23272,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.3.0/files/playfair-display-latin-800-normal.woff2"
@@ -727,6 +792,7 @@
           "weight": 800,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "24adb236cec8998bd06999d084c3f6f3f76b19e33feaeaa0ef00ac82d20500b4",
           "size": 12968,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.3.0/files/playfair-display-latin-ext-800-normal.woff2"
@@ -736,6 +802,7 @@
           "weight": 800,
           "style": "italic",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "b2dbf82092c648374256eec29f3a935fa5863743c59fb6a25fdded4416167b4e",
           "size": 23088,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.3.0/files/playfair-display-latin-800-italic.woff2"
@@ -745,6 +812,7 @@
           "weight": 800,
           "style": "italic",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "8070143188bb531d9e269b5921b24687ce89afae0c312c0817b9e53e28d56b02",
           "size": 14116,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.3.0/files/playfair-display-latin-ext-800-italic.woff2"
@@ -768,6 +836,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "eb8731f38a9a42823804fa2f0feb96eece36750e313edf31ea7203dcc8292b47",
           "size": 14144,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/bubblegum-sans@5.3.0/files/bubblegum-sans-latin-400-normal.woff2"
@@ -777,6 +846,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "a27a2e93348dfd9bda80972cbf254c7b9cddaeb98dc01722806ef1a4499f6c46",
           "size": 1544,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/bubblegum-sans@5.3.0/files/bubblegum-sans-latin-ext-400-normal.woff2"
@@ -800,6 +870,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "3877b522181765adf66ba89bd68d288ecb9f2483b441baab3424646b0c7aaa0a",
           "size": 17360,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/luckiest-guy@5.3.0/files/luckiest-guy-latin-400-normal.woff2"
@@ -809,6 +880,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "1fbdf1d552eaa1c0c01788630cacb64a3d072beda38e9e7c8d730ad8eb54bfdb",
           "size": 7612,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/luckiest-guy@5.3.0/files/luckiest-guy-latin-ext-400-normal.woff2"
@@ -832,6 +904,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "24fcce3b384f27da0e5c8069f96b4d10196851364b53c98e3a47346550a2f76e",
           "size": 24596,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/sniglet@5.3.0/files/sniglet-latin-400-normal.woff2"
@@ -841,6 +914,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "a2b407943929c8b47ac8e64ca8d1d03f59d7cfa10c78578033adfa17af981be8",
           "size": 4204,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/sniglet@5.3.0/files/sniglet-latin-ext-400-normal.woff2"
@@ -850,6 +924,7 @@
           "weight": 800,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "102c5b5d05d135df6022ae8318c796a480d2a5e08452a05ca8a7e2bc10b4bbf2",
           "size": 24928,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/sniglet@5.3.0/files/sniglet-latin-800-normal.woff2"
@@ -859,6 +934,7 @@
           "weight": 800,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "af004209536d45ca3d570024f96cc1b41ea379edf2a3f422badc3ef4fb4e0613",
           "size": 4260,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/sniglet@5.3.0/files/sniglet-latin-ext-800-normal.woff2"
@@ -882,6 +958,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "ac5bc9033b2572bf84d39f7150c1634e37ed16e8dbee632d6d0bceac0bbf0199",
           "size": 23944,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/patrick-hand@5.3.0/files/patrick-hand-latin-400-normal.woff2"
@@ -891,6 +968,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "c16846bad9501534b8402172c18f87e927146c4e63af2942f1fa8ad8ba7e6e70",
           "size": 20112,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/patrick-hand@5.3.0/files/patrick-hand-latin-ext-400-normal.woff2"
@@ -914,6 +992,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "954410601a823f37e219f7930b7446f86afa15621326a7078d56fb9c910135cb",
           "size": 22336,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/kalam@5.3.0/files/kalam-latin-400-normal.woff2"
@@ -923,6 +1002,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "1099e56781c48f97dc66c8df2039a640ded07742acd4c6f2c9dc6350c3e3f324",
           "size": 12140,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/kalam@5.3.0/files/kalam-latin-ext-400-normal.woff2"
@@ -932,6 +1012,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "252063af6ade8b9a744cde4ddad0fc21ea53b8ba711eed121a0c2e8610ea9c93",
           "size": 22144,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/kalam@5.3.0/files/kalam-latin-700-normal.woff2"
@@ -941,6 +1022,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "1fc176f6b1fbc091d4321ef2c9b683a6f512f645b9f22c460c2e2f3d298fcf74",
           "size": 12152,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/kalam@5.3.0/files/kalam-latin-ext-700-normal.woff2"
@@ -964,6 +1046,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "d0b7b931b8980049327e8f8f9ac264617c8200b8422d62e886473d3d9527bad3",
           "size": 48836,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/caveat@5.3.0/files/caveat-latin-400-normal.woff2"
@@ -973,6 +1056,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "b887f256176087e22d2374d634ba7d1e9def523bc02babe2eca3efa25b32ecd7",
           "size": 18600,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/caveat@5.3.0/files/caveat-latin-ext-400-normal.woff2"
@@ -982,6 +1066,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "15f9638095ad5ec9816f93d66805ca1a87e71dc5a76b596bfce1c78d4704c405",
           "size": 51020,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/caveat@5.3.0/files/caveat-latin-700-normal.woff2"
@@ -991,6 +1076,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "f97b55783e417e37fce40600ad946b11eb63741a1cfdb2cd3907febc3cd8927f",
           "size": 19572,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/caveat@5.3.0/files/caveat-latin-ext-700-normal.woff2"
@@ -1014,6 +1100,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "9ee1dd0b37fcea476e4142696cb034a466ad84101dff157b5dde311a02c8c35b",
           "size": 28268,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/amatic-sc@5.3.0/files/amatic-sc-latin-400-normal.woff2"
@@ -1023,6 +1110,7 @@
           "weight": 400,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "4ca7885bff93f7348c682bb0f81c954ef881620b1ea79d0edc16c32d56a7d0d9",
           "size": 25068,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/amatic-sc@5.3.0/files/amatic-sc-latin-ext-400-normal.woff2"
@@ -1032,6 +1120,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin",
+          "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
           "sha256": "5d37fcdf66e96bde406d488efdee57cae49f91be3376ee5af7e82c15715879b2",
           "size": 27220,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/amatic-sc@5.3.0/files/amatic-sc-latin-700-normal.woff2"
@@ -1041,6 +1130,7 @@
           "weight": 700,
           "style": "normal",
           "subset": "latin-ext",
+          "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
           "sha256": "d3dbc2c5b8f7975d5bb2d49d75714b5de370181c1590ec530e84d87535a77245",
           "size": 25148,
           "url": "https://cdn.jsdelivr.net/npm/@fontsource/amatic-sc@5.3.0/files/amatic-sc-latin-ext-700-normal.woff2"
