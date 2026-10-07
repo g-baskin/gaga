@@ -11,6 +11,7 @@ const modelPicker = require('./ai/model-picker.cjs');
 const { createOpenRouter } = require('./ai/openrouter.cjs');
 const { createChatGpt } = require('./ai/chatgpt.cjs');
 const { createClaudeCode } = require('./ai/claude-code.cjs');
+const { createFal } = require('./ai/fal.cjs');
 
 const selfTest = process.argv.includes('--self-test');
 app.setName('Storyloom');
@@ -61,7 +62,9 @@ const settingsFile = () => path.join(app.getPath('userData'), 'settings.json');
 const MODEL = /^[\w.:/@-]{1,200}$/;
 const VOICE = /^[\w.:-]{1,80}$/;
 const WRITERS = ['custom', 'openrouter', 'chatgpt', 'claude'];
-const MEDIA = ['custom', 'openrouter'];
+// Pictures: OpenRouter, fal.ai, or your own service. Voices: OpenRouter or your own service.
+const PICTURES = ['custom', 'openrouter', 'fal'];
+const VOICES = ['custom', 'openrouter'];
 async function readSettings() {
   const str = (v) => (typeof v === 'string' ? v : '');
   const one = (v, list, fallback) => (list.includes(v) ? v : fallback);
@@ -70,9 +73,10 @@ async function readSettings() {
   return {
     baseUrl: str(raw.baseUrl), model: str(raw.model), imageModel: str(raw.imageModel), speechModel: str(raw.speechModel),
     voice: str(raw.voice), apiKeyEnc: str(raw.apiKeyEnc),
-    writer: one(raw.writer, WRITERS, 'custom'), pictures: one(raw.pictures, MEDIA, 'custom'), voices: one(raw.voices, MEDIA, 'custom'),
+    writer: one(raw.writer, WRITERS, 'custom'), pictures: one(raw.pictures, PICTURES, 'custom'), voices: one(raw.voices, VOICES, 'custom'),
     tier: one(raw.tier, modelPicker.TIERS, 'balanced'),
     openrouterKeyEnc: str(raw.openrouterKeyEnc), orTextModel: str(raw.orTextModel), orImageModel: str(raw.orImageModel), orSpeechModel: str(raw.orSpeechModel),
+    falKeyEnc: str(raw.falKeyEnc), falImageModel: str(raw.falImageModel),
     chatgptModel: str(raw.chatgptModel), claudeModel: str(raw.claudeModel), claudePath: str(raw.claudePath),
   };
 }
@@ -138,12 +142,14 @@ async function saveSettingsNow(input = {}) {
     voice,
     apiKeyEnc: current.apiKeyEnc,
     writer: choose('writer', WRITERS, 'writing'),
-    pictures: choose('pictures', MEDIA, 'pictures'),
-    voices: choose('voices', MEDIA, 'voices'),
+    pictures: choose('pictures', PICTURES, 'pictures'),
+    voices: choose('voices', VOICES, 'voices'),
     tier: choose('tier', modelPicker.TIERS, 'the budget'),
     openrouterKeyEnc: current.openrouterKeyEnc,
     orTextModel: checkModel(keep('orTextModel'), 'Model'),
     orImageModel: checkModel(keep('orImageModel'), 'Picture model'),
+    falKeyEnc: current.falKeyEnc,
+    falImageModel: checkModel(keep('falImageModel'), 'Picture model'),
     orSpeechModel: checkModel(keep('orSpeechModel'), 'Voice model'),
     chatgptModel: checkModel(keep('chatgptModel'), 'Model'),
     claudeModel: checkModel(keep('claudeModel'), 'Model'),
@@ -153,6 +159,8 @@ async function saveSettingsNow(input = {}) {
   if (typeof input.apiKey === 'string' && input.apiKey.trim()) next.apiKeyEnc = encryptSecret(input.apiKey, 'API key');
   if (input.clearOpenrouterKey) next.openrouterKeyEnc = '';
   if (typeof input.openrouterKey === 'string' && input.openrouterKey.trim()) next.openrouterKeyEnc = encryptSecret(input.openrouterKey, 'OpenRouter key');
+  if (input.clearFalKey) next.falKeyEnc = '';
+  if (typeof input.falKey === 'string' && input.falKey.trim()) next.falKeyEnc = encryptSecret(input.falKey, 'fal.ai key');
   await writePrivate(settingsFile(), JSON.stringify(next));
   if (next.claudePath !== current.claudePath) claudeStatusCache = null;
   return publicSettings(next);
@@ -161,6 +169,7 @@ const publicSettings = (s) => ({
   baseUrl: s.baseUrl, model: s.model, imageModel: s.imageModel, speechModel: s.speechModel, voice: s.voice, hasKey: Boolean(s.apiKeyEnc),
   writer: s.writer, pictures: s.pictures, voices: s.voices, tier: s.tier, hasOpenrouterKey: Boolean(s.openrouterKeyEnc),
   orTextModel: s.orTextModel, orImageModel: s.orImageModel, orSpeechModel: s.orSpeechModel,
+  hasFalKey: Boolean(s.falKeyEnc), falImageModel: s.falImageModel,
   chatgptModel: s.chatgptModel, claudeModel: s.claudeModel, claudePath: s.claudePath,
 });
 
@@ -171,9 +180,10 @@ const testUrl = (name) => (selfTest ? testUrls[name] : undefined);
 function useTestServices(urls) {
   if (!selfTest) throw new Error('Test services are only available in the self-test');
   Object.assign(testUrls, urls);
-  openRouter = null; chatGpt = null; claudeCode = null; claudeStatusCache = null; chatGptModels = null;
+  openRouter = null; chatGpt = null; claudeCode = null; claudeStatusCache = null; chatGptModels = null; fal = null;
 }
 let openRouter = null;
+let fal = null;
 let chatGpt = null;
 let claudeCode = null;
 let claudeStatusCache = null;
@@ -183,6 +193,16 @@ function getOpenRouter() {
     getKey: async () => decryptSecret((await readSettings()).openrouterKeyEnc),
   });
   return openRouter;
+}
+function getFal() {
+  fal ||= createFal({
+    runBase: testUrl('STORYLOOM_TEST_FAL_RUN'),
+    apiBase: testUrl('STORYLOOM_TEST_FAL_API'),
+    getKey: async () => decryptSecret((await readSettings()).falKeyEnc),
+    // The self-test's fake fal serves pictures from 127.0.0.1; real installs accept only fal's own hosts.
+    ...(selfTest && testUrls.STORYLOOM_TEST_FAL_RUN ? { mediaHostOk: (host) => host === '127.0.0.1' } : {}),
+  });
+  return fal;
 }
 const chatGptFile = () => path.join(app.getPath('userData'), 'chatgpt.json');
 function getChatGpt() {
@@ -363,6 +383,10 @@ async function generateImage(input = {}) {
     const { bytes } = await getOpenRouter().image({ prompt: fullPrompt, tier: settings.tier, lineArt, model: settings.orImageModel });
     return store.saveImageBytes(book.id, bytes);
   }
+  if (settings.pictures === 'fal') {
+    const { bytes } = await getFal().image({ prompt: fullPrompt, tier: settings.tier, lineArt, model: settings.falImageModel });
+    return store.saveImageBytes(book.id, bytes);
+  }
   const { data } = await aiRequest('/images/generations', {
     prompt: fullPrompt, n: 1, size: '1024x1024', response_format: 'b64_json',
   }, { needs: 'imageModel', maxBytes: 40_000_000, timeout: 180000 });
@@ -414,6 +438,9 @@ async function aiRecommendations() {
   if (s.pictures === 'openrouter') {
     if (s.orImageModel) rows.push(pinned('Pictures', s.orImageModel));
     else rows.push(...(await fromOpenRouter()).filter((r) => ['Pictures', 'Coloring pages'].includes(r.job)));
+  } else if (s.pictures === 'fal') {
+    if (s.falImageModel) rows.push(pinned('Pictures', s.falImageModel));
+    else rows.push(...(await getFal().recommendations({ tier: s.tier }).catch(() => [])));
   } else if (s.imageModel) rows.push(pinned('Pictures', s.imageModel));
   if (s.voices === 'openrouter') {
     if (s.orSpeechModel) rows.push(pinned('Narration', s.orSpeechModel));
@@ -584,6 +611,7 @@ function registerHandlers() {
     const links = {
       'chatgpt-usage': 'https://chatgpt.com/settings/usage',
       'openrouter-keys': 'https://openrouter.ai/settings/keys',
+      'fal-keys': 'https://fal.ai/dashboard/keys',
       'claude-code': 'https://claude.com/product/claude-code',
     };
     if (!links[name]) throw new Error('Unknown link');

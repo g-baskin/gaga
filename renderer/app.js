@@ -208,6 +208,46 @@ const WRITER_LABEL = {
   openrouter: 'Writing with OpenRouter',
   custom: 'Writing with your own AI service',
 };
+// Whether AI pictures can be drawn with the saved settings (mirrors what the main process requires).
+const picturesReady = (s) => (s.pictures === 'openrouter' ? Boolean(s.hasOpenrouterKey)
+  : s.pictures === 'fal' ? Boolean(s.hasFalKey) : Boolean(s.baseUrl && s.imageModel));
+const PICTURE_SERVICE = { openrouter: 'OpenRouter', fal: 'fal.ai' };
+
+// Explains who draws AI pictures and who pays. In Storyloom, Claude and ChatGPT plans only write: ChatGPT
+// draws pictures in OpenAI's own apps, but OpenAI's "Sign in with ChatGPT" for other apps doesn't include
+// image generation yet (developers.openai.com/siwc, preview limitations). So pictures come from OpenRouter,
+// fal.ai, or the author's own API service. Calls onReady(true|false) once settings load.
+function aiPictureNote({ onReady } = {}) {
+  const note = h('p', { class: 'muted small-print ai-picture-note', role: 'status' }, 'Checking your picture service\u2026');
+  api.getSettings().then((s) => {
+    state.settings = s;
+    const ready = picturesReady(s);
+    const subscriptions = s.writer === 'chatgpt'
+      ? 'ChatGPT draws pictures in its own app, but OpenAI doesn\u2019t let other apps use your plan for pictures yet, so your ChatGPT plan writes your stories here. '
+      : s.writer === 'claude'
+        ? 'Your Claude plan writes your stories, but Claude can\u2019t draw pictures. '
+        : 'Claude and ChatGPT plans don\u2019t draw pictures in Storyloom. ';
+    let pictures;
+    const service = PICTURE_SERVICE[s.pictures];
+    if (ready && service) {
+      pictures = `Pictures are drawn by ${service} and charged to your ${service} credit for each picture.`;
+    } else if (ready) {
+      pictures = `Pictures are drawn by your own AI service (${s.imageModel}) and charged to that account.`;
+    } else if (service) {
+      pictures = `To draw pictures, add ${/^[AEIOU]/i.test(service) ? 'an' : 'a'} ${service} key in Account \u2192 AI services.`;
+    } else {
+      pictures = 'To draw pictures, choose OpenRouter, fal.ai, or your own AI service under Pictures in Account \u2192 AI services.';
+    }
+    note.classList.toggle('ai-picture-note-missing', !ready);
+    note.replaceChildren(h('strong', {}, ready ? 'AI pictures: ' : 'AI pictures aren\u2019t set up. '), subscriptions, pictures);
+    onReady?.(ready);
+  }, () => {
+    note.textContent = 'AI pictures use OpenRouter, fal.ai, or your own AI service (Account \u2192 AI services).';
+    onReady?.(true);
+  });
+  return note;
+}
+
 function aiWriterNote(extra = '') {
   const note = h('span', { class: 'muted small-print ai-writer-note' }, 'AI writing uses the service in Settings.', extra ? ` ${extra}` : '');
   api.getSettings().then((s) => {

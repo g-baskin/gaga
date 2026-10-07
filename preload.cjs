@@ -61,7 +61,7 @@ contextBridge.exposeInMainWorld('storyloom', {
   chatGptSignOut: () => soft('ai:chatgpt-sign-out'), // → { revoked }
   chatGptModels: () => soft('ai:chatgpt-models'), // → [{ slug, display_name }]
   claudeStatus: (force) => soft('ai:claude-status', force), // → { installed, signedIn, method, version, message? }
-  openLink: (name) => call('ai:open-link', name), // 'chatgpt-usage' | 'openrouter-keys' | 'claude-code'
+  openLink: (name) => call('ai:open-link', name), // 'chatgpt-usage' | 'openrouter-keys' | 'fal-keys' | 'claude-code'
   onBeforeClose: (fn) => ipcRenderer.on('app:before-close', () => fn()),
   onMenuAction: (fn) => ipcRenderer.on('menu:action', (_event, action) => {
     if (action === 'undo' || action === 'redo') fn(action);

@@ -8,9 +8,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- fal.ai for AI pictures: paste a fal.ai key, and Storyloom picks a picture model from fal.ai's live list to match your budget (Best quality, Balanced, or Lowest cost), with a clean line-art model for coloring pages.
+
 ### Changed
 
 - Download file names now say which Mac they're for: "Intel" or "Apple-Silicon".
+- The cover preview in the Story builder updates as you type and edit characters, including a new portrait before you save, and now shows where the story is set and who's in it.
+- Drawing a portrait or generating a picture now says who draws it and who pays. Claude and ChatGPT plans write your stories; pictures come from OpenRouter, fal.ai, or your own AI service. (ChatGPT can draw in its own app, but OpenAI doesn't let other apps use your plan for pictures yet.) The button is turned off, with directions, until pictures are set up.
+
+### Fixed
+
+- The cover preview no longer shows the word "null" when a story has no writing style.
 
 ## [0.1.0] - 2026-10-07
 

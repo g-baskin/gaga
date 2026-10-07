@@ -36,9 +36,52 @@ module.exports = async function storyBuilder(ctx) {
   await ctx.type('A sleek brown otter with a tiny lantern');
   await ctx.click('dialog[open] [data-action="choose-picture"]');
   await ctx.waitFor('dialog[open] .sb-picture-img');
+  // The cover preview shows the new picture while the dialog is still open (before saving).
+  checks.previewLiveDraft = await js(`$waitFor(() => {
+    const draft = document.querySelector('dialog[open] .sb-picture-img')?.src;
+    return draft && document.querySelector('#sb-cover img')?.src === draft ? true : null;
+  }, 5000).catch(() => false)`);
+  checks.previewLiveCast = await js(`$waitFor(() => /Starring Otto/.test(document.getElementById('sb-cast')?.textContent || '') || null, 5000).catch(() => false)`);
+  // The dialog explains who draws pictures: subscriptions can't, the configured API service does.
+  const note = await js(`$waitFor(() => document.querySelector('dialog[open] .ai-picture-note strong') && document.querySelector('dialog[open] .ai-picture-note').textContent, 5000)`);
+  checks.pictureNoteReady = /don\u2019t draw pictures in Storyloom/.test(note) && /your own AI service \(mock-painter\)/.test(note);
+  checks.drawEnabled = await js(`!document.querySelector('dialog[open] [data-action="draw-portrait"]').disabled`);
   await ctx.click('#sb-character-save');
   await ctx.waitFor('.sb-character .sb-avatar img');
   checks.characterAdded = (await js(`document.querySelectorAll('.sb-left .sb-character').length`)) === 1;
+
+  // Without a picture service: the button is disabled and the dialog says what to set up.
+  // A cancelled edit shows on the preview while typing, then disappears.
+  await js(`api.saveSettings({ pictures: 'openrouter' })`);
+  await ctx.click('#sb-add-character');
+  await ctx.waitFor('dialog[open] #sb-character-name');
+  const missing = await js(`$waitFor(() => document.querySelector('dialog[open] .ai-picture-note-missing')?.textContent || null, 5000)`);
+  checks.pictureNoteMissing = /aren\u2019t set up/.test(missing) && /add an OpenRouter key/.test(missing);
+  checks.drawDisabled = await js(`document.querySelector('dialog[open] [data-action="draw-portrait"]').disabled`);
+  await ctx.screenshot('story-builder-pictures');
+  checks.previewNoNull = await js(`!/\\bnull\\b/.test(document.querySelector('.sb-preview-body').textContent)`);
+  await ctx.click('#sb-character-name');
+  await ctx.type('Zed');
+  checks.previewTypingLive = await js(`$waitFor(() => /Zed/.test(document.getElementById('sb-cast')?.textContent || '') || null, 5000).catch(() => false)`);
+  await ctx.click('dialog[open] .form-actions .btn.ghost');
+  checks.previewCancelReverts = await js(`$waitFor(() => !/Zed/.test(document.getElementById('sb-cast')?.textContent || '') || null, 5000).catch(() => false)`);
+  // A change that lands after the dialog closed (like a slow portrait) must not bring the draft back.
+  await ctx.click('#sb-add-character');
+  await ctx.waitFor('dialog[open] #sb-character-name');
+  // Close, wait for the dialog's close event to finish, then deliver the late change.
+  await js(`new Promise((resolve) => {
+    const dialog = document.querySelector('dialog[open]');
+    window.__lateForm = dialog.querySelector('form');
+    dialog.addEventListener('close', () => setTimeout(resolve, 50), { once: true });
+    dialog.close();
+  }).then(() => {
+    __lateForm.elements.name.value = 'Late Larry';
+    __lateForm.dispatchEvent(new Event('input', { bubbles: true }));
+    return true;
+  })`);
+  await pause(100);
+  checks.previewIgnoresLateDraft = await js(`!/Late Larry/.test(document.getElementById('sb-cast')?.textContent || '')`);
+  await js(`api.saveSettings({ pictures: 'custom' })`);
 
   // Save to library, then insert a second copy.
   await ctx.click('[data-action="save-to-library"]');
@@ -61,6 +104,9 @@ module.exports = async function storyBuilder(ctx) {
   await ctx.click('[data-illustration="Watercolor"]');
   await ctx.click('#sb-themes .sb-theme', { index: 1 });
   await ctx.click('[data-size="landscape"]');
+  await ctx.click('[data-sb="location"]');
+  await ctx.type('a seaside village');
+  checks.previewSetting = await js(`$waitFor(() => /Set in a seaside village/.test(document.getElementById('sb-setting')?.textContent || '') || null, 5000).catch(() => false)`);
   await js('$settle()');
   const preview = await js(`(() => { const c = document.querySelector('#sb-cover'); return { text: c?.textContent || '', landscape: !!c?.querySelector('.page.size-landscape') }; })()`);
   checks.previewTitle = preview.text.includes('The Lantern Otter') && preview.text.includes('Robin Vale');

@@ -13,7 +13,7 @@ Storyloom is a Mac app for writing, illustrating, narrating, and exporting child
 - **Export** as PDF (screen or print with bleed), EPUB 3, or a narrated WAV audiobook, with an optional ISBN and copyright page.
 
 ## Optional AI
-Connect one of: your Claude plan (through Claude Code installed on your Mac), your ChatGPT plan (Sign in with ChatGPT), OpenRouter, or any OpenAI-compatible service. Claude and ChatGPT plans cover writing only; pictures and voices need OpenRouter or your own service. Storyloom can pick a model for each job based on your budget. Without AI, everything else still works.
+Connect one of: your Claude plan (through Claude Code installed on your Mac), your ChatGPT plan (Sign in with ChatGPT), OpenRouter, or any OpenAI-compatible service. Claude and ChatGPT plans cover writing in Storyloom; pictures come from OpenRouter, fal.ai, or your own service, and voices from OpenRouter or your own service. (ChatGPT can draw pictures in its own app, but OpenAI doesn't let other apps use your plan for pictures yet.) Storyloom can pick a model for each job based on your budget. Without AI, everything else still works.
 
 ## Not available
 MP3 audiobooks (export WAV and convert it), print ordering (export a print-ready PDF instead), online sharing/publishing, picture upscaling, and stories from a drawing or photo.

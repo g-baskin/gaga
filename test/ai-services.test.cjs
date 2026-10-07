@@ -7,6 +7,7 @@ const path = require('node:path');
 const { createChatGpt } = require('../ai/chatgpt.cjs');
 const { createOpenRouter } = require('../ai/openrouter.cjs');
 const { createClaudeCode } = require('../ai/claude-code.cjs');
+const { createFal } = require('../ai/fal.cjs');
 const mocks = require('../selftest/mock-services.cjs');
 
 const STORY_SYSTEM = 'You write original picture-book stories. Reply with JSON only.';
@@ -204,4 +205,48 @@ test('Claude Code: runs the installed program with every tool and setting switch
   await assert.rejects(missing.ask({ system: 'x', user: 'y' }), /isn’t a program/);
   const relative = createClaudeCode({ getPath: async () => 'claude', home: dir });
   await assert.rejects(relative.ask({ system: 'x', user: 'y' }), /isn’t a program/);
+});
+
+// ---------------- fal.ai ----------------
+test('fal.ai: picks a model from the live list, sends only settings the model accepts, and saves the picture', async (t) => {
+  const server = await mocks.startFal({ key: 'fal-test-key' });
+  t.after(() => server.close());
+  const client = createFal({
+    runBase: server.runBase, apiBase: server.apiBase, getKey: async () => 'fal-test-key',
+    mediaHostOk: (host) => host === '127.0.0.1',
+  });
+
+  // Balanced → Nano Banana 2: square via aspect_ratio, PNG, and the picture inline (sync_mode).
+  const balanced = await client.image({ prompt: 'A fox in a scarf', tier: 'balanced' });
+  assert.equal(balanced.model, 'fal-ai/nano-banana-2');
+  assert.equal(balanced.bytes.subarray(1, 4).toString(), 'PNG');
+  const call = server.calls.find((c) => c.path === '/run/fal-ai/nano-banana-2');
+  assert.deepEqual(call.body, { prompt: 'A fox in a scarf', aspect_ratio: '1:1', output_format: 'png', num_images: 1, sync_mode: true });
+  assert.equal(call.auth, 'Key fal-test-key');
+
+  // Coloring pages → newest Recraft, which has no sync_mode: the picture is downloaded from fal's media host.
+  const lineArt = await client.image({ prompt: 'Black and white line art: a cat', tier: 'balanced', lineArt: true });
+  assert.equal(lineArt.model, 'fal-ai/recraft/v4.1/text-to-image');
+  assert.deepEqual(server.calls.find((c) => c.path === '/run/fal-ai/recraft/v4.1/text-to-image').body, { prompt: 'Black and white line art: a cat', image_size: 'square_hd' });
+  assert.ok(server.calls.some((c) => c.path === '/media/picture.png'));
+
+  // A pinned model is used as is.
+  assert.equal((await client.image({ prompt: 'x', model: 'fal-ai/flux/schnell' })).model, 'fal-ai/flux/schnell');
+
+  const recs = await client.recommendations({ tier: 'best' });
+  assert.deepEqual(recs.map((r) => `${r.job}=${r.model}`), ['Pictures=openai/gpt-image-2.5/sunburst/text-to-image', 'Coloring pages=fal-ai/recraft/v4.1/text-to-image']);
+});
+
+test('fal.ai: no key, wrong key, empty balance, and pictures from other hosts are refused with clear messages', async (t) => {
+  const server = await mocks.startFal({ key: 'fal-test-key' });
+  t.after(() => server.close());
+  const make = (key, mediaHostOk) => createFal({ runBase: server.runBase, apiBase: server.apiBase, getKey: async () => key, ...(mediaHostOk ? { mediaHostOk } : {}) });
+
+  await assert.rejects(make('').image({ prompt: 'x', tier: 'balanced' }), /Add your fal\.ai key/);
+  await assert.rejects(make('wrong').image({ prompt: 'x', tier: 'balanced' }), /didn’t accept the key/);
+  server.options.outOfCredit = true;
+  await assert.rejects(make('fal-test-key').image({ prompt: 'x', tier: 'balanced' }), /out of credit/);
+  server.options.outOfCredit = false;
+  // With the real host rule, a picture URL on any host other than fal's own is refused (plain http too).
+  await assert.rejects(make('fal-test-key').image({ prompt: 'x', model: 'fal-ai/recraft/v4.1/text-to-image' }), /unexpected address/);
 });

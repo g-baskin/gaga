@@ -190,4 +190,36 @@ function pickChatGptModel({ models = [], task = 'story', tier = 'balanced' }) {
   return models[0].slug;
 }
 
-module.exports = { TIERS, TASKS, pickTextModels, pickImageModel, pickSpeechModel, pickVoice, pickClaudeModel, pickChatGptModel };
+// fal.ai picture models (endpoint IDs from fal's live text-to-image list). Families per budget, best first;
+// the list is checked against what fal offers today, so retired models are skipped automatically.
+const FAL_PREFERENCE = {
+  best: [/^openai\/gpt-image-[\d.]+\/sunburst\/text-to-image$/, /^fal-ai\/nano-banana-pro$/, /^blackforestlabs\/flux-\d+\/text-to-image$/, /^fal-ai\/flux-2-pro$/, /^openai\/gpt-image-\d/],
+  balanced: [/^fal-ai\/nano-banana-2$/, /^fal-ai\/flux-2-pro$/, /^bytedance\/seedream\/v\d+\/pro\/text-to-image$/, /^fal-ai\/flux\/dev$/],
+  thrifty: [/^fal-ai\/flux\/schnell$/, /^fal-ai\/flux-2\/klein\/4b$/, /^fal-ai\/z-image\/turbo$/, /nano-banana-2-lite$/],
+};
+// Recraft follows "clean line art" instructions well, which suits coloring pages.
+const FAL_LINE_ART = [/^fal-ai\/recraft\/v[\d.]+\/text-to-image$/, /^recraft\/v[\d.]+\/flash\/text-to-image$/];
+// Not plain picture makers: vector/SVG output, add-on-weight (LoRA) variants, control rigs, material maps.
+const FAL_SKIP = /vector|svg|lora|controlnet|kontext|material|layer/i;
+
+function pickFalModel({ models = [], tier = 'balanced', lineArt = false }) {
+  const budget = normalTier(tier);
+  const usable = models.filter((m) => typeof m?.endpoint_id === 'string' && !FAL_SKIP.test(m.endpoint_id)
+    && (m.metadata?.status ?? 'active') === 'active');
+  if (!usable.length) return null;
+  const label = budget === 'best' ? 'a top-quality' : budget === 'balanced' ? 'a well-rounded' : 'a fast, low-cost';
+  const patterns = lineArt && budget !== 'thrifty' ? [...FAL_LINE_ART, ...FAL_PREFERENCE[budget]] : FAL_PREFERENCE[budget];
+  // Version number in an ID like ".../v4.1/..." (0 if none), so the newest of a family wins.
+  const version = (id) => Number((/\/v(\d+(?:\.\d+)?)\//.exec(id) || [])[1] || 0);
+  for (const pattern of patterns) {
+    const hit = usable.filter((m) => pattern.test(m.endpoint_id)).sort((a, b) => version(b.endpoint_id) - version(a.endpoint_id))[0];
+    if (hit) {
+      const name = hit.metadata?.display_name || hit.endpoint_id;
+      return { model: hit.endpoint_id, reason: `${lineArt ? 'Coloring pages' : 'Pictures'}: ${name}, ${label} picture model on fal.ai.` };
+    }
+  }
+  const fallback = usable[0];
+  return { model: fallback.endpoint_id, reason: `Pictures: ${fallback.metadata?.display_name || fallback.endpoint_id}, the most-used picture model on fal.ai.` };
+}
+
+module.exports = { TIERS, TASKS, pickTextModels, pickImageModel, pickFalModel, pickSpeechModel, pickVoice, pickClaudeModel, pickChatGptModel };

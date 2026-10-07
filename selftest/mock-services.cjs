@@ -207,6 +207,68 @@ function listen(server, extra) {
   });
 }
 
+// ---------------- fal.ai ----------------
+// Model list (api.fal.ai/v1/models), per-model OpenAPI input schemas, drawing at fal.run/<model>
+// (inline picture when sync_mode is sent, otherwise a URL to a picture on this same server).
+const FAL_MODELS = [
+  { endpoint_id: 'fal-ai/flux/schnell', metadata: { display_name: 'FLUX.1 [schnell] (mock)', status: 'active' } },
+  { endpoint_id: 'fal-ai/nano-banana-2', metadata: { display_name: 'Nano Banana 2 (mock)', status: 'active' } },
+  { endpoint_id: 'fal-ai/recraft/v4.1/text-to-vector', metadata: { display_name: 'Vector (mock)', status: 'active' } },
+  { endpoint_id: 'fal-ai/recraft/v3/text-to-image', metadata: { display_name: 'Recraft V3 (mock)', status: 'active' } },
+  { endpoint_id: 'fal-ai/recraft/v4.1/text-to-image', metadata: { display_name: 'Recraft V4.1 (mock)', status: 'active' } },
+  { endpoint_id: 'openai/gpt-image-2.5/sunburst/text-to-image', metadata: { display_name: 'GPT Image 2.5 Sunburst (mock)', status: 'active' } },
+];
+// Input fields per model, shaped like fal's real schemas (Recraft has no sync_mode, so it returns a URL).
+const FAL_FIELDS = {
+  'fal-ai/flux/schnell': { prompt: {}, image_size: { anyOf: [{ $ref: '#/x' }, { enum: ['square_hd', 'square', 'landscape_4_3'] }] }, output_format: { enum: ['jpeg', 'png'] }, num_images: {}, sync_mode: {} },
+  'fal-ai/nano-banana-2': { prompt: {}, aspect_ratio: { anyOf: [{ enum: ['auto', '1:1', '16:9'] }, { type: 'null' }] }, output_format: { enum: ['jpeg', 'png', 'webp'] }, num_images: {}, sync_mode: {} },
+  'fal-ai/recraft/v4.1/text-to-image': { prompt: {}, image_size: { anyOf: [{ $ref: '#/x' }, { enum: ['square_hd', 'square'] }] } },
+  'openai/gpt-image-2.5/sunburst/text-to-image': { prompt: {}, image_size: { anyOf: [{ $ref: '#/x' }, { enum: ['square_hd', 'auto'] }] }, output_format: { enum: ['jpeg', 'png', 'webp'] }, num_images: {}, sync_mode: {} },
+};
+
+function startFal({ key = 'fal-test-key' } = {}) {
+  const calls = [];
+  const options = { outOfCredit: false };
+  let base = '';
+  const server = http.createServer((req, res) => {
+    let raw = '';
+    req.on('data', (d) => { raw += d; if (raw.length > 2_000_000) req.destroy(); });
+    req.on('end', () => {
+      const url = new URL(req.url, base);
+      let body = {};
+      try { body = JSON.parse(raw || '{}'); } catch { /* keep empty */ }
+      calls.push({ method: req.method, path: url.pathname, query: Object.fromEntries(url.searchParams), body, auth: req.headers.authorization || '' });
+      const json = (data, status = 200) => { res.writeHead(status, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(data)); };
+      if (req.method === 'GET' && url.pathname === '/v1/models') {
+        const id = url.searchParams.get('endpoint_id');
+        if (id) {
+          const fields = FAL_FIELDS[id];
+          return json({ models: [{ endpoint_id: id, openapi: { components: { schemas: { [`${id.replace(/\W/g, '')}Input`]: { properties: fields || {} } } } } }], has_more: false });
+        }
+        return json({ models: FAL_MODELS, has_more: false, next_cursor: null });
+      }
+      if (req.method === 'GET' && url.pathname === '/media/picture.png') {
+        res.writeHead(200, { 'Content-Type': 'image/png' });
+        return res.end(makePng({ lineArt: true }));
+      }
+      if (req.method === 'POST' && url.pathname.startsWith('/run/')) {
+        if (req.headers.authorization !== `Key ${key}`) return json({ detail: 'Cannot access application. Authentication is required to access this application.' }, 401);
+        if (options.outOfCredit) return json({ detail: 'User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.' }, 403);
+        const png = makePng({ lineArt: /line art/i.test(body.prompt || '') });
+        const image = body.sync_mode
+          ? { url: `data:image/png;base64,${png.toString('base64')}`, content_type: 'image/png', width: 64, height: 64 }
+          : { url: `${base}/media/picture.png`, content_type: 'image/png', width: 64, height: 64 };
+        return json({ images: [image], has_nsfw_concepts: [false] });
+      }
+      res.writeHead(404);
+      return res.end();
+    });
+  });
+  return listen(server, { calls, key, options, onUrl: (url) => { base = url; } }).then((s) => ({
+    ...s, runBase: `${s.url}/run`, apiBase: `${s.url}/v1`,
+  }));
+}
+
 // ---------------- Claude Code ----------------
 // A stand-in "claude" program (a shell script) that answers like `claude -p --output-format json`.
 // It records its arguments so tests can check every tool and setting was switched off.
@@ -235,4 +297,4 @@ esac
 }
 const shellQuote = (value) => `'${String(value).replace(/'/g, `'\\''`)}'`;
 
-module.exports = { startOpenRouter, startChatGpt, makeFakeClaude, OR_MODELS };
+module.exports = { startOpenRouter, startChatGpt, startFal, makeFakeClaude, OR_MODELS };

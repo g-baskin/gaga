@@ -32,6 +32,9 @@
   };
 
   let view = null; // { host, left, preview, errors }
+  // The character being edited in the dialog (unsaved), so the cover preview can show it as it changes.
+  let draftCharacter = null; // { original, draft }
+  let previewQueued = false;
 
   function builder() {
     const b = state.book.builder ||= {};
@@ -40,7 +43,20 @@
     b.readingLevel ||= 'early-reader'; b.length ||= 'short'; b.illustrationStyle ??= ''; b.templateId ??= null;
     return b;
   }
-  const changed = (rerender = false) => { scheduleSave(); if (rerender) renderLeft(); updatePreview(); };
+  const changed = (rerender = false) => { scheduleSave(); if (rerender) renderLeft(); schedulePreview(); };
+  // Redraws the cover preview right after the current change, once, even if one action changes several things.
+  function schedulePreview() {
+    if (previewQueued) return;
+    previewQueued = true;
+    queueMicrotask(() => { previewQueued = false; updatePreview(); });
+  }
+  // Characters as they look right now, including unsaved changes in an open character dialog.
+  function liveCharacters() {
+    const list = builder().characters;
+    if (!draftCharacter) return list;
+    const { original, draft } = draftCharacter;
+    return original ? list.map((c) => (c === original ? draft : c)) : [...list, draft];
+  }
 
   // ---------- small building blocks ----------
   const card = (id, title, hint, ...body) => h('section', { class: 'sb-card', id: `sb-${id}` },
@@ -190,7 +206,7 @@
     const designed = first && (first.image || first.elements?.length || first.layout !== 'cover');
     if (first && designed && !theme) return first;
     const p = theme?.palette || {};
-    const hero = b.characters.find((c) => c.image);
+    const hero = liveCharacters().find((c) => c.image);
     return {
       id: 'sb-preview', layout: 'cover', text: '', image: first?.image || hero?.image || null, crop: first?.image ? first.crop : null,
       background: p.background || first?.background || '#ffffff', color: p.ink || first?.color || '#2a2433',
@@ -204,27 +220,46 @@
     const book = { id: state.book.id, title: state.book.title || 'Untitled story', author: state.book.author, size: state.book.size };
     const level = LEVELS.find(([id]) => id === b.readingLevel);
     const facts = [b.genre, level?.[1], `${LENGTH_PAGES[b.length]} pages`, b.illustrationStyle, state.book.language].filter(Boolean);
-    view.preview.replaceChildren(
+    const setting = [b.location.trim() && `Set in ${b.location.trim()}`, b.era.trim()].filter(Boolean).join(' · ');
+    const cast = liveCharacters().map((c) => c.name.trim()).filter(Boolean);
+    // (replaceChildren would print an empty slot as the word "null", so leave empty lines out.)
+    view.preview.replaceChildren(...[
       h('div', { class: 'sb-cover', id: 'sb-cover' }, scaledPage(coverPage(), book, 300, 340)),
-      h('p', { class: 'sb-facts muted' }, facts.join(' · ')),
-      b.writingStyle.length ? h('p', { class: 'sb-facts muted' }, `Told in a ${b.writingStyle.join(', ').toLowerCase()} voice`) : null);
+      h('p', { class: 'sb-facts muted', id: 'sb-facts' }, facts.join(' · ')),
+      setting ? h('p', { class: 'sb-facts muted', id: 'sb-setting' }, setting) : null,
+      cast.length ? h('p', { class: 'sb-facts muted', id: 'sb-cast' }, `Starring ${cast.join(', ')}`) : null,
+      b.writingStyle.length ? h('p', { class: 'sb-facts muted' }, `Told in a ${b.writingStyle.join(', ').toLowerCase()} voice`) : null,
+    ].filter(Boolean));
   }
 
   // ---------- character modal ----------
   function editCharacter(existing) {
     const draft = existing ? { ...existing } : { id: newId(), name: '', role: 'Main character', description: '', image: null };
-    modal(existing ? `Edit ${existing.name}` : 'New character', (close) => {
+    const dialog = modal(existing ? `Edit ${existing.name}` : 'New character', (close) => {
       const picture = h('div', { class: 'sb-picture' });
       const drawBtn = h('button', { type: 'button', class: 'btn ghost small', 'data-action': 'draw-portrait' }, 'Draw a portrait with AI');
+      let canDraw = true;
+      const pictureNote = aiPictureNote({ onReady: (ready) => {
+        canDraw = ready;
+        drawBtn.disabled = !ready;
+        drawBtn.title = ready ? '' : 'Set up AI pictures in Account \u2192 AI services first';
+      } });
+      // Show the dialog's current state on the cover preview straight away.
+      const showDraft = () => {
+        // A picture that arrives after the dialog was closed must not bring the unsaved draft back.
+        if (!dialog.open) return;
+        draftCharacter = { original: existing, draft: { ...draft, name: form.elements.name.value, description: form.elements.description.value } };
+        schedulePreview();
+      };
       const showPicture = () => picture.replaceChildren(
         draft.image ? h('img', { src: mediaUrl(state.book.id, draft.image), alt: '', class: 'sb-picture-img' }) : h('span', { class: 'muted' }, 'No picture'),
         h('div', { class: 'sb-picture-actions' },
           h('button', {
             type: 'button', class: 'btn ghost small', 'data-action': 'choose-picture',
-            onclick: async () => { const name = await run(() => api.importImage(state.book.id)); if (name) { draft.image = name; showPicture(); } },
+            onclick: async () => { const name = await run(() => api.importImage(state.book.id)); if (name) { draft.image = name; showPicture(); showDraft(); } },
           }, 'Choose from Mac…'),
           drawBtn,
-          draft.image ? h('button', { type: 'button', class: 'btn ghost small danger', onclick: () => { draft.image = null; showPicture(); } }, 'Remove') : null));
+          draft.image ? h('button', { type: 'button', class: 'btn ghost small danger', onclick: () => { draft.image = null; showPicture(); showDraft(); } }, 'Remove') : null));
       drawBtn.onclick = async () => {
         const prompt = `${form.elements.name.value}: ${form.elements.description.value}`.trim();
         if (!form.elements.description.value.trim()) { toast('Describe the character first so the artist knows what to draw'); return; }
@@ -234,16 +269,18 @@
         } catch (error) {
           toast(cleanError(error), { label: 'Open settings', run: openAiSettings });
         }
-        drawBtn.disabled = false; drawBtn.textContent = 'Draw a portrait with AI';
+        drawBtn.disabled = !canDraw; drawBtn.textContent = 'Draw a portrait with AI';
         showPicture();
+        showDraft();
       };
-      const form = h('form', { class: 'form sb-character-form', onsubmit: (e) => {
+      const form = h('form', { class: 'form sb-character-form', oninput: () => showDraft(), onsubmit: (e) => {
         e.preventDefault();
         const name = form.elements.name.value.trim();
         if (!name) { form.elements.name.focus(); toast('Give the character a name'); return; }
         Object.assign(draft, { name, role: form.elements.role.value, description: form.elements.description.value.trim() });
         const b = builder();
         if (existing) Object.assign(existing, draft); else b.characters.push(draft);
+        draftCharacter = null;
         close(); changed(true);
       } },
       field('Name', h('input', { name: 'name', id: 'sb-character-name', value: draft.name, maxlength: '80', required: true, placeholder: 'Pip' })),
@@ -253,13 +290,15 @@
         name: 'description', id: 'sb-character-description', rows: '3', maxlength: '1000', value: draft.description,
         placeholder: 'A round little hedgehog with a red scarf who hums when nervous',
       })),
-      h('div', { class: 'field' }, h('span', { class: 'field-label' }, 'Picture'), picture),
+      h('div', { class: 'field' }, h('span', { class: 'field-label' }, 'Picture'), picture, pictureNote),
       h('div', { class: 'form-actions' },
         h('button', { type: 'button', class: 'btn ghost', onclick: close }, 'Cancel'),
         h('button', { class: 'btn primary', id: 'sb-character-save' }, existing ? 'Save' : 'Add character')));
       showPicture();
       return form;
     });
+    // However the dialog closes (Save, Cancel, \u00d7, or Esc), the preview goes back to the saved characters.
+    dialog.addEventListener('close', () => { draftCharacter = null; schedulePreview(); });
   }
 
   async function saveToLibrary(c) {
@@ -396,7 +435,8 @@
     renderLeft();
     host.replaceChildren(h('div', { class: 'sb-screen' },
       h('div', { class: 'sb-main' }, view.left,
-        h('aside', { class: 'sb-preview' }, h('h3', {}, 'Cover preview'), view.preview)),
+        h('aside', { class: 'sb-preview' }, h('h3', {}, 'Cover preview'),
+        h('p', { class: 'muted small-print sb-preview-hint' }, 'Updates as you make changes'), view.preview)),
       h('footer', { class: 'sb-footer' },
         h('span', { class: 'sb-progress muted', id: 'sb-progress', hidden: true }, h('span', { class: 'sb-spinner' }), 'Writing — this can take a minute…'),
         h('span', { class: 'sb-footer-note' }, aiWriterNote('An outline works offline.')),

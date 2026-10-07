@@ -26,7 +26,9 @@
     ['openrouter', 'OpenRouter', 'Picks the best model for each job; pay as you go'],
     ['custom', 'Your own service', 'Any OpenAI-compatible address, including Ollama'],
   ];
-  const MEDIA = [['openrouter', 'OpenRouter'], ['custom', 'Your own service']];
+  const PICTURE_SERVICES = [['openrouter', 'OpenRouter'], ['fal', 'fal.ai'], ['custom', 'Your own service']];
+  const VOICE_SERVICES = [['openrouter', 'OpenRouter'], ['custom', 'Your own service']];
+  const PICTURE_JOBS = ['Pictures', 'Coloring pages'];
   const TIERS = [
     ['best', 'Best quality', 'Strongest models; costs more'],
     ['balanced', 'Balanced', 'Great results at a sensible price'],
@@ -49,7 +51,7 @@
     try {
       state.settings = await api.saveSettings(patch);
       // A new budget or key changes which models fit, so fetch fresh picks.
-      if ('tier' in patch || 'openrouterKey' in patch || 'clearOpenrouterKey' in patch) live.recs = undefined;
+      if (['tier', 'openrouterKey', 'clearOpenrouterKey', 'falKey', 'clearFalKey', 'pictures', 'falImageModel'].some((k) => k in patch)) live.recs = undefined;
       await drawAi();
       const status = document.getElementById('account-ai-status');
       if (status) status.textContent = message;
@@ -139,6 +141,8 @@
   }
 
   function openRouterPanel(s, recs) {
+    // When fal.ai draws the pictures, its picks are shown in the fal.ai panel instead of here.
+    if (s.pictures === 'fal' && recs) recs = recs.filter((r) => !PICTURE_JOBS.includes(r.job));
     const key = h('input', { id: 'account-openrouter-key', class: 'ai-key-input', 'aria-label': 'OpenRouter key', type: 'password', autocomplete: 'off', placeholder: s.hasOpenrouterKey ? 'Saved — paste a new key to replace it' : 'sk-or-…' });
     const overrides = [['orTextModel', 'Writing model'], ['orImageModel', 'Picture model'], ['orSpeechModel', 'Voice model']];
     return h('div', { class: 'ai-panel', id: 'account-openrouter' },
@@ -168,6 +172,38 @@
           field(label, h('input', { id: `account-${name}`, value: s[name], placeholder: 'Automatic', spellcheck: 'false',
             onchange: (e) => saveAi({ [name]: e.target.value }) })))),
         h('p', { class: 'muted small-print' }, 'Use OpenRouter model IDs, like anthropic/claude-sonnet-4.6. Leave blank for automatic.')));
+  }
+
+  // fal.ai: pictures only. Shows the budget here too when OpenRouter's panel (which also has it) is hidden.
+  function falPanel(s, recs, showBudget) {
+    const key = h('input', { id: 'account-fal-key', class: 'ai-key-input', 'aria-label': 'fal.ai key', type: 'password', autocomplete: 'off', placeholder: s.hasFalKey ? 'Saved — paste a new key to replace it' : 'Paste your fal.ai key' });
+    const picks = (recs || []).filter((r) => PICTURE_JOBS.includes(r.job));
+    return h('div', { class: 'ai-panel', id: 'account-fal' },
+      h('div', { class: 'ai-panel-head' }, h('strong', {}, 'fal.ai'),
+        h('span', { class: `ai-badge ${s.hasFalKey ? 'ok' : ''}`, id: 'account-fal-state' }, s.hasFalKey ? 'Key saved' : 'No key yet')),
+      h('p', { class: 'muted small-print' }, 'Fast picture models with one key. Storyloom reads fal.ai’s live list of picture models and picks one for your budget; each picture is charged to your fal.ai credit.'),
+      showBudget ? h('fieldset', { class: 'ai-fieldset' }, h('legend', { class: 'field-label' }, 'Budget'), choices('tier', TIERS, s.tier, (v) => saveAi({ tier: v }))) : null,
+      h('div', { class: 'export-isbn-row' },
+        key,
+        h('button', { type: 'button', class: 'btn secondary', id: 'account-fal-save', onclick: async () => {
+          if (!key.value.trim()) return;
+          const value = key.value;
+          key.value = '';
+          if (!(await saveAi({ falKey: value }, 'Key saved'))) key.value = value;
+        } }, 'Save key'),
+        s.hasFalKey ? h('button', { type: 'button', class: 'btn ghost small danger', id: 'account-fal-clear', onclick: () => saveAi({ clearFalKey: true }, 'Key removed') }, 'Remove') : null),
+      h('p', { class: 'muted small-print' }, 'Encrypted with your Mac’s keychain. ', h('button', { type: 'button', class: 'link-btn', onclick: () => api.openLink('fal-keys') }, 'Get a key at fal.ai')),
+      picks.length ? h('div', { class: 'ai-picks', id: 'account-fal-picks' },
+        h('div', { class: 'field-label' }, 'Picture models Storyloom would use'),
+        h('ul', {}, picks.map((r) => h('li', {},
+          h('span', { class: 'ai-pick-job' }, r.job), h('code', {}, r.model),
+          h('span', { class: 'muted small-print ai-pick-why' }, r.reason)))))
+        : recs === null ? h('p', { class: 'muted small-print', id: 'account-fal-picks' }, 'Loading fal.ai’s model list…')
+          : h('p', { class: 'muted small-print', id: 'account-fal-picks' }, 'Couldn’t load fal.ai’s model list. Check your internet connection.'),
+      h('details', { class: 'ai-advanced' }, h('summary', {}, 'Always use a specific model instead'),
+        field('Picture model', h('input', { id: 'account-falImageModel', value: s.falImageModel, placeholder: 'Automatic', spellcheck: 'false',
+          onchange: (e) => saveAi({ falImageModel: e.target.value }) })),
+        h('p', { class: 'muted small-print' }, 'Use a fal.ai model ID, like fal-ai/flux/schnell. Leave blank for automatic.')));
   }
 
   function customPanel(s) {
@@ -209,29 +245,32 @@
       if (token !== drawToken || !aiHost?.isConnected) return;
       const keepOpen = aiHost.querySelector('details.ai-advanced')?.open;
       // Keep anything half-typed into the key field across redraws.
-      const typedKey = aiHost.querySelector('#account-openrouter-key')?.value || '';
-      const hadFocus = document.activeElement?.id === 'account-openrouter-key';
+      const typed = Object.fromEntries(['account-openrouter-key', 'account-fal-key'].map((id) => [id, aiHost.querySelector(`#${id}`)?.value || '']));
+      const focused = document.activeElement?.id;
       aiHost.replaceChildren(...[
         h('p', { class: 'muted' }, 'Optional. Everything else in Storyloom works without AI.'),
         h('fieldset', { class: 'ai-fieldset' }, h('legend', { class: 'ai-subhead' }, 'Writing stories'),
           choices('writer', WRITERS, s.writer, (v) => saveAi({ writer: v }))),
         h('div', { class: 'ai-media-row' },
           field('Pictures', h('select', { id: 'account-pictures', onchange: (e) => saveAi({ pictures: e.target.value }) },
-            MEDIA.map(([v, l]) => h('option', { value: v, selected: v === s.pictures }, l)))),
+            PICTURE_SERVICES.map(([v, l]) => h('option', { value: v, selected: v === s.pictures }, l)))),
           field('Voices', h('select', { id: 'account-voices', onchange: (e) => saveAi({ voices: e.target.value }) },
-            MEDIA.map(([v, l]) => h('option', { value: v, selected: v === s.voices }, l))))),
-        h('p', { class: 'muted small-print' }, 'ChatGPT and Claude plans cover writing only. Pictures and voices use OpenRouter or your own service.'),
+            VOICE_SERVICES.map(([v, l]) => h('option', { value: v, selected: v === s.voices }, l))))),
+        h('p', { class: 'muted small-print' }, 'ChatGPT and Claude plans cover writing in Storyloom. Pictures come from OpenRouter, fal.ai, or your own service; voices from OpenRouter or your own service.'),
         h('p', { class: 'export-error', id: 'account-ai-error', role: 'alert' }),
         h('span', { class: 'muted ai-status', id: 'account-ai-status', role: 'status' }),
         s.writer === 'claude' ? claudePanel(s, live.claude) : null,
         s.writer === 'chatgpt' ? chatGptPanel(s, live.gpt, live.models) : null,
         [s.writer, s.pictures, s.voices].includes('openrouter') ? openRouterPanel(s, live.recs) : null,
+        s.pictures === 'fal' ? falPanel(s, live.recs, ![s.writer, s.pictures, s.voices].includes('openrouter')) : null,
         [s.writer, s.pictures, s.voices].includes('custom') ? customPanel(s) : null,
       ].filter(Boolean));
       if (keepOpen) aiHost.querySelector('details.ai-advanced')?.setAttribute('open', '');
-      const keyInput = aiHost.querySelector('#account-openrouter-key');
-      if (keyInput && typedKey) keyInput.value = typedKey;
-      if (keyInput && hadFocus) keyInput.focus();
+      for (const [id, value] of Object.entries(typed)) {
+        const input = aiHost.querySelector(`#${id}`);
+        if (input && value) input.value = value;
+        if (input && focused === id) input.focus();
+      }
     };
     render();
     const jobs = [];
@@ -245,7 +284,7 @@
         live.models = v.signedIn && v.planEnabled ? await api.chatGptModels().catch(() => []) : [];
       }, () => { live.gpt = { signedIn: false }; }));
     }
-    if ([s.writer, s.pictures, s.voices].includes('openrouter') && live.recs === undefined) {
+    if (([s.writer, s.pictures, s.voices].includes('openrouter') || s.pictures === 'fal') && live.recs === undefined) {
       live.recs = null;
       jobs.push(api.aiRecommendations().then((v) => { live.recs = v; }, () => { live.recs = []; }));
     }
