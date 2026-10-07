@@ -19,7 +19,11 @@
 - Grid of all books; search; sort: recently edited, oldest, A–Z, Z–A, custom (drag to reorder). Sort choice kept in `localStorage`; custom order kept in `profile.json` (`bookOrder`) so it survives restart.
 - Shelves sidebar: create, rename, delete (books are kept), add/remove books (`shelves:list`/`shelves:save`).
 - Per-book ⋯ / right-click menu: open, rename, duplicate, add to shelf, convert to coloring book (PRD-008), move to Trash.
-- **Not available:** "Share online" (bookshelf.js:125).
+- Title of the all-books view is the author's name ("<Author>'s bookshelf", from `profile.json`), else "Your bookshelf".
+- **Not available:** "Share online" — needs a Storyloom web service, which doesn't exist yet; the dialog suggests exporting a PDF or EPUB instead.
+
+### Look (`renderer/theme.css`, see `DESIGN.md`)
+Lavender/purple palette (paper #f4f0fa, ink #2c2458, main buttons #2a2158, lilac sky gradient), Rockwell display headings (Georgia fallback), Home drawn as an open notebook page with a margin rule, and books standing on a wooden shelf (#b07a45). `theme.css` loads last and restyles each screen.
 
 ## Acceptance criteria (as verified)
 - [x] `selftest/home.cjs`, `selftest/bookshelf.cjs` drive these with real mouse/keyboard input.

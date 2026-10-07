@@ -4,7 +4,7 @@ title: "generateImage"
 entity_type: function
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 path: "main.cjs"
 language: js
 depends_on:
@@ -14,7 +14,7 @@ depends_on:
   - "[[entities/createStore]]"
 used_by:
   - "[[entities/ipc-ai-image]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "eb83d47"
 tested_by: []
 tags:
   - entity
@@ -40,6 +40,10 @@ async function generateImage(input = {})
 ## Behavior
 
 Picture or line-art prompt; OpenRouter `image` or `/images/generations` (b64) on own service; saves bytes as a book asset.
+
+## Changes since 2add52d
+
+Now at main.cjs:466 (line numbers in older text are from `2add52d`). When `pictures === "fal"` it draws through [[entities/fal-cjs]] (main.cjs:480).
 
 ## Connections
 

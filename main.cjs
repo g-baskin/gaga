@@ -12,7 +12,7 @@ const { createOpenRouter } = require('./ai/openrouter.cjs');
 const { createChatGpt } = require('./ai/chatgpt.cjs');
 const { createClaudeCode } = require('./ai/claude-code.cjs');
 const { createFal } = require('./ai/fal.cjs');
-const { createUpdater, UpdateError, installTarget, startInstall } = require('./updater.cjs');
+const { createUpdater, UpdateError, installTarget, startInstall, INSTALL_WAIT_TENTHS } = require('./updater.cjs');
 
 const selfTest = process.argv.includes('--self-test');
 app.setName('Storyloom');
@@ -276,6 +276,13 @@ async function installUpdate() {
   }
   // Quit through the normal close path, so open books save first. The helper swaps the app and reopens it.
   setTimeout(() => app.quit(), 200);
+  // If Storyloom is somehow still open after the installer stopped waiting, nothing was replaced:
+  // say so (instead of "Installing…" forever) and drop the download, which the installer has deleted.
+  const giveUp = setTimeout(() => {
+    discardReadyUpdate();
+    setUpdateState({ phase: 'failed', message: 'Storyloom didn’t close, so the update wasn’t installed. Click Check for updates to try again.', version: ready.version });
+  }, INSTALL_WAIT_TENTHS * 100 + 10000);
+  giveUp.unref?.();
   return updateState;
 }
 let chatGpt = null;
@@ -698,7 +705,7 @@ function registerHandlers() {
   handle('ai:chapter', (_e, input) => generateChapter(input && typeof input === 'object' ? input : {}));
   handle('ai:image', (_e, input) => generateImage(input && typeof input === 'object' ? input : {}));
   handle('ai:speech', (_e, input) => generateSpeech(input && typeof input === 'object' ? input : {}));
-  // Expected failures (not signed in, declined, offline) come back as { error } rather than a logged exception.
+  // Expected failures (not signed in, declined, no connection) come back as { error } rather than a logged exception.
   const soft = (fn) => async (...args) => {
     try { return { ok: await fn(...args) }; } catch (error) { return { error: String(error?.message || error) }; }
   };

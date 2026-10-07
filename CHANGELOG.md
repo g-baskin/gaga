@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Fixed
+
+- If Storyloom can't close to install an update, it now says so and cleans up the download, instead of showing "Installing…" until you restart it.
+- The export option now says the copyright page is added to PDFs and e-books, which is what it does.
+
 ## [0.5.0] - 2026-10-07
 
 ### Added

@@ -38,11 +38,16 @@ Settings (`settings.json`, main.cjs:60-145): `writer` ∈ custom/openrouter/chat
 - Claude: Opus/Sonnet/Haiku by job and budget. ChatGPT: account's own list in OpenAI's order.
 - Account screen shows the per-job choice and reason (`ai:recommendations`).
 
+- fal.ai picks (`pickFalModel`, model-picker.cjs:205): a family per budget from fal.ai's live text-to-image list (GPT Image / Nano Banana / FLUX schnell today), the newest Recraft for coloring pages; vector, LoRA and inactive models skipped. Shown in the Account → fal.ai panel, which also has its own budget choice when OpenRouter isn't used.
+
+### Picture-service note (`aiPictureNote`, renderer/app.js)
+Shown in the Story builder character dialog and the Designer's **Generate a picture** dialog. Says which service draws (OpenRouter, fal.ai, or the author's own model) and that each picture is charged to that account, explains that Claude/ChatGPT plans don't draw in Storyloom, and disables drawing until a picture service is ready (`picturesReady`).
+
 ### Jobs (main.cjs)
 `ai:generate` (whole story / coloring captions, JSON chapters), `ai:chapter`, `ai:image` (saved to the book), `ai:speech` (saved to the book).
 
 ## Acceptance criteria (as verified)
-- [x] `test/ai-services.test.cjs` (8), `test/model-picker.test.cjs` (8), `selftest/ai-services.cjs` — against fakes only.
+- [x] `test/ai-services.test.cjs` (8), `test/model-picker.test.cjs`, fal.ai cases in `test/ai-services.test.cjs` and `selftest/ai-services.cjs` (`selftest/mock-services.cjs`), `selftest/ai-services.cjs` — against fakes only.
 
 ## Open questions
 - ChatGPT plan use in third-party apps is an OpenAI preview and writing-only. Claude plans are meant for personal use.

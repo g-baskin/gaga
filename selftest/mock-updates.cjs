@@ -13,7 +13,8 @@ const { PLATFORMS, signedMessage } = require('../updater.cjs');
 const run = promisify(execFile);
 // Electron's launcher for this Mac. Requiring 'electron' from plain Node gives its path, and downloads
 // Electron first if this checkout doesn't have it yet (a fresh CI machine, for example).
-const LAUNCHER = require('electron');
+// (Inside Electron, the UI self-test, require('electron') is the app API, so use the running executable.)
+const LAUNCHER = process.versions.electron ? process.execPath : require('electron');
 
 async function makeAppZip({ dir, version, bundleId = 'local.storyloom.app' }) {
   const app = path.join(dir, 'build', 'Storyloom.app');

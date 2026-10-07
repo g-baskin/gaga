@@ -11,7 +11,7 @@ depends_on:
   - "[[entities/model-picker-cjs]]"
 used_by:
   - "[[entities/main-cjs]]"
-last_commit_hash: "uncommitted"
+last_commit_hash: "ded9f37"
 tested_by:
   - test/ai-services.test.cjs
   - test/model-picker.test.cjs
@@ -20,6 +20,7 @@ tags:
   - entity
   - module
 related:
+  - "[[concepts/picture-service-routing]]"
   - "[[concepts/ai-provider-routing]]"
   - "[[entities/openrouter-cjs]]"
   - "[[entities/settings-falKeyEnc]]"
@@ -40,6 +41,10 @@ sources:
 - **Drawing:** `POST {runBase}/<model>` with `Authorization: Key <key>`. The picture comes back inline as a data URL, or is downloaded over https from fal's own hosts only (redirects re-checked, 40 MB cap).
 - **Errors:** friendly text for no key, wrong key, empty balance, busy, and rejected requests.
 
+## Changes since 2add52d
+
+Committed in `ded9f37` ("Add fal.ai pictures, live cover preview, and picture-service notes"). Self-test hooks: [[entities/test-url-STORYLOOM_TEST_FAL_RUN]], [[entities/test-url-STORYLOOM_TEST_FAL_API]]; `mediaHostOk` allows 127.0.0.1 only in self-test (main.cjs:297).
+
 ## Connections
 
 - **depends_on:** [[entities/model-picker-cjs]]
@@ -48,7 +53,7 @@ sources:
 
 ## History
 
-- **Created:** 2026-10-07, not yet committed at the time of writing.
+- **Created:** commit `ded9f37` by AutomationGod on 2026-10-06.
 
 ## Sources
 

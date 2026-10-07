@@ -4,7 +4,7 @@ title: "renderer/screens/home.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 path: "renderer/screens/home.js"
 language: js
 depends_on:
@@ -12,7 +12,7 @@ depends_on:
   - "[[entities/core-js]]"
   - "[[entities/preload-cjs]]"
 used_by: []
-last_commit_hash: "a5dac04"
+last_commit_hash: "3312b4e"
 tested_by: []
 tags:
   - entity
@@ -38,6 +38,10 @@ Registered via `registerScreen('home', …)` at renderer/screens/home.js:171. He
 - `api.getProfile` → [[entities/ipc-profile-get]]
 - `api.importStoryText` → [[entities/ipc-import-story-text]]
 - `api.listBooks` → [[entities/ipc-books-list]]
+
+## Changes since 2add52d
+
+Restyled for the picture-book design; new books take `authorName` from the profile (renderer/screens/home.js:64-86); registered at :175.
 
 ## Connections
 

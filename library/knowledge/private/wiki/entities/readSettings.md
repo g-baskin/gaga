@@ -4,7 +4,7 @@ title: "readSettings"
 entity_type: function
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 path: "main.cjs"
 language: js
 depends_on:
@@ -14,7 +14,7 @@ used_by:
   - "[[entities/aiRequest]]"
   - "[[entities/writeText]]"
   - "[[entities/aiRecommendations]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "eb83d47"
 tested_by: []
 tags:
   - entity
@@ -40,6 +40,10 @@ async function readSettings()
 ## Behavior
 
 Reads `settings.json` from userData and coerces every field: strings default to `""`, `writer` ∈ WRITERS (default custom), `pictures`/`voices` ∈ MEDIA (default custom), `tier` ∈ TIERS (default balanced). Missing/invalid file → defaults (first run).
+
+## Changes since 2add52d
+
+Now at main.cjs:69 (line numbers in older text are from `2add52d`). Reads `falKeyEnc`, `falImageModel`, and `checkUpdates` (default on).
 
 ## Connections
 

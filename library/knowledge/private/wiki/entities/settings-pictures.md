@@ -4,7 +4,7 @@ title: "settings.pictures"
 entity_type: config-key
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 path: "main.cjs"
 language: js
 depends_on:
@@ -12,13 +12,14 @@ depends_on:
 used_by:
   - "[[entities/readSettings]]"
   - "[[entities/saveSettings]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "ded9f37"
 tested_by: []
 key: "pictures"
 tags:
   - entity
   - config
 related:
+  - "[[concepts/picture-service-routing]]"
   - "[[entities/settings-json]]"
 sources:
   - main.cjs:64
@@ -26,6 +27,8 @@ sources:
 ---
 
 # settings.pictures
+
+> [!contradiction] Changed since 2add52d; see [[meta/2026-10-07-contradiction-report]].
 
 Field of [[entities/settings-json]].
 
@@ -35,6 +38,10 @@ Field of [[entities/settings-json]].
 Which service makes pictures.
 
 Read/coerced in [[entities/readSettings]] (`main.cjs:64`), validated in [[entities/saveSettings]] (`main.cjs:108`).
+
+## Changes since 2add52d
+
+Allowed values are now `custom`, `openrouter`, `fal` (main.cjs:67). See [[concepts/picture-service-routing]].
 
 ## Connections
 

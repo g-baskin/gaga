@@ -4,7 +4,7 @@ title: "renderer/screens/bookshelf.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 path: "renderer/screens/bookshelf.js"
 language: js
 depends_on:
@@ -12,7 +12,7 @@ depends_on:
   - "[[entities/core-js]]"
   - "[[entities/preload-cjs]]"
 used_by: []
-last_commit_hash: "a5dac04"
+last_commit_hash: "eb83d47"
 tested_by: []
 tags:
   - entity
@@ -44,6 +44,10 @@ Registered via `registerScreen('bookshelf', …)` at renderer/screens/bookshelf.
 - `api.saveShelves` → [[entities/ipc-shelves-save]]
 
 Persists sort choice in [[entities/localStorage-bookshelf-sort]] (renderer/screens/bookshelf.js:5).
+
+## Changes since 2add52d
+
+Restyled; shows `profile.authorName` (renderer/screens/bookshelf.js:116); registered at :424.
 
 ## Connections
 

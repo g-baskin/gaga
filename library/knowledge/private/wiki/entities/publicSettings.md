@@ -4,7 +4,7 @@ title: "publicSettings"
 entity_type: function
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 path: "main.cjs"
 language: js
 depends_on:
@@ -12,7 +12,7 @@ depends_on:
 used_by:
   - "[[entities/ipc-settings-get]]"
   - "[[entities/saveSettings]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "eb83d47"
 tested_by: []
 tags:
   - entity
@@ -38,6 +38,10 @@ const publicSettings = (s) => (
 ## Behavior
 
 Projection of settings sent to the page: replaces `apiKeyEnc`/`openrouterKeyEnc` with booleans `hasKey`/`hasOpenrouterKey`.
+
+## Changes since 2add52d
+
+Now at main.cjs:171 (line numbers in older text are from `2add52d`). Exposes `hasFalKey`, `falImageModel`, `checkUpdates`.
 
 ## Connections
 

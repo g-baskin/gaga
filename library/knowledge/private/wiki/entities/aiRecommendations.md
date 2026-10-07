@@ -4,7 +4,7 @@ title: "aiRecommendations"
 entity_type: function
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 path: "main.cjs"
 language: js
 depends_on:
@@ -14,7 +14,7 @@ depends_on:
   - "[[entities/pickChatGptModel]]"
 used_by:
   - "[[entities/ipc-ai-recommendations]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "eb83d47"
 tested_by: []
 tags:
   - entity
@@ -40,6 +40,10 @@ async function aiRecommendations()
 ## Behavior
 
 Rows `{job, model, fallbacks, reason}` describing which model each job will use for the current writer/pictures/voices/tier; shown on Account.
+
+## Changes since 2add52d
+
+Now at main.cjs:509 (line numbers in older text are from `2add52d`). Adds rows for fal.ai pictures (main.cjs:535).
 
 ## Connections
 

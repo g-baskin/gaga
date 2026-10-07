@@ -67,7 +67,7 @@ Automatic model choice (`ai/model-picker.cjs`) picks a model per job from a budg
 | Export: EPUB 3 | ✅ | Fixed layout, nav, images, ISBN metadata. |
 | Export: audiobook WAV | ✅ | Narration + music mixed. |
 | Export: audiobook MP3 | ⛔ | No MP3 encoder bundled. Labelled; suggests converting the WAV. |
-| ISBN + copyright page | ✅ | Validated ISBN; optional copyright page in the PDF. |
+| ISBN + copyright page | ✅ | Validated ISBN; optional copyright page in exported PDFs and EPUBs. |
 | Print ordering, addresses, order list | ⛔ | Orders screen explains this and offers a print-ready PDF export. |
 | Account settings | ✅ | Default author name, AI services, data folder, updates, version, source code link. |
 

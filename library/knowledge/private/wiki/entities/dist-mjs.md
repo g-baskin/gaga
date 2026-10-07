@@ -1,0 +1,48 @@
+---
+type: entity
+title: "dist.mjs"
+entity_type: script
+status: developing
+created: 2026-10-07
+updated: 2026-10-07
+path: "dist.mjs"
+language: js
+depends_on:
+  - "[[entities/package-mjs]]"
+used_by:
+  - "[[entities/release-workflow]]"
+last_commit_hash: "eb83d47"
+tested_by: []
+tags:
+  - entity
+  - script
+related:
+  - "[[concepts/release-pipeline]]"
+  - "[[entities/updater-PLATFORMS]]"
+sources:
+  - dist.mjs
+---
+
+# dist.mjs
+
+**npm run dist: builds Intel and Apple Silicon apps as .dmg plus .app.zip update archives.**
+
+## Overview
+
+Uses only macOS tools (dist.mjs:7). `ARCHES = { x64: 'Intel_x64', arm64: 'Apple-Silicon_arm64' }` (dist.mjs:21) names the files. For each arch: [[entities/package-mjs]] `buildApp`, `makeDmg` (checks `lipo` arch and that Info.plist `CFBundleShortVersionString` equals package.json version, dist.mjs:44-47), `makeUpdateZip` (`ditto -c -k --sequesterRsrc --keepParent`, dist.mjs:71-76), then both files go into `SHA256SUMS.txt`.
+
+Outputs in `releases/dist/`: `Storyloom_<v>_Intel_x64.dmg`, `Storyloom_<v>_Apple-Silicon_arm64.dmg`, matching `.app.zip`s, `SHA256SUMS.txt`.
+
+## Connections
+
+- **depends_on:** [[entities/package-mjs]]
+- **used_by:** [[entities/release-workflow]]
+- **related:** [[concepts/release-pipeline]], [[entities/updater-PLATFORMS]]
+
+## History
+
+- First wiki page for this file (it predates `2add52d` but had no page). Last touched by `eb83d47`; file names changed in `94e2726` (see contradiction report).
+
+## Sources
+
+- `dist.mjs`

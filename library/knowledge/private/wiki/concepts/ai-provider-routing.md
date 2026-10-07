@@ -3,13 +3,14 @@ type: concept
 title: "AI provider routing"
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 complexity: intermediate
 domain: "storyloom"
 tags:
   - concept
   - storyloom
 related:
+  - "[[concepts/picture-service-routing]]"
   - "[[entities/writeText]]"
   - "[[entities/model-picker-cjs]]"
   - "[[entities/createOpenRouter]]"
@@ -29,3 +30,7 @@ Writing can use own service / OpenRouter / ChatGPT plan / Claude Code ([[entitie
 - [[entities/createOpenRouter]]
 - [[entities/createChatGpt]]
 - [[entities/createClaudeCode]]
+
+## Changes since 2add52d
+
+Picture routing now has its own page: [[concepts/picture-service-routing]].

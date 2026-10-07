@@ -224,13 +224,14 @@ async function installTarget(execPath) {
 
 // Runs after Storyloom quits: waits for it to exit, swaps in the new app (keeping the old one until the
 // copy succeeds, and putting it back if the copy fails), cleans up, then reopens Storyloom.
-// All values arrive as separate arguments ($1..$5); none is pasted into the script text.
+// All values arrive as separate arguments ($1..$6); none is pasted into the script text.
+// If Storyloom doesn't close in time ($6 tenths of a second), nothing is replaced and the download is deleted.
 const INSTALL_SCRIPT = `
-pid="$1"; target="$2"; staged="$3"; workdir="$4"; relaunch="$5"
+pid="$1"; target="$2"; staged="$3"; workdir="$4"; relaunch="$5"; wait="$6"
 i=0
 while kill -0 "$pid" 2>/dev/null; do
   i=$((i + 1))
-  if [ "$i" -gt 1200 ]; then exit 1; fi
+  if [ "$i" -gt "$wait" ]; then /bin/rm -rf "$workdir"; exit 1; fi
   /bin/sleep 0.1
 done
 backup="\${target%.app}.update-backup.app"
@@ -249,13 +250,17 @@ if [ "$relaunch" = 1 ]; then /usr/bin/open "$target"; fi
 exit "$status"
 `;
 
-function installArgs({ pid, target, staged, relaunch = true }) {
+// How long the installer waits for Storyloom to close, in tenths of a second (2 minutes).
+const INSTALL_WAIT_TENTHS = 1200;
+
+function installArgs({ pid, target, staged, relaunch = true, waitTenths = INSTALL_WAIT_TENTHS }) {
   if (!Number.isSafeInteger(pid) || pid <= 1) throw new UpdateError('Couldn’t start the installer');
+  if (!Number.isSafeInteger(waitTenths) || waitTenths < 1 || waitTenths > 6000) throw new UpdateError('Couldn’t start the installer');
   for (const value of [target, staged.appPath, staged.workdir]) {
     if (typeof value !== 'string' || !path.isAbsolute(value) || value.includes('\n')) throw new UpdateError('Couldn’t start the installer');
   }
   if (!target.endsWith('.app') || !staged.appPath.endsWith('.app')) throw new UpdateError('Couldn’t start the installer');
-  return ['-c', INSTALL_SCRIPT, 'storyloom-update', String(pid), target, staged.appPath, staged.workdir, relaunch ? '1' : '0'];
+  return ['-c', INSTALL_SCRIPT, 'storyloom-update', String(pid), target, staged.appPath, staged.workdir, relaunch ? '1' : '0', String(waitTenths)];
 }
 
 // Starts the installer in the background. The caller then quits Storyloom.
@@ -266,5 +271,5 @@ function startInstall(options) {
 
 module.exports = {
   createUpdater, installTarget, installArgs, startInstall, signedMessage, verifySignature, isNewer,
-  UpdateError, PLATFORMS, TRUSTED_KEYS, BUNDLE_ID, RELEASES_PAGE,
+  UpdateError, PLATFORMS, TRUSTED_KEYS, BUNDLE_ID, RELEASES_PAGE, INSTALL_WAIT_TENTHS,
 };

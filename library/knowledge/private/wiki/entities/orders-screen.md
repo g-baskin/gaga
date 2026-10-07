@@ -4,7 +4,7 @@ title: "renderer/screens/orders.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 path: "renderer/screens/orders.js"
 language: js
 depends_on:
@@ -12,7 +12,7 @@ depends_on:
   - "[[entities/core-js]]"
   - "[[entities/preload-cjs]]"
 used_by: []
-last_commit_hash: "a5dac04"
+last_commit_hash: "eb83d47"
 tested_by: []
 tags:
   - entity
@@ -26,7 +26,9 @@ sources:
 
 # renderer/screens/orders.js
 
-**Print orders: not available offline; points to a print-ready PDF.**
+> [!contradiction] Changed since 2add52d; see [[meta/2026-10-07-contradiction-report]].
+
+**Print orders: not available yet; points to a print-ready PDF.**
 
 ## Overview
 
@@ -35,6 +37,10 @@ Registered via `registerScreen('orders', …)` at renderer/screens/orders.js:25.
 ## IPC used
 
 - `api.listBooks` → [[entities/ipc-books-list]]
+
+## Changes since 2add52d
+
+Header now says print orders are "not available yet (needs a print partner and payments)" (renderer/screens/orders.js:3).
 
 ## Connections
 

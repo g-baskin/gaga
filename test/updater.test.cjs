@@ -146,6 +146,28 @@ test('if copying the new app fails, the installer puts the old app back', async 
   assert.equal(await fs.readFile(path.join(target, 'Contents', 'which.txt'), 'utf8'), 'old');
 });
 
+test('if Storyloom doesn’t close in time, the installer replaces nothing and deletes the download', async (t) => {
+  const { installArgs } = require('../updater.cjs');
+  const { spawn } = require('node:child_process');
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'storyloom-install-test-'));
+  t.after(() => fs.rm(tmp, { recursive: true, force: true }));
+  const target = path.join(tmp, 'Applications', 'Storyloom.app');
+  const workdir = path.join(tmp, 'work');
+  const staged = path.join(workdir, 'unpacked', 'Storyloom.app');
+  for (const [dir, label] of [[target, 'old'], [staged, 'new']]) {
+    await fs.mkdir(path.join(dir, 'Contents'), { recursive: true });
+    await fs.writeFile(path.join(dir, 'Contents', 'which.txt'), label);
+  }
+  // A stand-in for an app that won't quit, and an installer that only waits half a second.
+  const app = spawn('/bin/sleep', ['10']);
+  t.after(() => app.kill());
+  const installer = spawn('/bin/bash', installArgs({ pid: app.pid, target, staged: { appPath: staged, workdir }, relaunch: false, waitTenths: 5 }));
+  const code = await new Promise((resolve) => installer.on('close', resolve));
+  assert.equal(code, 1);
+  assert.equal(await fs.readFile(path.join(target, 'Contents', 'which.txt'), 'utf8'), 'old');
+  await assert.rejects(fs.access(workdir), 'the download is deleted');
+});
+
 test('the installer refuses unsafe arguments', () => {
   const { installArgs } = require('../updater.cjs');
   const staged = { appPath: '/tmp/x/Storyloom.app', workdir: '/tmp/x' };
@@ -153,6 +175,8 @@ test('the installer refuses unsafe arguments', () => {
   assert.throws(() => installArgs({ pid: 500, target: 'relative/Storyloom.app', staged }), /installer/);
   assert.throws(() => installArgs({ pid: 500, target: '/Applications/Other', staged }), /installer/);
   assert.throws(() => installArgs({ pid: 500, target: '/Applications/Story\nloom.app', staged }), /installer/);
+  assert.throws(() => installArgs({ pid: 500, target: '/Applications/Storyloom.app', staged, waitTenths: 0 }), /installer/);
+  assert.throws(() => installArgs({ pid: 500, target: '/Applications/Storyloom.app', staged, waitTenths: '5; rm -rf /' }), /installer/);
 });
 
 test('install location: refuses translocated or non-app paths', async () => {

@@ -4,7 +4,7 @@ title: "settings.json (AI service settings file)"
 entity_type: config-key
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 path: "main.cjs"
 language: json
 depends_on:
@@ -13,7 +13,7 @@ used_by:
   - "[[entities/readSettings]]"
   - "[[entities/saveSettings]]"
   - "[[entities/publicSettings]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "eb83d47"
 tested_by: []
 tags:
   - entity
@@ -47,6 +47,10 @@ Stored at `<userData>/settings.json` (main.cjs:59), written 0600 via temp+rename
 - [[entities/settings-claudePath]]
 
 Related file: `<userData>/chatgpt.json` — the whole ChatGPT sign-in record encrypted with safeStorage (main.cjs:174).
+
+## Changes since 2add52d
+
+New fields: [[entities/settings-falKeyEnc]], `falImageModel`, [[entities/settings-checkUpdates]] (main.cjs:80-82). `pictures` may now be `fal` ([[entities/settings-pictures]]).
 
 ## Connections
 

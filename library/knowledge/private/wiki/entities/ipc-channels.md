@@ -4,14 +4,14 @@ title: "IPC channel index (main ↔ preload)"
 entity_type: service
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 path: "main.cjs"
 language: js
 depends_on:
   - "[[entities/main-cjs]]"
   - "[[entities/preload-cjs]]"
 used_by: []
-last_commit_hash: "a5dac04"
+last_commit_hash: "eb83d47"
 tested_by: []
 tags:
   - entity
@@ -24,6 +24,10 @@ sources:
 ---
 
 # IPC channel index (main ↔ preload)
+
+> [!stale] Superseded 2026-10-07
+> Earlier text said: "All 44 handle(...) channels".
+> Current code: 49 channels after the five update channels. See [[meta/2026-10-07-contradiction-report]].
 
 All 44 `handle(...)` channels in `main.cjs` and their `window.storyloom` wrappers. Every channel has exactly one preload method and vice versa (verified by script at scan time). This is a per-chunk listing page, not the driver-owned `_index.md`.
 
@@ -77,6 +81,12 @@ All 44 `handle(...)` channels in `main.cjs` and their `window.storyloom` wrapper
 Preload methods with no caller found in `renderer/`: none (selftest may still use them).
 
 Push events main→page: `app:before-close` (main.cjs:683), `menu:action` (main.cjs:588).
+
+## Changes since 2add52d
+
+> [!contradiction] Contract changed; see [[meta/2026-10-07-contradiction-report]].
+
+Added channels (main.cjs:678-683): [[entities/ipc-app-update-state]], [[entities/ipc-app-check-update]], [[entities/ipc-app-download-update]], [[entities/ipc-app-install-update]], [[entities/ipc-app-open-update-notes]]. Line numbers in the table above are from `2add52d`. New push event: `app:update-state`.
 
 ## Connections
 

@@ -16,8 +16,10 @@ Location: Electron `app.getPath('userData')` (on macOS normally `~/Library/Appli
 | `characters.json`, `characters/` | storage.cjs | Reusable character library |
 | `shelves.json` | storage.cjs | Shelves |
 | `profile.json` | storage.cjs | Default author, custom bookshelf order |
-| `settings.json` | main.cjs | AI service settings; keys encrypted (safeStorage) |
+| `settings.json` | main.cjs | AI service settings (keys encrypted with safeStorage) and `checkUpdates` (on unless turned off) |
 | `chatgpt.json` | main.cjs | Encrypted ChatGPT sign-in record |
+
+Downloaded updates are staged outside this folder, in a `storyloom-update-*` folder in the system temp folder, and deleted after install or on quit.
 
 All writes are atomic (temp + rename) with mode 0600. Back up by copying the folder while the app is closed. Files can be inspected but edits are re-sanitized on load.
 

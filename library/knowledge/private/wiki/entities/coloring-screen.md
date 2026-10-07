@@ -4,7 +4,7 @@ title: "renderer/screens/coloring.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 path: "renderer/screens/coloring.js"
 language: js
 depends_on:
@@ -12,7 +12,7 @@ depends_on:
   - "[[entities/core-js]]"
   - "[[entities/preload-cjs]]"
 used_by: []
-last_commit_hash: "a5dac04"
+last_commit_hash: "eb83d47"
 tested_by: []
 tags:
   - entity
@@ -42,6 +42,10 @@ Registered via `registerScreen('coloring', …)` at renderer/screens/coloring.js
 - `api.readBook` → [[entities/ipc-books-read]]
 - `api.saveBook` → [[entities/ipc-books-save]]
 - `api.saveImage` → [[entities/ipc-books-save-image]]
+
+## Changes since 2add52d
+
+Shows `aiWriterNote()` (renderer/screens/coloring.js:194).
 
 ## Connections
 

@@ -300,7 +300,7 @@
         h('label', { class: 'field export-isbn-field' }, h('span', { class: 'field-label' }, 'ISBN (optional)'),
           h('div', { class: 'export-isbn-row' }, isbnInput, isbnOk)),
         isbnErr,
-        h('label', { class: 'check' }, copyToggle, 'Add a copyright page to PDF'),
+        h('label', { class: 'check' }, copyToggle, 'Add a copyright page to PDFs and e-books'),
         h('p', { class: 'muted small-print' }, 'The copyright page (title, author, year, ISBN) is added only to exported PDFs and EPUBs — your book isn’t changed.')));
   }
 

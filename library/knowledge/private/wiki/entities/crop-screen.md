@@ -4,7 +4,7 @@ title: "renderer/screens/crop.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-07
 path: "renderer/screens/crop.js"
 language: js
 depends_on:
@@ -12,7 +12,7 @@ depends_on:
   - "[[entities/core-js]]"
   - "[[entities/preload-cjs]]"
 used_by: []
-last_commit_hash: "a5dac04"
+last_commit_hash: "ded9f37"
 tested_by: []
 tags:
   - entity
@@ -35,6 +35,10 @@ Does not call `registerScreen`; it installs dialog helpers used by other screens
 ## IPC used
 
 - `api.generateImage` → [[entities/ipc-ai-image]]
+
+## Changes since 2add52d
+
+The Generate dialog shows `aiPictureNote` and disables Generate until pictures are set up (renderer/screens/crop.js:182); comment names OpenRouter, fal.ai, or own service (:154).
 
 ## Connections
 
