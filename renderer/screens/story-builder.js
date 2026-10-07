@@ -439,7 +439,7 @@
         h('p', { class: 'muted small-print sb-preview-hint' }, 'Updates as you make changes'), view.preview)),
       h('footer', { class: 'sb-footer' },
         h('span', { class: 'sb-progress muted', id: 'sb-progress', hidden: true }, h('span', { class: 'sb-spinner' }), 'Writing — this can take a minute…'),
-        h('span', { class: 'sb-footer-note' }, aiWriterNote('An outline works offline.')),
+        h('span', { class: 'sb-footer-note' }, aiWriterNote('An outline needs no AI service.')),
         h('button', { type: 'button', class: 'btn ghost large', id: 'sb-outline', onclick: () => run(startOutline) }, 'Start with an outline'),
         writeBtn)));
     updatePreview();

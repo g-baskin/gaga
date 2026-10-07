@@ -137,7 +137,7 @@
     const share = ui.showShare
       ? h('div', { class: 'bs-unavailable', 'data-unavailable': 'public-bookshelf', role: 'note' },
         h('strong', {}, 'Public bookshelf links aren’t available in Storyloom'),
-        h('p', {}, 'Sharing a shelf as a web link needs a hosted server, and Storyloom runs only on this Mac. To share a book, open it and export a PDF or an EPUB, then send the file.'),
+        h('p', {}, 'Sharing a shelf as a web link needs a Storyloom web service, which doesn’t exist yet. To share a book, open it and export a PDF or an EPUB, then send the file.'),
         h('button', { class: 'btn ghost small', onclick: () => { ui.showShare = false; draw(); } }, 'Got it'))
       : null;
     const hint = ui.sort === 'custom' && books.length > 1 ? h('p', { class: 'muted bs-hint' }, 'Drag books to arrange them.') : null;

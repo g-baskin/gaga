@@ -104,6 +104,8 @@ module.exports = async function exportOrdersAccount(ctx) {
   const before = await js('api.getSettings()');
   checks.accountPrefilled = await js(`$must('#account-base-url').value`) === before.baseUrl;
   checks.cloudUnavailable = await js(`!!document.querySelector('[data-unavailable="cloud-account"]')`);
+  checks.licenseShown = await js(`/GNU AGPL v3/.test(document.getElementById('account-about')?.textContent || '')`);
+  checks.notOfflineOnly = await js(`!/runs entirely on this Mac|works offline/i.test(document.querySelector('.screen-host')?.textContent || document.body.textContent)`);
   checks.dataPath = await js(`$must('#account-data-path').textContent.length > 0`);
   await ctx.click('#account-author');
   await ctx.type('Ada Writer');

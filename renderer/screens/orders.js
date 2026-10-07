@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  // Print orders: not available offline; guides the user to a print-ready PDF instead.
+  // Print orders: not available yet (needs a print partner and payments); guides the user to a print-ready PDF instead.
 
   async function pickBook() {
     const books = (await run(() => api.listBooks())) || [];
@@ -29,7 +29,7 @@
         h('header', { class: 'export-head' }, h('h1', {}, 'Print orders')),
         h('div', { class: 'export-unavailable export-unavailable-large', 'data-unavailable': 'print-ordering' },
           h('h2', {}, 'Print ordering isn’t available in Storyloom'),
-          h('p', {}, 'Ordering printed copies needs a print partner and a payments server, and Storyloom runs entirely on this Mac. You can still get beautiful printed books: export a print-ready PDF and upload it to any print-on-demand service.')),
+          h('p', {}, 'Ordering printed copies needs a print partner and payments, which Storyloom doesn’t have yet. You can still get beautiful printed books: export a print-ready PDF and upload it to any print-on-demand service.')),
         h('section', { class: 'export-details' },
           h('h3', {}, 'Before you upload'),
           h('ul', { class: 'export-checklist' }, CHECKS.map(([title, text]) =>

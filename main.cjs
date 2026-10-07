@@ -12,7 +12,7 @@ const { createOpenRouter } = require('./ai/openrouter.cjs');
 const { createChatGpt } = require('./ai/chatgpt.cjs');
 const { createClaudeCode } = require('./ai/claude-code.cjs');
 const { createFal } = require('./ai/fal.cjs');
-const { createUpdateChecker } = require('./updates.cjs');
+const { createUpdater, UpdateError, installTarget, startInstall } = require('./updater.cjs');
 
 const selfTest = process.argv.includes('--self-test');
 app.setName('Storyloom');
@@ -184,30 +184,99 @@ const testUrl = (name) => (selfTest ? testUrls[name] : undefined);
 function useTestServices(urls) {
   if (!selfTest) throw new Error('Test services are only available in the self-test');
   Object.assign(testUrls, urls);
-  openRouter = null; chatGpt = null; claudeCode = null; claudeStatusCache = null; chatGptModels = null; fal = null; updateChecker = null;
+  openRouter = null; chatGpt = null; claudeCode = null; claudeStatusCache = null; chatGptModels = null; fal = null;
+  updater = null; pendingUpdate = null;
+  discardReadyUpdate();
+  setUpdateState({ phase: 'idle' }); // also tells the screen, so its buttons match
 }
 let openRouter = null;
 let fal = null;
 
-// New-version notice. The self-test never contacts GitHub: it uses a local fake, or the check is off.
-let updateChecker = null;
-let lastUpdate = null; // the last answer, so "Get it" opens only a page the app itself checked
-async function checkForUpdate(force) {
-  // When there's nothing to offer, forget any earlier answer so "Download it" can't open an old link.
-  if (!(await readSettings()).checkUpdates) {
-    lastUpdate = null;
-    return { available: false, current: app.getVersion(), disabled: true };
+// In-app updates (see updater.cjs). One state, shared with the screen through 'app:update-state' messages:
+// idle | checking | up-to-date | available | downloading | ready | installing | failed.
+// The self-test never contacts GitHub: it uses a local fake, or nothing.
+let updater = null;
+let pendingUpdate = null; // the verified result of the last check, needed to download it
+let readyUpdate = null; // { appPath, workdir, version } once downloaded and verified
+let updateState = { phase: 'idle' };
+function setUpdateState(next) {
+  updateState = { ...next, current: app.getVersion() };
+  win?.webContents.send('app:update-state', updateState);
+  return updateState;
+}
+const friendly = (error, fallback) => (error instanceof UpdateError ? error.message : fallback);
+// Deletes a downloaded update that won't be installed (its folder is always one we created in the temp folder).
+function discardReadyUpdate() {
+  const dir = readyUpdate?.workdir;
+  readyUpdate = null;
+  if (dir && path.basename(dir).startsWith('storyloom-update-')) {
+    try { fsSync.rmSync(dir, { recursive: true, force: true }); } catch { /* best effort */ }
   }
-  if (selfTest && !testUrls.STORYLOOM_TEST_UPDATES) {
-    lastUpdate = null;
-    return { available: false, current: app.getVersion() };
-  }
-  updateChecker ||= createUpdateChecker({
+}
+function getUpdater() {
+  updater ||= createUpdater({
     currentVersion: app.getVersion(),
-    ...(selfTest ? { apiUrl: testUrls.STORYLOOM_TEST_UPDATES } : {}),
+    ...(selfTest && testUrls.STORYLOOM_TEST_UPDATES ? {
+      feedUrl: `${testUrls.STORYLOOM_TEST_UPDATES}/latest.json`,
+      downloadBase: `${testUrls.STORYLOOM_TEST_UPDATES}/download/`,
+      allowHost: (host) => host === '127.0.0.1',
+      ...(testUrls.STORYLOOM_TEST_UPDATE_KEY ? { trustedKeys: [testUrls.STORYLOOM_TEST_UPDATE_KEY] } : {}),
+    } : {}),
   });
-  lastUpdate = await updateChecker.check({ force });
-  return lastUpdate;
+  return updater;
+}
+async function checkForUpdate({ manual = false } = {}) {
+  if (['checking', 'downloading', 'installing'].includes(updateState.phase)) return updateState;
+  if (updateState.phase === 'ready') return updateState;
+  if (!manual && !(await readSettings()).checkUpdates) return setUpdateState({ phase: 'idle', disabled: true });
+  if (selfTest && !testUrls.STORYLOOM_TEST_UPDATES) return setUpdateState({ phase: 'idle' });
+  setUpdateState({ phase: 'checking' });
+  try {
+    const result = await getUpdater().check();
+    if (result.status !== 'available') {
+      pendingUpdate = null;
+      return setUpdateState({ phase: 'up-to-date', checkedAt: Date.now() });
+    }
+    pendingUpdate = result;
+    return setUpdateState({ phase: 'available', version: result.version, notesUrl: result.notesUrl });
+  } catch (error) {
+    pendingUpdate = null;
+    // A background check that fails says nothing; a check the user asked for explains why.
+    return setUpdateState(manual ? { phase: 'failed', message: friendly(error, 'Could not check for updates') } : { phase: 'idle' });
+  }
+}
+async function downloadUpdate() {
+  if (updateState.phase !== 'available' || !pendingUpdate) throw new Error('There is no update to download');
+  const update = pendingUpdate;
+  setUpdateState({ phase: 'downloading', version: update.version, percent: 0 });
+  try {
+    readyUpdate = await getUpdater().download(update, {
+      onProgress: (percent) => setUpdateState({ phase: 'downloading', version: update.version, percent }),
+    });
+    return setUpdateState({ phase: 'ready', version: update.version });
+  } catch (error) {
+    return setUpdateState({ phase: 'failed', message: friendly(error, 'The update couldn’t be downloaded'), version: update.version });
+  }
+}
+async function installUpdate() {
+  if (updateState.phase !== 'ready' || !readyUpdate) throw new Error('No update is ready to install');
+  const ready = readyUpdate;
+  // The self-test can't replace the running Electron, so it checks everything up to the swap and stops there.
+  if (selfTest) {
+    setUpdateState({ phase: 'installing', version: ready.version });
+    return { ...updateState, staged: ready.appPath };
+  }
+  const where = await installTarget(process.execPath);
+  if (!where.ok) return setUpdateState({ phase: 'failed', message: where.reason, version: ready.version });
+  setUpdateState({ phase: 'installing', version: ready.version });
+  try {
+    startInstall({ pid: process.pid, target: where.target, staged: ready });
+  } catch (error) {
+    return setUpdateState({ phase: 'failed', message: friendly(error, 'The update couldn’t be installed'), version: ready.version });
+  }
+  // Quit through the normal close path, so open books save first. The helper swaps the app and reopens it.
+  setTimeout(() => app.quit(), 200);
+  return updateState;
 }
 let chatGpt = null;
 let claudeCode = null;
@@ -606,11 +675,14 @@ function registerHandlers() {
   handle('books:reveal-export', () => { if (lastExport) shell.showItemInFolder(lastExport); });
   handle('app:open-data-folder', () => (selfTest ? true : shell.openPath(app.getPath('userData')).then((err) => !err)));
   handle('app:info', () => ({ version: app.getVersion(), dataFolder: app.getPath('userData'), platform: process.platform }));
-  handle('app:check-update', (_e, force) => checkForUpdate(force === true));
-  handle('app:open-update', () => {
-    if (!lastUpdate?.available) throw new Error('No newer version to open');
-    if (!selfTest) shell.openExternal(lastUpdate.url);
-    return lastUpdate.url;
+  handle('app:update-state', () => updateState);
+  handle('app:check-update', (_e, manual) => checkForUpdate({ manual: manual === true }));
+  handle('app:download-update', () => downloadUpdate());
+  handle('app:install-update', () => installUpdate());
+  handle('app:open-update-notes', () => {
+    if (!updateState.notesUrl) throw new Error('No release notes to open');
+    if (!selfTest) shell.openExternal(updateState.notesUrl);
+    return updateState.notesUrl;
   });
   handle('settings:get', async () => publicSettings(await readSettings()));
   // Invalid settings are an expected user mistake, so return the message instead of throwing
@@ -643,6 +715,7 @@ function registerHandlers() {
       'chatgpt-usage': 'https://chatgpt.com/settings/usage',
       'openrouter-keys': 'https://openrouter.ai/settings/keys',
       'fal-keys': 'https://fal.ai/dashboard/keys',
+      source: 'https://github.com/g-baskin/gaga',
       'claude-code': 'https://claude.com/product/claude-code',
     };
     if (!links[name]) throw new Error('Unknown link');
@@ -768,3 +841,5 @@ app.whenReady().then(async () => {
 }).catch((error) => { console.error(error); app.exit(1); });
 
 app.on('window-all-closed', () => app.quit());
+// A downloaded update that wasn't installed is deleted on quit (the installer cleans up its own).
+app.on('will-quit', () => { if (updateState.phase !== 'installing') discardReadyUpdate(); });

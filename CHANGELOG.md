@@ -8,6 +8,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- Storyloom can now update itself. When a new version is out, click **Download update** in the sidebar or in **Account → Updates**, then **Restart to update**. Updates are checked against Storyloom's signature before they install.
+- **Account → Updates**, with **Check for updates** and a switch for the automatic check when Storyloom opens.
+- A README, and Storyloom is now open source under the GNU AGPL v3. Account → About links to the source code.
+
+### Changed
+
+- Wording across the app no longer says Storyloom is offline-only. Your books are saved on your Mac, and AI features use the online services you connect.
+
 ## [0.4.0] - 2026-10-07
 
 ### Added

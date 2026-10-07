@@ -3,12 +3,14 @@ name: Release
 # Publishes a GitHub release when a version tag (v1.2.3) is pushed:
 #   1. checks the tag matches package.json and CHANGELOG.md has that version's notes,
 #   2. runs the unit tests,
-#   3. builds Storyloom for Apple Silicon and Intel Macs as .dmg files (both on one Apple Silicon runner;
-#      Storyloom has no native add-ons, so the Intel build doesn't need an Intel runner),
-#   4. creates the release with the changelog section as its notes and the .dmg files attached.
+#   3. builds Storyloom for Apple Silicon and Intel Macs as .dmg files and .app.zip update archives (both on
+#      one Apple Silicon runner; Storyloom has no native add-ons, so the Intel build doesn't need an Intel runner),
+#   4. signs the update archives into latest.json (the in-app updater only installs signed updates),
+#   5. creates the release with the changelog section as its notes and every file attached.
 #
 # To release: `npm run release -- 1.2.3`, commit, then `git tag v1.2.3 && git push origin main v1.2.3`.
-# No secrets needed: the apps are ad-hoc signed, not notarized (see dist.mjs).
+# Needs one secret, STORYLOOM_UPDATE_SIGNING_KEY (the Ed25519 private key matching updater.cjs TRUSTED_KEYS).
+# The apps themselves are ad-hoc signed, not notarized (see dist.mjs).
 
 on:
   push:
@@ -58,6 +60,13 @@ jobs:
       - name: Build the Mac disk images
         run: npm run dist
 
+      # Only this step can read the signing key. It signs the update archives and writes latest.json.
+      - name: Sign the in-app updates
+        env:
+          STORYLOOM_UPDATE_SIGNING_KEY: ${{ secrets.STORYLOOM_UPDATE_SIGNING_KEY }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: node scripts/update-manifest.mjs "$VERSION"
+
       - name: Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -69,7 +78,10 @@ jobs:
           gh release create "$GITHUB_REF_NAME" \
             "releases/dist/Storyloom_${VERSION}_Intel_x64.dmg#Storyloom ${VERSION} for Intel Macs (.dmg)" \
             "releases/dist/Storyloom_${VERSION}_Apple-Silicon_arm64.dmg#Storyloom ${VERSION} for Apple Silicon Macs, M1 and newer (.dmg)" \
-            "releases/dist/SHA256SUMS.txt#Checksums for both downloads (SHA256SUMS.txt)" \
+            "releases/dist/Storyloom_${VERSION}_Intel_x64.app.zip#In-app update for Intel Macs" \
+            "releases/dist/Storyloom_${VERSION}_Apple-Silicon_arm64.app.zip#In-app update for Apple Silicon Macs" \
+            "releases/dist/latest.json#Update information for the app (signed)" \
+            "releases/dist/SHA256SUMS.txt#Checksums for all downloads (SHA256SUMS.txt)" \
             --repo "$GITHUB_REPOSITORY" \
             --title "Storyloom v$VERSION" \
             --notes-file "$RUNNER_TEMP/notes.md" \

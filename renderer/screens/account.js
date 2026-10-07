@@ -236,6 +236,39 @@
 
   // Live status is fetched in the background so the screen appears instantly.
   const live = { claude: undefined, gpt: undefined, models: undefined, recs: undefined };
+  // ---------- Updates ----------
+  // Check, download, and install new versions from here. The controls follow the shared update state
+  // (renderer/app.js), so the sidebar and this section always agree.
+  function updatesSection(info, settings) {
+    const status = h('div', { class: 'account-update-status', id: 'account-update-status', role: 'status' });
+    const checkBtn = h('button', { type: 'button', class: 'btn ghost', id: 'account-update-check', onclick: () => run(checkUpdateNow) }, 'Check for updates');
+    const redraw = () => {
+      if (!status.isConnected && status.dataset.drawn) { updateViews.delete(redraw); return; }
+      status.dataset.drawn = '1';
+      status.replaceChildren(...(updateControls(false) || []).filter(Boolean));
+      checkBtn.disabled = ['checking', 'downloading', 'installing'].includes(updateState.phase);
+    };
+    updateViews.add(redraw);
+    queueMicrotask(redraw);
+    return h('section', { class: 'export-details', id: 'account-updates' }, h('h2', {}, 'Updates'),
+      h('p', {}, `You have Storyloom ${info.version}.`),
+      status,
+      h('div', { class: 'form-actions export-start' }, checkBtn),
+      h('label', { class: 'check' },
+        h('input', { type: 'checkbox', id: 'account-check-updates', checked: settings.checkUpdates !== false, onchange: async (e) => {
+          const on = e.target.checked;
+          try {
+            state.settings = await api.saveSettings({ checkUpdates: on });
+            toast(on ? 'Storyloom will check for updates when it opens' : 'Storyloom won’t check by itself');
+          } catch (err) {
+            e.target.checked = !on;
+            toast(cleanError(err));
+          }
+        } }),
+        'Check for updates when Storyloom opens'),
+      h('p', { class: 'muted small-print' }, 'Updates come from Storyloom’s GitHub releases and are checked against Storyloom’s signature before they install. Nothing about you or your books is sent.'));
+  }
+
   let aiHost;
   let drawToken = 0;
   async function drawAi({ forceClaude = false } = {}) {
@@ -311,25 +344,14 @@
           h('code', { class: 'account-path', id: 'account-data-path' }, info.dataFolder),
           h('div', { class: 'form-actions export-start' },
             h('button', { class: 'btn secondary', id: 'account-open-data', onclick: () => run(() => api.openDataFolder()) }, 'Open data folder'))),
+        updatesSection(info, settings),
         h('section', { class: 'export-details', id: 'account-about' }, h('h2', {}, 'About'),
-          h('p', {}, `Storyloom ${info.version}`, h('span', { class: 'muted' }, ' — a picture-book maker that works offline.')),
-          h('label', { class: 'check' },
-            h('input', { type: 'checkbox', id: 'account-check-updates', checked: settings.checkUpdates !== false, onchange: async (e) => {
-              const on = e.target.checked;
-              try {
-                state.settings = await api.saveSettings({ checkUpdates: on });
-                await checkUpdateNow(true);
-                toast(on ? 'Storyloom will tell you about new versions' : 'Storyloom won’t check for new versions');
-              } catch (err) {
-                e.target.checked = !on;
-                toast(cleanError(err));
-              }
-            } }),
-            'Tell me when a new version is out'),
-          h('p', { class: 'muted small-print' }, 'When Storyloom opens, it asks GitHub for the latest release. Nothing about you or your books is sent.')),
+          h('p', {}, `Storyloom ${info.version}`, h('span', { class: 'muted' }, ' — make picture books on your Mac, with optional AI help from the services you connect.')),
+          h('p', { class: 'muted small-print' }, 'Free and open source under the GNU AGPL v3. ',
+            h('button', { type: 'button', class: 'link-btn', onclick: () => run(() => api.openLink('source')) }, 'View the source code'))),
         h('div', { class: 'export-unavailable', 'data-unavailable': 'cloud-account' },
           h('strong', {}, 'Storyloom account — not needed'),
-          h('span', {}, ': Storyloom runs entirely on this Mac, so there is no Storyloom account, password, or subscription. AI services above are optional and billed by their own providers.'))));
+          h('span', {}, ': your books are saved on this Mac, so there is no Storyloom account, password, or subscription. The AI services above are online and billed by their own providers.'))));
       drawAi();
     },
   });

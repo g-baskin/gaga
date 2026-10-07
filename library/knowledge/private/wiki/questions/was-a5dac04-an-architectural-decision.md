@@ -19,7 +19,7 @@ sources: []
 
 ## Answer
 
-Unanswered. The only commit (`a5dac04`, 2026-10-06) is a feature summary ("offline picture-book maker with Scrively feature parity", "No Scrively code or assets"). It contains no Tier-1 decision language, so no ADR was filed. The "offline / original code only" stance may deserve a human-authored ADR.
+Unanswered. The first commit (`a5dac04`, 2026-10-06) is a feature summary. It contains no Tier-1 decision language, so no ADR was filed. The "original code only" stance may deserve a human-authored ADR.
 
 ## Confidence
 

@@ -78,4 +78,4 @@ Main → page events: `menu:action` (undo/redo), `app:before-close`.
 
 - [Security model](../security/security-model.md) · [Data folder](../data/data-folder.md)
 - Code wiki: [`../wiki/`](../wiki/) (maintained separately)
-- Feature status: `PARITY.md` at the repo root
+- Feature status: `FEATURES.md` at the repo root

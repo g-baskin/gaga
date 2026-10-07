@@ -179,8 +179,13 @@
     revealExport: unsupported,
     openDataFolder: unsupported,
     appInfo: () => ok({ version: 'preview', dataFolder: 'This browser tab (preview only)' }),
-    checkForUpdate: () => ok({ available: false, current: 'preview' }), // the preview never contacts GitHub
-    openUpdate: unsupported,
+    // The preview never contacts GitHub or installs anything.
+    updateState: () => ok({ phase: 'idle', current: 'preview' }),
+    checkForUpdate: () => ok({ phase: 'up-to-date', current: 'preview', checkedAt: Date.now() }),
+    downloadUpdate: unsupported,
+    installUpdate: unsupported,
+    openUpdateNotes: unsupported,
+    onUpdateState: () => {},
     getSettings: () => ok(structuredClone(settings)),
     saveSettings: (input) => { settings = { ...settings, ...input, hasKey: settings.hasKey }; return ok(structuredClone(settings)); },
     generateStory: unsupported,

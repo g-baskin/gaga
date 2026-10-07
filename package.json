@@ -3,7 +3,13 @@
   "productName": "Storyloom",
   "version": "0.4.0",
   "private": true,
-  "description": "Create, illustrate, and export picture books on your own computer",
+  "description": "Make picture books on your Mac, with optional AI help for writing, pictures, and narration",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/g-baskin/gaga.git"
+  },
+  "homepage": "https://github.com/g-baskin/gaga",
   "main": "main.cjs",
   "scripts": {
     "start": "electron .",

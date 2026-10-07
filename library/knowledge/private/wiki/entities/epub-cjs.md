@@ -37,7 +37,7 @@ Implements CRC-32 (epub.cjs:14), a stored (uncompressed) `zip` with a fixed 1980
 
 ## History
 
-- **Created / last touched:** commit `a5dac04` by AutomationGod on 2026-10-06 ("Storyloom: offline picture-book maker with Scrively feature parity"). Scanned from the working tree, which had uncommitted changes at scan time.
+- **Created / last touched:** commit `a5dac04` by AutomationGod on 2026-10-06 (the first Storyloom commit). Scanned from the working tree, which had uncommitted changes at scan time.
 
 ## Sources
 

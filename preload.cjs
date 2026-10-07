@@ -43,8 +43,13 @@ contextBridge.exposeInMainWorld('storyloom', {
   // App and AI services
   openDataFolder: () => call('app:open-data-folder'),
   appInfo: () => call('app:info'),
-  checkForUpdate: (force) => call('app:check-update', force), // → { available, current, latest?, url? }
-  openUpdate: () => call('app:open-update'), // opens the release page for the newer version
+  // In-app updates. State: { phase: idle|checking|up-to-date|available|downloading|ready|installing|failed, ... }
+  updateState: () => call('app:update-state'),
+  checkForUpdate: (manual) => call('app:check-update', manual),
+  downloadUpdate: () => call('app:download-update'),
+  installUpdate: () => call('app:install-update'), // quits, replaces the app, and reopens it
+  openUpdateNotes: () => call('app:open-update-notes'),
+  onUpdateState: (fn) => ipcRenderer.on('app:update-state', (_e, next) => fn(next)),
   getSettings: () => call('settings:get'),
   saveSettings: async (input) => {
     const result = await call('settings:save', input);
@@ -63,7 +68,7 @@ contextBridge.exposeInMainWorld('storyloom', {
   chatGptSignOut: () => soft('ai:chatgpt-sign-out'), // → { revoked }
   chatGptModels: () => soft('ai:chatgpt-models'), // → [{ slug, display_name }]
   claudeStatus: (force) => soft('ai:claude-status', force), // → { installed, signedIn, method, version, message? }
-  openLink: (name) => call('ai:open-link', name), // 'chatgpt-usage' | 'openrouter-keys' | 'fal-keys' | 'claude-code'
+  openLink: (name) => call('ai:open-link', name), // 'chatgpt-usage' | 'openrouter-keys' | 'fal-keys' | 'claude-code' | 'source'
   onBeforeClose: (fn) => ipcRenderer.on('app:before-close', () => fn()),
   onMenuAction: (fn) => ipcRenderer.on('menu:action', (_event, action) => {
     if (action === 'undo' || action === 'redo') fn(action);

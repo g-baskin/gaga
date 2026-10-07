@@ -1,6 +1,7 @@
 // Builds Storyloom for Intel and Apple Silicon Macs and wraps each in a .dmg, ready for a GitHub release.
 //
-//   npm run dist                 → both: releases/dist/Storyloom_<version>_Intel_x64.dmg and _Apple-Silicon_arm64.dmg
+//   npm run dist                 → both: releases/dist/Storyloom_<version>_Intel_x64.dmg and _Apple-Silicon_arm64.dmg,
+//                                  plus a matching .app.zip of each for the in-app updater
 //   npm run dist -- --arch=arm64 → just one
 //
 // Uses only macOS's own tools (codesign, hdiutil, shasum), so it must run on a Mac.
@@ -66,12 +67,24 @@ const outDir = path.join(root, 'releases', 'dist');
 await rm(outDir, { recursive: true, force: true });
 await mkdir(outDir, { recursive: true });
 
+// The in-app updater downloads a zipped Storyloom.app (ditto keeps the code signature intact).
+async function makeUpdateZip({ app, arch, version, outDir }) {
+  const zip = path.join(outDir, `Storyloom_${version}_${ARCHES[arch]}.app.zip`);
+  await rm(zip, { force: true });
+  await run('ditto', ['-c', '-k', '--sequesterRsrc', '--keepParent', app, zip]);
+  return zip;
+}
+
 const sums = [];
 for (const arch of chosenArches()) {
   const [app] = await buildApp({ arch, out: path.join(root, 'releases', 'build'), quiet: true });
-  const dmg = await makeDmg({ app: path.join(app, 'Storyloom.app'), arch, version, outDir });
-  sums.push(`${await sha256(dmg)}  ${path.basename(dmg)}`);
-  console.log(`Built ${path.relative(root, dmg)}`);
+  const appPath = path.join(app, 'Storyloom.app');
+  const dmg = await makeDmg({ app: appPath, arch, version, outDir });
+  const zip = await makeUpdateZip({ app: appPath, arch, version, outDir });
+  for (const file of [dmg, zip]) {
+    sums.push(`${await sha256(file)}  ${path.basename(file)}`);
+    console.log(`Built ${path.relative(root, file)}`);
+  }
 }
 await writeFile(path.join(outDir, 'SHA256SUMS.txt'), `${sums.join('\n')}\n`);
 console.log(`Checksums: ${path.relative(root, path.join(outDir, 'SHA256SUMS.txt'))}`);

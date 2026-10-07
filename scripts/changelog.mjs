@@ -64,6 +64,9 @@ Not sure which you have? Apple menu → About This Mac: "Chip: Apple M…" means
 
 Open the .dmg and drag Storyloom into Applications. Storyloom isn't notarized by Apple yet, so the first time you open it
 macOS will block it: go to System Settings → Privacy & Security and click **Open Anyway**.
+
+Already have Storyloom? Open **Account → Updates** and click **Download update**. The \`.app.zip\` files and
+\`latest.json\` are for that in-app updater; you don't need to download them yourself.
 `;
 }
 

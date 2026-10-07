@@ -198,49 +198,84 @@ const notBuilt = () => toast(NOT_BUILT);
 
 // The running app's version, shown at the foot of the sidebar. It comes from the app itself
 // (package.json, which `npm run release` updates), so it always matches the installed build.
-// Below it, a notice appears when GitHub has a newer release (checked once per launch, if allowed).
+// Updates: one state from the main process (see updater.cjs). The sidebar shows a small notice when an
+// update is available; Account → Updates has the full controls. Both redraw on every state change.
 let appVersion = null;
-let updateInfo = null; // { available, latest } from the last check
-let updateCheck = null; // the check in progress or done, so it runs once per launch
-function updateNotice() {
-  if (!updateInfo?.available) return null;
-  return h('div', { class: 'app-update', id: 'app-update', role: 'status' },
-    h('span', {}, `Version ${updateInfo.latest} is available`),
-    h('button', { type: 'button', class: 'link-btn', id: 'app-update-open', onclick: () => run(() => api.openUpdate()) }, 'Download it'));
+let updateState = { phase: 'idle' };
+const updateViews = new Set(); // functions that redraw a view of the update state
+let updateStarted = false;
+
+function setUpdateView(next) {
+  updateState = next || { phase: 'idle' };
+  for (const redraw of updateViews) redraw();
 }
-function refreshVersionBox() {
-  const box = document.getElementById('app-version-box');
-  if (!box) return;
-  box.replaceChildren(...[
-    h('p', { class: 'app-version', id: 'app-version' }, appVersion ? `Version ${appVersion}` : ''),
-    updateNotice(),
-  ].filter(Boolean));
+function startUpdates() {
+  if (updateStarted) return;
+  updateStarted = true;
+  api.onUpdateState(setUpdateView);
+  api.updateState().then(setUpdateView, () => {}).then(() => {
+    // One background check per launch (skipped if turned off in Account → Updates).
+    if (updateState.phase === 'idle') api.checkForUpdate(false).then(setUpdateView, () => {});
+  });
 }
-// Runs the check (again, if `force`) and updates the sidebar. Also used by Account's on/off switch.
-let updateRequest = 0;
-function checkUpdateNow(force = false) {
-  if (force || !updateCheck) {
-    const request = ++updateRequest;
-    // Only the newest check may change the notice, so a slow older answer can't overwrite a newer one.
-    updateCheck = Promise.resolve()
-      .then(() => api.checkForUpdate(force))
-      .then((info) => { if (request === updateRequest) updateInfo = info; },
-        () => { if (request === updateRequest) updateInfo = null; });
+// Runs a check the user asked for and shows the answer.
+function checkUpdateNow() {
+  return api.checkForUpdate(true).then(setUpdateView, (error) => setUpdateView({ phase: 'failed', message: cleanError(error) }));
+}
+const updateAction = (fn) => () => run(async () => setUpdateView(await fn()));
+
+// The update controls for the current state. `compact` is the sidebar version.
+function updateControls(compact) {
+  const u = updateState;
+  const button = (label, onclick, id, kind = 'primary') => h('button', { type: 'button', class: `btn ${kind} ${compact ? 'small' : ''}`, id, onclick }, label);
+  if (u.phase === 'available') {
+    return [
+      h('span', {}, `Version ${u.version} is available`),
+      button('Download update', updateAction(() => api.downloadUpdate()), compact ? 'app-update-download' : 'account-update-download'),
+      compact ? null : h('button', { type: 'button', class: 'link-btn', onclick: () => run(() => api.openUpdateNotes()) }, 'What’s new'),
+    ];
   }
-  return updateCheck.then(refreshVersionBox);
+  if (u.phase === 'downloading') {
+    return [
+      h('span', {}, `Downloading ${u.version}… ${u.percent || 0}%`),
+      h('progress', { max: 100, value: u.percent || 0, 'aria-label': 'Download progress' }),
+    ];
+  }
+  if (u.phase === 'ready') {
+    return [
+      h('span', {}, `Version ${u.version} is ready`),
+      button('Restart to update', updateAction(() => api.installUpdate()), compact ? 'app-update-install' : 'account-update-install'),
+    ];
+  }
+  if (u.phase === 'installing') return [h('span', {}, `Installing ${u.version}… Storyloom will reopen.`)];
+  if (compact) return null; // the sidebar stays quiet otherwise
+  if (u.phase === 'checking') return [h('span', {}, 'Checking for updates…')];
+  if (u.phase === 'up-to-date') return [h('span', {}, 'Storyloom is up to date.')];
+  if (u.phase === 'failed') return [h('span', { class: 'export-error' }, u.message || 'Something went wrong')];
+  return null;
 }
+
 function versionLabel() {
-  const box = h('div', { class: 'app-version-box', id: 'app-version-box' },
-    h('p', { class: 'app-version', id: 'app-version' }, appVersion ? `Version ${appVersion}` : ''),
-    updateNotice());
+  const box = h('div', { class: 'app-version-box', id: 'app-version-box' });
+  const redraw = () => {
+    if (!box.isConnected && box.dataset.drawn) { updateViews.delete(redraw); return; }
+    box.dataset.drawn = '1';
+    const controls = updateControls(true);
+    box.replaceChildren(...[
+      h('p', { class: 'app-version', id: 'app-version' }, appVersion ? `Version ${appVersion}` : ''),
+      controls ? h('div', { class: 'app-update', id: 'app-update', role: 'status' }, controls.filter(Boolean)) : null,
+    ].filter(Boolean));
+  };
+  updateViews.add(redraw);
+  redraw();
   if (!appVersion) {
     api.appInfo().then((info) => {
       if (typeof info?.version !== 'string' || !info.version) return;
       appVersion = info.version;
-      refreshVersionBox();
+      redraw();
     }, () => {});
   }
-  if (!updateCheck) queueMicrotask(() => checkUpdateNow());
+  queueMicrotask(startUpdates);
   return box;
 }
 

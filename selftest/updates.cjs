@@ -1,64 +1,82 @@
 'use strict';
-// New-version notice, against a local stand-in for GitHub's "latest release" answer.
-const http = require('node:http');
+// In-app updates through the real screens, against a local stand-in for GitHub Releases:
+// sidebar notice → Download update (with progress) → Restart to update, plus Account → Updates.
+// The last step stops before replacing anything, because the self-test runs inside the development copy.
+const crypto = require('node:crypto');
+const fs = require('node:fs/promises');
+const os = require('node:os');
+const path = require('node:path');
+const { PLATFORMS } = require('../updater.cjs');
+const { makeAppZip, startUpdateServer } = require('./mock-updates.cjs');
 
 module.exports = async function updates(ctx) {
   const { js, pause } = ctx;
   const checks = {};
-  let release = { tag_name: 'v9.9.9', html_url: 'https://github.com/g-baskin/gaga/releases/tag/v9.9.9' };
-  let requests = 0;
-  const server = http.createServer((req, res) => {
-    requests++;
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(release));
-  });
-  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
-  const until = async (expr, ms = 5000) => {
+  const until = async (expr, ms = 15000) => {
     const end = Date.now() + ms;
     while (Date.now() < end) { if (await js(expr)) return true; await pause(50); }
     return false;
   };
+  const { privateKey, publicKey } = crypto.generateKeyPairSync('ed25519');
+  const trusted = publicKey.export({ format: 'jwk' }).x;
 
+  // 1. A real signed update: notice, download, verify, ready to install.
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'storyloom-selftest-update-'));
+  const server = await startUpdateServer({ version: '9.9.9', zip: await makeAppZip({ dir: tmp, version: '9.9.9' }), privateKey });
+  let staged = '';
   try {
-    // By default the self-test never contacts GitHub, so no notice shows.
+    // Without a test server, the self-test never contacts GitHub.
     await ctx.navigate('home');
-    await js('checkUpdateNow(true)');
-    checks.offlineByDefault = (await js(`!document.getElementById('app-update')`)) && requests === 0;
+    checks.quietByDefault = (await js(`api.checkForUpdate(false).then((s) => s.phase)`)) === 'idle' && server.requests.length === 0;
 
-    ctx.useTestServices({ STORYLOOM_TEST_UPDATES: `http://127.0.0.1:${server.address().port}/repos/g-baskin/gaga/releases/latest` });
-    await js('checkUpdateNow(true)');
-    checks.noticeShown = await until(`/Version 9\\.9\\.9 is available/.test(document.getElementById('app-update')?.textContent || '')`);
-    await ctx.screenshot('updates');
-    // "Download it" opens only the release page the app itself checked.
-    checks.opensCheckedPage = (await js('api.openUpdate()')) === 'https://github.com/g-baskin/gaga/releases/tag/v9.9.9';
-    // The notice stays as you move between screens, without asking GitHub again.
-    const before = requests;
-    await ctx.click('[data-nav="bookshelf"]');
-    checks.noticeOnOtherScreens = (await until(`!!document.getElementById('app-update')`)) && requests === before;
+    ctx.useTestServices({ STORYLOOM_TEST_UPDATES: server.url, STORYLOOM_TEST_UPDATE_KEY: trusted });
+    await js('checkUpdateNow()');
+    checks.sidebarNotice = await until(`/Version 9\\.9\\.9 is available/.test(document.getElementById('app-update')?.textContent || '')`);
 
-    // Switching it off in Account hides the notice and stops asking.
+    // Account → Updates shows the same state and does the download.
     await ctx.navigate('account');
-    await ctx.waitFor('#account-check-updates');
-    await ctx.click('#account-check-updates');
-    checks.switchOffSaved = await until(`api.getSettings().then((s) => s.checkUpdates === false)`);
-    checks.noticeHiddenWhenOff = await until(`!document.getElementById('app-update')`);
-    const whileOff = requests;
-    await js('checkUpdateNow(true)');
-    checks.noRequestsWhenOff = requests === whileOff;
-    // With the check off, "Download it" can't reopen the earlier link.
-    checks.noStaleLinkWhenOff = await js(`api.openUpdate().then(() => false, () => true)`);
-    await ctx.click('#account-check-updates');
-    checks.switchOnShowsNotice = await until(`!!document.getElementById('app-update')`);
+    checks.accountShowsUpdate = await until(`/Version 9\\.9\\.9 is available/.test(document.getElementById('account-update-status')?.textContent || '')`);
+    await ctx.click('#account-update-download');
+    checks.downloaded = await until(`/Version 9\\.9\\.9 is ready/.test(document.getElementById('account-update-status')?.textContent || '')`, 60000);
+    checks.sidebarReady = await until(`!!document.getElementById('app-update-install')`);
+    checks.fetchedReleaseFile = server.requests.includes(`/download/v9.9.9/${PLATFORMS[process.arch].file('9.9.9')}`);
+    await ctx.screenshot('updates');
 
-    // When GitHub's latest release is this version, there's nothing to show.
-    const { version } = await js('api.appInfo()');
-    release = { tag_name: `v${version}`, html_url: `https://github.com/g-baskin/gaga/releases/tag/v${version}` };
-    await js('checkUpdateNow(true)');
-    checks.upToDateNoNotice = await until(`!document.getElementById('app-update')`);
+    // "Restart to update" stops here in the self-test, after the update is verified and staged.
+    const result = await js('api.installUpdate()');
+    checks.installReady = result.phase === 'installing' && typeof result.staged === 'string' && result.staged.endsWith('Storyloom.app');
+    staged = result.staged;
+    checks.stagedAppExists = await fs.stat(staged).then((s) => s.isDirectory(), () => false);
   } finally {
-    ctx.useTestServices({ STORYLOOM_TEST_UPDATES: undefined });
-    await js(`api.saveSettings({ checkUpdates: true }).then(() => checkUpdateNow(true))`).catch(() => {});
+    ctx.useTestServices({ STORYLOOM_TEST_UPDATES: undefined, STORYLOOM_TEST_UPDATE_KEY: undefined });
     server.close();
+    await fs.rm(tmp, { recursive: true, force: true });
   }
+  // A downloaded update that isn't installed doesn't stay behind in the temp folder.
+  checks.unusedDownloadDeleted = Boolean(staged) && await fs.stat(staged).then(() => false, () => true);
+
+  // 2. An update signed with another key is refused, with nothing offered to download.
+  const tmp2 = await fs.mkdtemp(path.join(os.tmpdir(), 'storyloom-selftest-update-'));
+  const impostor = crypto.generateKeyPairSync('ed25519');
+  const server2 = await startUpdateServer({ version: '9.9.9', zip: await makeAppZip({ dir: tmp2, version: '9.9.9' }), privateKey: impostor.privateKey });
+  try {
+    ctx.useTestServices({ STORYLOOM_TEST_UPDATES: server2.url, STORYLOOM_TEST_UPDATE_KEY: trusted });
+    await ctx.navigate('account');
+    await ctx.click('#account-update-check');
+    checks.tamperedRefused = await until(`/couldn’t be verified/.test(document.getElementById('account-update-status')?.textContent || '')`);
+    checks.noDownloadOffered = await js(`!document.getElementById('account-update-download') && !document.getElementById('app-update-download')`);
+  } finally {
+    ctx.useTestServices({ STORYLOOM_TEST_UPDATES: undefined, STORYLOOM_TEST_UPDATE_KEY: undefined });
+    server2.close();
+    await fs.rm(tmp2, { recursive: true, force: true });
+  }
+
+  // 3. The automatic check can be switched off and on.
+  await ctx.navigate('account');
+  await ctx.waitFor('#account-check-updates');
+  await ctx.click('#account-check-updates');
+  checks.switchOffSaved = await until(`api.getSettings().then((s) => s.checkUpdates === false)`);
+  await ctx.click('#account-check-updates');
+  checks.switchOnSaved = await until(`api.getSettings().then((s) => s.checkUpdates === true)`);
   return checks;
 };
