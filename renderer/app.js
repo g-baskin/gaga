@@ -128,10 +128,10 @@ function renderShell(scope, name) {
   } else {
     const nav = h('nav', { class: 'app-nav', 'aria-label': 'Storyloom' },
       h('div', { class: 'brand' }, h('span', { class: 'brand-mark', 'aria-hidden': 'true' }), 'Storyloom'),
-      h('button', { class: 'btn primary block', id: 'new-book', onclick: () => run(createBlankBook) }, '+ New book'),
+      h('button', { class: 'btn primary block', id: 'new-book', type: 'button', onclick: () => run(createBlankBook) }, 'New book'),
       h('div', { class: 'app-nav-list' }, APP_NAV.map(([item, label, icon]) =>
         h('button', {
-          class: `app-nav-item${item === name ? ' active' : ''}`, 'data-nav': item, 'aria-current': item === name ? 'page' : null,
+          class: `app-nav-item${item === name ? ' active' : ''}`, type: 'button', 'data-nav': item, 'aria-current': item === name ? 'page' : null,
           onclick: () => run(() => navigate(item)),
         }, h('span', { class: 'app-nav-icon', 'aria-hidden': 'true' }, icon), label))));
     root.replaceChildren(h('div', { class: 'app-shell' }, nav, host));

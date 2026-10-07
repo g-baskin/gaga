@@ -89,19 +89,23 @@
       await openBook(book.id, 'story-builder');
     };
 
-    return h('section', { class: 'home-hero' },
-      h('h1', {}, 'What’s your story about?'),
-      h('p', { class: 'muted home-sub' }, 'Start with a sentence. You’ll shape characters, style, and pages next.'),
-      prompt,
-      h('div', { class: 'home-chips', role: 'list', 'aria-label': 'Quick ideas' }, IDEAS.map((idea) =>
-        h('button', { class: 'home-chip', type: 'button', role: 'listitem', onclick: () => { prompt.value = idea; error.hidden = true; prompt.focus(); } }, idea))),
-      h('div', { class: 'home-hero-row' },
-        h('label', { class: 'home-star-field' }, h('span', { class: 'field-label' }, 'Star of the story (optional)'), star),
-        h('button', { class: 'btn primary large', id: 'home-start', onclick: () => run(start) }, 'Start building')),
-      error,
-      h('div', { class: 'home-alt' },
-        h('button', { class: 'btn ghost', id: 'home-import', onclick: () => run(importStory) }, 'Import a story (.txt, .md)'),
-        h('button', { class: 'btn ghost', id: 'home-blank', onclick: () => run(createBlankBook) }, 'Blank book')));
+    const fill = (idea) => { prompt.value = idea; error.hidden = true; prompt.focus(); };
+    return h('section', { class: 'home-hero', 'aria-labelledby': 'home-title' },
+      h('div', { class: 'home-page' },
+        h('h1', { id: 'home-title' }, 'Every book starts with one line'),
+        h('label', { class: 'field-label', for: 'home-prompt' }, 'What happens in your story?'),
+        prompt,
+        h('p', { class: 'home-sparks-label', id: 'home-sparks-label' }, 'Need a nudge? Borrow one of these'),
+        h('div', { class: 'home-chips', role: 'list', 'aria-labelledby': 'home-sparks-label' }, IDEAS.map((idea) =>
+          h('button', { class: 'home-chip', type: 'button', role: 'listitem', onclick: () => fill(idea) }, idea))),
+        h('div', { class: 'home-hero-row' },
+          h('label', { class: 'home-star-field' }, h('span', { class: 'field-label' }, 'Star of the story (optional)'), star),
+          h('button', { class: 'btn primary large', type: 'button', id: 'home-start', onclick: () => run(start) }, 'Start writing')),
+        error,
+        h('div', { class: 'home-alt' },
+          h('button', { class: 'btn ghost', type: 'button', id: 'home-import', onclick: () => run(importStory) }, 'Import a story (.txt, .md)'),
+          h('button', { class: 'btn ghost', type: 'button', id: 'home-blank', onclick: () => run(createBlankBook) }, 'Blank book'),
+          h('button', { class: 'btn ghost', type: 'button', id: 'home-browse', onclick: () => run(() => navigate('templates')) }, 'Start from a template'))));
   }
 
   // ---------- recent ----------

@@ -8,6 +8,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- `npm run preview`, which opens Storyloom's screens in a browser at http://127.0.0.1:4173 with a sample library, so the look can be checked without building the app.
+
+### Changed
+
+- A new picture-book look: a soft lavender sky, deep purple buttons, a slab-serif headline type, and books standing on a wooden shelf.
+- The Home page is now an open notebook page with "Start writing", and long story ideas wrap instead of being cut off.
+- The bookshelf title uses your author name, such as "Kelly's bookshelf".
+
 ## [0.2.0] - 2026-10-07
 
 ### Added

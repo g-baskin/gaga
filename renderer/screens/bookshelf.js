@@ -113,7 +113,8 @@
 
   function drawMain() {
     const shelf = currentShelf();
-    const title = ui.shelf === 'all' ? 'Your bookshelf' : ui.shelf === 'coloring' ? 'Coloring books' : shelf?.name || 'Shelf';
+    const author = (ui.profile.authorName || '').trim();
+    const title = ui.shelf === 'all' ? (author ? `${author}'s bookshelf` : 'Your bookshelf') : ui.shelf === 'coloring' ? 'Coloring books' : shelf?.name || 'Shelf';
     const books = visibleBooks();
     const header = h('header', { class: 'bs-header' },
       h('div', { class: 'bs-title-row' },

@@ -1,0 +1,156 @@
+/* Storyloom picture-book theme (see DESIGN.md).
+   Kelly's lavender palette: a lilac sky, deep purple ink and buttons, pink and sunny-yellow touches,
+   and a wooden shelf. Loaded last, so it restyles the app on top of each screen's own layout. */
+
+:root {
+  --paper: #f4f0fa;
+  --panel: #ffffff;
+  --ink: #2c2458;
+  --muted: #655e86;
+  --line: #e4daf5;
+  --accent: #2a2158;        /* main buttons */
+  --accent-hover: #1b153f;
+  --accent-ink: #ffffff;
+  --accent-soft: #efe7ff;
+  --violet: #5b4fd6;        /* links and highlights; 5.9:1 on white */
+  --pink: #ff8fb8;
+  --sun: #ffd36e;
+  --teal: #3a2f86;          /* selected states: purple text on lilac, 9:1 */
+  --teal-soft: #efe7ff;
+  --wood: #b07a45;
+  --wood-edge: #8a5a2e;
+  --radius: 10px;
+  --radius-control: 6px;
+  --shadow: 0 1px 0 rgba(38, 48, 74, .06), 0 6px 18px rgba(38, 48, 74, .08);
+  --display: Rockwell, "Rockwell Nova", "Roboto Slab", Georgia, serif;
+  --ease: 120ms ease-out;
+}
+
+body { background: var(--paper); }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: 0; color: var(--ink); }
+::placeholder { color: #6b6488; }
+:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+
+/* ---------- buttons ---------- */
+.btn { border-radius: var(--radius-control); transition: background-color var(--ease), border-color var(--ease), color var(--ease); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover:not(:disabled) { background: var(--accent-hover); }
+.btn.secondary { background: var(--teal-soft); color: var(--teal); }
+.btn.secondary:hover:not(:disabled) { background: #e2d6ff; }
+.btn.ghost { background: var(--panel); border-color: var(--line); color: #3a2f86; }
+.btn.ghost:hover:not(:disabled) { background: #f6f0ff; border-color: #d9c8ff; }
+.icon-btn:hover { background: #f3ecff; }
+
+/* ---------- sidebar navigation ---------- */
+.app-nav { background: linear-gradient(180deg, #e9ddff, #f4f0fa 60%); border-right-color: var(--line); }
+.brand { font-family: var(--display); font-weight: 700; font-size: 21px; color: var(--ink); }
+/* The logo: a spool of thread (the "loom" in Storyloom). */
+.brand-mark {
+  flex: none; width: 26px; height: 26px; border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--sun) 0 3px, transparent 3.5px),
+    repeating-radial-gradient(circle, #7c5cff 0 2px, var(--pink) 2px 4px);
+  box-shadow: 0 0 0 2px var(--ink);
+}
+.app-nav-item { border-radius: var(--radius-control); color: var(--muted); transition: background-color var(--ease), color var(--ease); }
+.app-nav-item:hover { background: rgba(255, 255, 255, .7); color: var(--ink); }
+.app-nav-item.active { background: var(--panel); color: #3a2f86; box-shadow: inset 3px 0 0 #7c5cff, 0 1px 2px rgba(70, 46, 130, .1); font-weight: 600; }
+
+/* ---------- book screens ---------- */
+.book-bar { background: linear-gradient(180deg, #f7f3ff, #fff); border-bottom-color: var(--line); }
+.title-input { font-family: var(--display); }
+.book-tabs { background: #efe7ff; }
+.book-tab.active { background: #3a2f86; color: #fff; }
+
+/* ---------- Home: a lilac sky behind the page ---------- */
+.screen-home .home-main { background: linear-gradient(180deg, #c9b6ff 0%, #eadbff 22%, #fff0f7 55%, var(--paper) 100%); }
+
+/* ---------- Home: an open notebook page ---------- */
+.home-inner { max-width: 1040px; grid-template-columns: minmax(0, 1fr); }
+.home-page > * { min-width: 0; }
+.screen-home .home-hero { background: none; border: 0; box-shadow: none; padding: 0; }
+.home-page {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 36px 40px 28px 64px;
+  box-shadow: var(--shadow);
+}
+/* The notebook margin rule: the one decorative line on the page. */
+.home-page::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 40px; width: 2px;
+  background: var(--pink);
+}
+.home-page h1 { font-size: 40px; line-height: 1.1; margin: 0 0 24px; max-width: 18ch; }
+.home-page .field-label { font-weight: 600; color: var(--ink); }
+.screen-home .home-prompt {
+  margin-top: 8px;
+  font-size: 18px; line-height: 1.5;
+  background: transparent;
+  border: 0; border-bottom: 2px solid var(--line); border-radius: 0;
+  padding: 6px 0 10px;
+}
+.screen-home .home-prompt:focus { border-bottom-color: var(--ink); background: transparent; }
+.home-sparks-label { margin: 22px 0 8px; font-size: 13px; color: var(--muted); }
+.screen-home .home-chips { margin: 0 0 24px; }
+.screen-home .home-chip {
+  border-radius: var(--radius-control);
+  background: #f4ecff; border: 1px solid transparent; color: #3a2f86;
+  white-space: normal; text-align: left; line-height: 1.35;
+  transition: background-color var(--ease), border-color var(--ease);
+}
+.screen-home .home-chip:hover { background: #ffe7f4; border-color: transparent; }
+.screen-home .home-star { border-radius: var(--radius-control); background: #f7f4ff; border-color: #e4daf5; }
+.screen-home .home-alt { border-top: 1px dashed var(--line); }
+.home-section-head h2 { font-size: 20px; }
+.home-recent-cover, .home-theme { border-radius: var(--radius-control); }
+.home-unavailable { background: var(--panel); border-radius: var(--radius); }
+
+/* ---------- Bookshelf: books standing on a wooden shelf ---------- */
+.bs-shelves { background: #faf8ff; border-right-color: var(--line); }
+.bs-side-title { font-family: var(--display); letter-spacing: 0; text-transform: none; font-size: 15px; color: var(--ink); }
+.bs-shelf { border-radius: var(--radius-control); }
+.bs-shelf:hover { background: #f3ecff; }
+.bs-shelf.active { background: #efe7ff; box-shadow: inset 3px 0 0 #7c5cff; }
+.bs-shelf.active .bs-shelf-btn, .bs-shelf.active .bs-shelf-count { color: #3a2f86; }
+.bs-title-row h1 { font-size: 30px; }
+.bs-cover { position: relative; overflow: visible; padding-bottom: 14px; background: transparent; }
+.bs-cover .page-frame { border-radius: 2px 3px 3px 2px; box-shadow: inset 6px 0 0 rgba(0, 0, 0, .12), 0 8px 14px -6px rgba(38, 48, 74, .35); }
+/* The shelf plank under each book. */
+.bs-cover::after {
+  content: ""; position: absolute; left: -6%; right: -6%; bottom: 0; height: 12px; border-radius: 2px;
+  background: linear-gradient(var(--wood), #9a6838);
+  box-shadow: 0 3px 0 var(--wood-edge);
+  pointer-events: none;
+}
+.bs-card:active .bs-cover .page-frame { transform: translateY(-2px); }
+.bs-card-title { font-family: var(--display); font-weight: 700; }
+.bs-more:hover, .bs-more:focus-visible { background: #f3ecff; }
+
+/* ---------- Templates ---------- */
+.templates-head h1 { font-size: 32px; }
+.templates-chip { border-radius: var(--radius-control); }
+.templates-chip.active { background: #3a2f86; color: #fff; }
+.templates-card { border-radius: var(--radius); transition: border-color var(--ease); }
+.templates-card:hover { border-color: #d9c8ff; }
+.templates-cover, .templates-stage { border-radius: var(--radius-control); }
+
+/* ---------- shared surfaces ---------- */
+.export-unavailable, .coloring-start, .export-details { border-radius: var(--radius); }
+.page-image.placeholder {
+  background: repeating-linear-gradient(135deg, #f6efff 0 14pt, #fff4f9 14pt 28pt);
+  color: var(--muted);
+}
+
+/* Browser preview badge (npm run preview only). */
+html[data-preview="1"] .brand { flex-wrap: wrap; row-gap: 4px; }
+html[data-preview="1"] .brand::after {
+  content: "Preview"; padding: 1px 6px; border-radius: 4px;
+  font: 600 11px/1.6 system-ui, sans-serif; color: var(--muted); border: 1px solid var(--line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn, .app-nav-item, .screen-home .home-chip, .templates-card { transition: none; }
+  .bs-card:active .bs-cover .page-frame { transform: none; }
+}
