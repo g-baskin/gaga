@@ -45,7 +45,7 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$GITHUB_REF_NAME" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)$ ]] || { echo "Tags must look like v1.2.3" >&2; exit 1; }
-          git fetch --no-tags origin main:refs/remotes/origin/main
+          # fetch-depth: 0 above already fetched every branch, so origin/main is here without a second (unauthenticated) fetch.
           git merge-base --is-ancestor "$GITHUB_SHA" origin/main || { echo "Release tags must point to a commit on main" >&2; exit 1; }
           version="${BASH_REMATCH[1]}"
           node scripts/changelog.mjs check "$version"
