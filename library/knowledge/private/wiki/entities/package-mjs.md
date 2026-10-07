@@ -28,7 +28,7 @@ sources:
 
 Build/packaging script (`npm run package`). Exports `buildApp({ arch, out, quiet })`, which runs `@electron/packager` for macOS with only the app files (`main.cjs`, `preload.cjs`, `storage.cjs`, `epub.cjs`, `renderer/`, `ai/`), plus `readManifest()` and `root`. Run directly, it builds `Storyloom.app` for this Mac under `releases/`.
 
-`dist.mjs` (`npm run dist`) reuses `buildApp` to build both an Intel (`x64`) and an Apple Silicon (`arm64`) app, ad-hoc signs each with `codesign`, checks the chip with `lipo`, and wraps each in a drag-to-Applications disk image with `hdiutil`: `releases/dist/Storyloom_<version>_x64.dmg` and `Storyloom_<version>_aarch64.dmg`, plus `SHA256SUMS.txt`. The apps are not notarized.
+`dist.mjs` (`npm run dist`) reuses `buildApp` to build both an Intel (`x64`) and an Apple Silicon (`arm64`) app, ad-hoc signs each with `codesign`, checks the chip with `lipo`, and wraps each in a drag-to-Applications disk image with `hdiutil`: `releases/dist/Storyloom_<version>_Intel_x64.dmg` and `Storyloom_<version>_Apple-Silicon_arm64.dmg`, plus `SHA256SUMS.txt`. The apps are not notarized.
 
 Releases: `scripts/changelog.mjs` moves `CHANGELOG.md`'s Unreleased notes into a version section (`npm run release -- X.Y.Z`), and `.github/workflows/release.yml` builds both disk images on a pushed `vX.Y.Z` tag and publishes a GitHub release using that section as the notes.
 

@@ -57,8 +57,8 @@ export function notes(text, version) {
 
 ### Download
 
-- **Apple Silicon Macs** (M1 and newer, 2020 onward): \`Storyloom_${version}_aarch64.dmg\`
-- **Intel Macs**: \`Storyloom_${version}_x64.dmg\`
+- **Intel Macs**: \`Storyloom_${version}_Intel_x64.dmg\`
+- **Apple Silicon Macs** (M1 and newer, 2020 onward): \`Storyloom_${version}_Apple-Silicon_arm64.dmg\`
 
 Not sure which you have? Apple menu → About This Mac: "Chip: Apple M…" means Apple Silicon; "Processor: … Intel" means Intel.
 

@@ -53,8 +53,8 @@ test('first release from a changelog with no versions yet', async () => {
   assert.match(out, /^\[0\.1\.0\]: https:\/\/github\.com\/g-baskin\/gaga\/releases\/tag\/v0\.1\.0$/m);
   const text = notes(out, '0.1.0');
   assert.match(text, /^### Fixed\n\n- A bug\./);
-  assert.match(text, /Storyloom_0\.1\.0_aarch64\.dmg/);
-  assert.match(text, /Storyloom_0\.1\.0_x64\.dmg/);
+  assert.match(text, /\*\*Intel Macs\*\*: `Storyloom_0\.1\.0_Intel_x64\.dmg`/);
+  assert.match(text, /\*\*Apple Silicon Macs\*\*.*`Storyloom_0\.1\.0_Apple-Silicon_arm64\.dmg`/);
   assert.throws(() => notes(out, '9.9.9'), /no entries/);
 });
 

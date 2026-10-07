@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Changed
+
+- Download file names now say which Mac they're for: "Intel" or "Apple-Silicon".
+
 ## [0.1.0] - 2026-10-07
 
 ### Added

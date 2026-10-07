@@ -1,6 +1,6 @@
 // Builds Storyloom for Intel and Apple Silicon Macs and wraps each in a .dmg, ready for a GitHub release.
 //
-//   npm run dist                 → both: releases/dist/Storyloom_<version>_x64.dmg and _aarch64.dmg
+//   npm run dist                 → both: releases/dist/Storyloom_<version>_Intel_x64.dmg and _Apple-Silicon_arm64.dmg
 //   npm run dist -- --arch=arm64 → just one
 //
 // Uses only macOS's own tools (codesign, hdiutil, shasum), so it must run on a Mac.
@@ -16,8 +16,8 @@ import { promisify } from 'node:util';
 import { buildApp, readManifest, root } from './package.mjs';
 
 const run = promisify(execFile);
-// Electron's name for each chip, and the label used in the file name (same convention as many Mac apps).
-const ARCHES = { x64: 'x64', arm64: 'aarch64' };
+// Electron's name for each chip, and how the file name marks it, so people can tell which Mac each download is for.
+const ARCHES = { x64: 'Intel_x64', arm64: 'Apple-Silicon_arm64' };
 
 function chosenArches() {
   const flag = process.argv.find((a) => a.startsWith('--arch='));
