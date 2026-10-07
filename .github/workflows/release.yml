@@ -1,0 +1,76 @@
+name: Release
+
+# Publishes a GitHub release when a version tag (v1.2.3) is pushed:
+#   1. checks the tag matches package.json and CHANGELOG.md has that version's notes,
+#   2. runs the unit tests,
+#   3. builds Storyloom for Apple Silicon and Intel Macs as .dmg files (both on one Apple Silicon runner;
+#      Storyloom has no native add-ons, so the Intel build doesn't need an Intel runner),
+#   4. creates the release with the changelog section as its notes and the .dmg files attached.
+#
+# To release: `npm run release -- 1.2.3`, commit, then `git tag v1.2.3 && git push origin main v1.2.3`.
+# No secrets needed: the apps are ad-hoc signed, not notarized (see dist.mjs).
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: macos-14
+    timeout-minutes: 45
+    permissions:
+      contents: write # create the release and upload the .dmg files
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - name: Check the tag, version, and changelog
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_REF_NAME" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)$ ]] || { echo "Tags must look like v1.2.3" >&2; exit 1; }
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main || { echo "Release tags must point to a commit on main" >&2; exit 1; }
+          version="${BASH_REMATCH[1]}"
+          node scripts/changelog.mjs check "$version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - run: npm ci
+
+      - run: npm test
+
+      - name: Build the Mac disk images
+        run: npm run dist
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/changelog.mjs notes "$VERSION" > "$RUNNER_TEMP/notes.md"
+          gh release create "$GITHUB_REF_NAME" \
+            "releases/dist/Storyloom_${VERSION}_aarch64.dmg" \
+            "releases/dist/Storyloom_${VERSION}_x64.dmg" \
+            releases/dist/SHA256SUMS.txt \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Storyloom v$VERSION" \
+            --notes-file "$RUNNER_TEMP/notes.md" \
+            --verify-tag

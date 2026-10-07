@@ -1,11 +1,16 @@
 'use strict';
 const { app, BrowserWindow, Menu, dialog, ipcMain, protocol, safeStorage, session, shell } = require('electron');
+const crypto = require('node:crypto');
 const fs = require('node:fs/promises');
 const fsSync = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { createStore } = require('./storage.cjs');
-const { buildEpub } = require('./epub.cjs');
+const { buildEpub, collectImages } = require('./epub.cjs');
+const modelPicker = require('./ai/model-picker.cjs');
+const { createOpenRouter } = require('./ai/openrouter.cjs');
+const { createChatGpt } = require('./ai/chatgpt.cjs');
+const { createClaudeCode } = require('./ai/claude-code.cjs');
 
 const selfTest = process.argv.includes('--self-test');
 app.setName('Storyloom');
@@ -13,6 +18,8 @@ if (selfTest) {
   app.setPath('userData', fsSync.mkdtempSync(path.join(os.tmpdir(), 'storyloom-self-test-')));
   // A fake microphone lets the self-test exercise recording; the permission handler still decides access.
   app.commandLine.appendSwitch('use-fake-device-for-media-stream');
+  // Encrypt test secrets with a throwaway key instead of the real macOS keychain.
+  app.commandLine.appendSwitch('use-mock-keychain');
 }
 // Removes the self-test's temporary data folder (only ever a mkdtemp folder) unless --keep-data is passed.
 function cleanSelfTestData() {
@@ -47,21 +54,27 @@ function handle(channel, fn) {
   });
 }
 
-// --- Optional AI services (any OpenAI-compatible service). The key never reaches the page. ---
+// --- Optional AI services. Keys and sign-ins stay in this process; the page only sees what is connected. ---
+// Writing: your own OpenAI-compatible service, OpenRouter, your ChatGPT plan, or your Claude Code subscription.
+// Pictures and voices: your own service or OpenRouter (ChatGPT and Claude plans don't cover them).
 const settingsFile = () => path.join(app.getPath('userData'), 'settings.json');
 const MODEL = /^[\w.:/@-]{1,200}$/;
-const VOICE = /^[\w.-]{1,60}$/;
+const VOICE = /^[\w.:-]{1,80}$/;
+const WRITERS = ['custom', 'openrouter', 'chatgpt', 'claude'];
+const MEDIA = ['custom', 'openrouter'];
 async function readSettings() {
   const str = (v) => (typeof v === 'string' ? v : '');
-  try {
-    const raw = JSON.parse(await fs.readFile(settingsFile(), 'utf8'));
-    return {
-      baseUrl: str(raw.baseUrl), model: str(raw.model), imageModel: str(raw.imageModel), speechModel: str(raw.speechModel),
-      voice: str(raw.voice), apiKeyEnc: str(raw.apiKeyEnc),
-    };
-  } catch {
-    return { baseUrl: '', model: '', imageModel: '', speechModel: '', voice: '', apiKeyEnc: '' };
-  }
+  const one = (v, list, fallback) => (list.includes(v) ? v : fallback);
+  let raw = {};
+  try { raw = JSON.parse(await fs.readFile(settingsFile(), 'utf8')) || {}; } catch { /* first run */ }
+  return {
+    baseUrl: str(raw.baseUrl), model: str(raw.model), imageModel: str(raw.imageModel), speechModel: str(raw.speechModel),
+    voice: str(raw.voice), apiKeyEnc: str(raw.apiKeyEnc),
+    writer: one(raw.writer, WRITERS, 'custom'), pictures: one(raw.pictures, MEDIA, 'custom'), voices: one(raw.voices, MEDIA, 'custom'),
+    tier: one(raw.tier, modelPicker.TIERS, 'balanced'),
+    openrouterKeyEnc: str(raw.openrouterKeyEnc), orTextModel: str(raw.orTextModel), orImageModel: str(raw.orImageModel), orSpeechModel: str(raw.orSpeechModel),
+    chatgptModel: str(raw.chatgptModel), claudeModel: str(raw.claudeModel), claudePath: str(raw.claudePath),
+  };
 }
 function checkBaseUrl(value) {
   if (!value) return '';
@@ -81,11 +94,42 @@ function checkModel(value, label) {
   if (model && !MODEL.test(model)) throw new Error(`${label} names may only contain letters, numbers, and . : / @ - _`);
   return model;
 }
-async function saveSettings(input = {}) {
+function encryptSecret(value, label) {
+  const secret = typeof value === 'string' ? value.trim() : '';
+  if (secret.length > 1000) throw new Error(`That ${label} is too long`);
+  if (!safeStorage.isEncryptionAvailable()) throw new Error('Secure key storage is unavailable on this computer');
+  return safeStorage.encryptString(secret).toString('base64');
+}
+const decryptSecret = (enc) => (enc ? safeStorage.decryptString(Buffer.from(enc, 'base64')) : '');
+async function writePrivate(file, text) {
+  const temp = `${file}.${process.pid}.${crypto.randomUUID()}.tmp`;
+  try {
+    await fs.writeFile(temp, text, { mode: 0o600 });
+    await fs.rename(temp, file);
+  } catch (error) {
+    await fs.rm(temp, { force: true });
+    throw error;
+  }
+}
+// Each save reads the current settings, changes them, and writes them back, so saves must not overlap.
+let settingsQueue = Promise.resolve();
+function saveSettings(input = {}) {
+  const next = settingsQueue.then(() => saveSettingsNow(input));
+  settingsQueue = next.catch(() => {});
+  return next;
+}
+async function saveSettingsNow(input = {}) {
   const current = await readSettings();
-  const voice = typeof input.voice === 'string' ? input.voice.trim() : current.voice;
-  if (voice && !VOICE.test(voice)) throw new Error('Voice names may only contain letters, numbers, and . - _');
   const keep = (key) => (key in input ? input[key] : current[key]);
+  const voice = typeof keep('voice') === 'string' ? keep('voice').trim() : '';
+  if (voice && !VOICE.test(voice)) throw new Error('Voice names may only contain letters, numbers, and . : - _');
+  const choose = (key, list, label) => {
+    const value = keep(key);
+    if (!list.includes(value)) throw new Error(`Choose a service for ${label}`);
+    return value;
+  };
+  const claudePath = typeof keep('claudePath') === 'string' ? keep('claudePath').trim() : '';
+  if (claudePath && (!path.isAbsolute(claudePath) || claudePath.length > 1000)) throw new Error('The Claude Code location must be a full path, like /usr/local/bin/claude');
   const next = {
     baseUrl: checkBaseUrl(typeof input.baseUrl === 'string' ? input.baseUrl.trim() : current.baseUrl),
     model: checkModel(keep('model'), 'Model'),
@@ -93,22 +137,99 @@ async function saveSettings(input = {}) {
     speechModel: checkModel(keep('speechModel'), 'Voice model'),
     voice,
     apiKeyEnc: current.apiKeyEnc,
+    writer: choose('writer', WRITERS, 'writing'),
+    pictures: choose('pictures', MEDIA, 'pictures'),
+    voices: choose('voices', MEDIA, 'voices'),
+    tier: choose('tier', modelPicker.TIERS, 'the budget'),
+    openrouterKeyEnc: current.openrouterKeyEnc,
+    orTextModel: checkModel(keep('orTextModel'), 'Model'),
+    orImageModel: checkModel(keep('orImageModel'), 'Picture model'),
+    orSpeechModel: checkModel(keep('orSpeechModel'), 'Voice model'),
+    chatgptModel: checkModel(keep('chatgptModel'), 'Model'),
+    claudeModel: checkModel(keep('claudeModel'), 'Model'),
+    claudePath,
   };
   if (input.clearKey) next.apiKeyEnc = '';
-  const key = typeof input.apiKey === 'string' ? input.apiKey.trim() : '';
-  if (key) {
-    if (key.length > 1000) throw new Error('That API key is too long');
-    if (!safeStorage.isEncryptionAvailable()) throw new Error('Secure key storage is unavailable on this computer');
-    next.apiKeyEnc = safeStorage.encryptString(key).toString('base64');
-  }
-  await fs.writeFile(settingsFile(), JSON.stringify(next), { mode: 0o600 });
+  if (typeof input.apiKey === 'string' && input.apiKey.trim()) next.apiKeyEnc = encryptSecret(input.apiKey, 'API key');
+  if (input.clearOpenrouterKey) next.openrouterKeyEnc = '';
+  if (typeof input.openrouterKey === 'string' && input.openrouterKey.trim()) next.openrouterKeyEnc = encryptSecret(input.openrouterKey, 'OpenRouter key');
+  await writePrivate(settingsFile(), JSON.stringify(next));
+  if (next.claudePath !== current.claudePath) claudeStatusCache = null;
   return publicSettings(next);
 }
 const publicSettings = (s) => ({
   baseUrl: s.baseUrl, model: s.model, imageModel: s.imageModel, speechModel: s.speechModel, voice: s.voice, hasKey: Boolean(s.apiKeyEnc),
+  writer: s.writer, pictures: s.pictures, voices: s.voices, tier: s.tier, hasOpenrouterKey: Boolean(s.openrouterKeyEnc),
+  orTextModel: s.orTextModel, orImageModel: s.orImageModel, orSpeechModel: s.orSpeechModel,
+  chatgptModel: s.chatgptModel, claudeModel: s.claudeModel, claudePath: s.claudePath,
 });
 
-// Calls the configured service. Only the user's own address, no redirects, bounded time and size.
+// Test-only service addresses, set by the self-test runner. They exist only in --self-test, so a real
+// install always talks to the real services.
+const testUrls = {};
+const testUrl = (name) => (selfTest ? testUrls[name] : undefined);
+function useTestServices(urls) {
+  if (!selfTest) throw new Error('Test services are only available in the self-test');
+  Object.assign(testUrls, urls);
+  openRouter = null; chatGpt = null; claudeCode = null; claudeStatusCache = null; chatGptModels = null;
+}
+let openRouter = null;
+let chatGpt = null;
+let claudeCode = null;
+let claudeStatusCache = null;
+function getOpenRouter() {
+  openRouter ||= createOpenRouter({
+    baseUrl: testUrl('STORYLOOM_TEST_OPENROUTER'),
+    getKey: async () => decryptSecret((await readSettings()).openrouterKeyEnc),
+  });
+  return openRouter;
+}
+const chatGptFile = () => path.join(app.getPath('userData'), 'chatgpt.json');
+function getChatGpt() {
+  chatGpt ||= createChatGpt({
+    authBase: testUrl('STORYLOOM_TEST_CHATGPT_AUTH'),
+    apiBase: testUrl('STORYLOOM_TEST_CHATGPT_API'),
+    callbackPort: selfTest ? 0 : 1455,
+    // The whole sign-in record is encrypted with the Mac keychain and readable only by this user.
+    async loadRecord() {
+      try {
+        const sealed = await fs.readFile(chatGptFile(), 'utf8');
+        return JSON.parse(safeStorage.decryptString(Buffer.from(sealed, 'base64')));
+      } catch { return null; }
+    },
+    async saveRecord(record) {
+      if (!safeStorage.isEncryptionAvailable()) throw new Error('Secure storage is unavailable on this computer');
+      await writePrivate(chatGptFile(), safeStorage.encryptString(JSON.stringify(record)).toString('base64'));
+    },
+    async openBrowser(url) {
+      const auth = testUrl('STORYLOOM_TEST_CHATGPT_AUTH') || 'https://auth.openai.com';
+      if (!url.startsWith(`${auth}/`)) throw new Error('Refusing to open an unexpected sign-in address');
+      // The self-test's fake sign-in server answers with a redirect straight back to the callback.
+      if (selfTest) { await fetch(url); return; }
+      await shell.openExternal(url);
+    },
+  });
+  return chatGpt;
+}
+function getClaudeCode() {
+  claudeCode ||= createClaudeCode({ getPath: async () => (await readSettings()).claudePath });
+  return claudeCode;
+}
+async function claudeStatus(force) {
+  if (force || !claudeStatusCache || Date.now() - claudeStatusCache.at > 60000) {
+    claudeStatusCache = { at: Date.now(), value: await getClaudeCode().status() };
+  }
+  return claudeStatusCache.value;
+}
+let chatGptModels = null; // { at, list }
+async function chatGptModelList(force) {
+  if (force || !chatGptModels || Date.now() - chatGptModels.at > 6 * 60 * 60 * 1000) {
+    chatGptModels = { at: Date.now(), list: await getChatGpt().models() };
+  }
+  return chatGptModels.list;
+}
+
+// Calls your own OpenAI-compatible service. Only the address you set, no redirects, bounded time and size.
 async function aiRequest(endpoint, body, { needs, maxBytes = 2_000_000, binary = false, timeout = 120000 }) {
   const settings = await readSettings();
   const model = settings[needs];
@@ -117,7 +238,7 @@ async function aiRequest(endpoint, body, { needs, maxBytes = 2_000_000, binary =
     throw new Error(`Set up ${what} in Account → AI services first`);
   }
   const headers = { 'Content-Type': 'application/json' };
-  if (settings.apiKeyEnc) headers.Authorization = `Bearer ${safeStorage.decryptString(Buffer.from(settings.apiKeyEnc, 'base64'))}`;
+  if (settings.apiKeyEnc) headers.Authorization = `Bearer ${decryptSecret(settings.apiKeyEnc)}`;
   let response;
   try {
     response = await fetch(`${checkBaseUrl(settings.baseUrl)}${endpoint}`, {
@@ -144,36 +265,56 @@ const LEVEL_TEXT = {
 };
 const LENGTH_PAGES = { tiny: 8, short: 12, medium: 18, long: 24 };
 
-async function chatJson(system, user, maxTokens) {
+// Sends one writing job to the chosen service and returns { content, model }.
+async function writeText({ system, user, maxTokens, task, language }) {
+  const settings = await readSettings();
+  if (settings.writer === 'openrouter') {
+    return getOpenRouter().chat({ system, user, maxTokens, task, tier: settings.tier, language, model: settings.orTextModel });
+  }
+  if (settings.writer === 'chatgpt') {
+    const model = settings.chatgptModel || modelPicker.pickChatGptModel({ models: await chatGptModelList(), task, tier: settings.tier });
+    if (!model) throw new Error('Your ChatGPT account has no models available for other apps right now');
+    return { content: await getChatGpt().respond({ instructions: system, user, model }), model };
+  }
+  if (settings.writer === 'claude') {
+    return getClaudeCode().ask({ system, user, model: settings.claudeModel || modelPicker.pickClaudeModel({ task, tier: settings.tier }) });
+  }
   const { data } = await aiRequest('/chat/completions', {
     temperature: 0.8, ...(maxTokens ? { max_tokens: maxTokens } : {}),
     messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
   }, { needs: 'model' });
   const content = data?.choices?.[0]?.message?.content;
   if (typeof content !== 'string') throw new Error('The AI service response was not understood');
-  const start = content.indexOf('{');
-  const end = content.lastIndexOf('}');
-  try { return JSON.parse(content.slice(start, end + 1)); } catch { throw new Error('The AI service did not answer in the expected format — try again'); }
+  return { content, model: typeof data.model === 'string' ? data.model : settings.model };
 }
 
-// Writes a whole story from the Story builder (or the quick idea box).
+async function chatJson(system, user, { maxTokens, task, language } = {}) {
+  const { content, model } = await writeText({ system, user, maxTokens, task, language });
+  const start = content.indexOf('{');
+  const end = content.lastIndexOf('}');
+  try { return { json: JSON.parse(content.slice(start, end + 1)), model }; } catch { throw new Error('The AI service did not answer in the expected format — try again'); }
+}
+
+// Writes a whole story from the Story builder (or the quick idea box, or a coloring-book idea).
 async function generateStory(input = {}) {
   const idea = clip(input.idea, 4000);
   if (!idea) throw new Error('Describe your story idea first');
   const level = LEVEL_TEXT[input.readingLevel] || (typeof input.readingLevel === 'string' ? `ages ${clip(input.readingLevel, 20)}` : LEVEL_TEXT['early-reader']);
   const count = Math.min(30, Math.max(3, Math.round(Number(input.pages) || LENGTH_PAGES[input.length] || 10)));
+  const language = clip(input.language, 40) || 'English';
   const characters = (Array.isArray(input.characters) ? input.characters.slice(0, 12) : [])
     .map((c) => [clip(c?.name, 80), clip(c?.role, 80), clip(c?.description, 400)].filter(Boolean).join(' — ')).filter(Boolean);
   const details = [
     ['Title', clip(input.title, 200)], ['Genre', clip(input.genre, 60)],
     ['Writing style', (Array.isArray(input.writingStyle) ? input.writingStyle.slice(0, 8).map((w) => clip(w, 40)) : []).join(', ')],
     ['Setting', clip(input.location, 200)], ['Time period', clip(input.era, 200)], ['Also include', clip(input.extras, 2000)],
-    ['Language', clip(input.language, 40) || 'English'], ['Reader level', level], ['Number of pages', String(count)],
+    ['Language', language], ['Reader level', level], ['Number of pages', String(count)],
     ['Characters', characters.join('; ')],
   ].filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n');
-  const story = await chatJson(
+  const { json: story, model } = await chatJson(
     'You write original, warm picture-book stories for children. Reply with JSON only, no commentary, in this shape: {"title": string, "chapters": [{"title": string, "text": string}]}. Each chapter is one picture-book page of text suited to the reader level. Write in the requested language.',
     `Story idea: ${idea}\n${details}`,
+    { task: input.purpose === 'coloring' ? 'captions' : 'story', language },
   );
   const raw = Array.isArray(story.chapters) ? story.chapters
     : Array.isArray(story.pages) ? story.pages.map((text, i) => ({ title: `Page ${i + 1}`, text })) : [];
@@ -181,28 +322,30 @@ async function generateStory(input = {}) {
     .map((c, i) => ({ title: clip(typeof c === 'string' ? `Page ${i + 1}` : c?.title, 200) || `Page ${i + 1}`, text: clip(typeof c === 'string' ? c : c?.text, 4000) }))
     .filter((c) => c.text).slice(0, count);
   if (chapters.length === 0) throw new Error('The AI service returned no pages — try again');
-  return { title: clip(story.title, 200) || clip(input.title, 200) || 'My story', chapters, pages: chapters.map((c) => c.text) };
+  return { title: clip(story.title, 200) || clip(input.title, 200) || 'My story', chapters, pages: chapters.map((c) => c.text), model };
 }
 
 // Writes or rewrites one chapter in the Manuscript.
 async function generateChapter(input = {}) {
   const wordLimit = Math.min(2000, Math.max(5, Math.round(Number(input.wordLimit) || 120)));
-  const result = await chatJson(
+  const language = clip(input.language, 40) || 'English';
+  const { json: result, model } = await chatJson(
     'You help write one chapter of an original children\'s picture book. Reply with JSON only: {"text": string}. Use plain text with blank lines between paragraphs. Stay within the word limit.',
     [
       `Book: ${clip(input.bookTitle, 200) || 'Untitled'}`,
       `Chapter: ${clip(input.chapterTitle, 200) || 'Untitled'}`,
       `Reader level: ${LEVEL_TEXT[input.readingLevel] || LEVEL_TEXT['early-reader']}`,
-      `Language: ${clip(input.language, 40) || 'English'}`,
+      `Language: ${language}`,
       `Word limit: ${wordLimit}`,
       input.context ? `Story so far:\n${clip(input.context, 6000)}` : '',
       input.current ? `Current chapter text to rewrite:\n${clip(input.current, 6000)}` : '',
       `Instruction: ${clip(input.instruction, 1000) || (input.current ? 'Rewrite this chapter so it reads more smoothly.' : 'Write this chapter.')}`,
     ].filter(Boolean).join('\n'),
+    { task: 'chapter', language },
   );
   const text = clip(result.text, 20000);
   if (!text) throw new Error('The AI service returned an empty chapter — try again');
-  return { text };
+  return { text, model };
 }
 
 // Generates a picture and stores it in the book. Returns the new asset name.
@@ -211,9 +354,15 @@ async function generateImage(input = {}) {
   const prompt = clip(input.prompt, 3000);
   if (!prompt) throw new Error('Describe the picture first');
   const style = clip(input.style, 200);
-  const fullPrompt = input.lineArt
+  const lineArt = Boolean(input.lineArt);
+  const fullPrompt = lineArt
     ? `Black and white line art coloring page for children, clean bold outlines, no shading, white background: ${prompt}`
     : `Children's picture-book illustration${style ? ` in a ${style} style` : ''}: ${prompt}`;
+  const settings = await readSettings();
+  if (settings.pictures === 'openrouter') {
+    const { bytes } = await getOpenRouter().image({ prompt: fullPrompt, tier: settings.tier, lineArt, model: settings.orImageModel });
+    return store.saveImageBytes(book.id, bytes);
+  }
   const { data } = await aiRequest('/images/generations', {
     prompt: fullPrompt, n: 1, size: '1024x1024', response_format: 'b64_json',
   }, { needs: 'imageModel', maxBytes: 40_000_000, timeout: 180000 });
@@ -222,16 +371,55 @@ async function generateImage(input = {}) {
   return store.saveImageBytes(book.id, Buffer.from(b64, 'base64'));
 }
 
-// Reads text aloud with the configured voice model and stores the sound in the book.
+// Reads text aloud with the chosen voice service and stores the sound in the book.
 async function generateSpeech(input = {}) {
   const book = await store.read(input.bookId);
   const text = clip(input.text, 4000);
   if (!text) throw new Error('This page has no words to read aloud');
-  const saved = (await readSettings()).voice;
-  const voice = typeof input.voice === 'string' && VOICE.test(input.voice) ? input.voice : saved || 'alloy';
+  const settings = await readSettings();
+  const voice = typeof input.voice === 'string' && VOICE.test(input.voice) ? input.voice : settings.voice || 'alloy';
+  if (settings.voices === 'openrouter') {
+    const { bytes } = await getOpenRouter().speech({ text, tier: settings.tier, voice, model: settings.orSpeechModel });
+    return store.saveAudioBytes(book.id, bytes);
+  }
   const { data } = await aiRequest('/audio/speech', { input: text, voice, response_format: 'mp3' },
     { needs: 'speechModel', maxBytes: 100_000_000, binary: true, timeout: 180000 });
   return store.saveAudioBytes(book.id, data);
+}
+
+// Which model each job would use right now, and why (shown on the Account screen).
+async function aiRecommendations() {
+  const s = await readSettings();
+  const rows = [];
+  const tierName = { best: 'Best quality', balanced: 'Balanced', thrifty: 'Lowest cost' }[s.tier];
+  let openRouterRows = null;
+  const fromOpenRouter = async () => (openRouterRows ||= await getOpenRouter().recommendations({ tier: s.tier, language: 'English' }));
+  const pinned = (job, model) => ({ job, model, fallbacks: [], reason: 'You chose this model.' });
+  if (s.writer === 'openrouter') {
+    if (s.orTextModel) rows.push(pinned('Writing', s.orTextModel));
+    else rows.push(...(await fromOpenRouter()).filter((r) => ['Whole stories', 'Chapters', 'Coloring captions'].includes(r.job)));
+  } else if (s.writer === 'claude') {
+    for (const [job, task] of [['Whole stories', 'story'], ['Chapters', 'chapter'], ['Coloring captions', 'captions']]) {
+      const model = s.claudeModel || modelPicker.pickClaudeModel({ task, tier: s.tier });
+      rows.push({ job, model: `Claude ${model}`, fallbacks: [], reason: s.claudeModel ? 'You chose this model.' : `Claude Code’s ${model} model suits this job at the ${tierName} setting.` });
+    }
+  } else if (s.writer === 'chatgpt') {
+    const list = await chatGptModelList().catch(() => []);
+    for (const [job, task] of [['Whole stories', 'story'], ['Chapters', 'chapter'], ['Coloring captions', 'captions']]) {
+      const slug = s.chatgptModel || modelPicker.pickChatGptModel({ models: list, task, tier: s.tier });
+      const name = list.find((m) => m.slug === slug)?.display_name || slug;
+      if (slug) rows.push({ job, model: name, fallbacks: [], reason: s.chatgptModel ? 'You chose this model.' : 'From the models your ChatGPT plan offers, in OpenAI’s recommended order.' });
+    }
+  } else if (s.model) rows.push(pinned('Writing', s.model));
+  if (s.pictures === 'openrouter') {
+    if (s.orImageModel) rows.push(pinned('Pictures', s.orImageModel));
+    else rows.push(...(await fromOpenRouter()).filter((r) => ['Pictures', 'Coloring pages'].includes(r.job)));
+  } else if (s.imageModel) rows.push(pinned('Pictures', s.imageModel));
+  if (s.voices === 'openrouter') {
+    if (s.orSpeechModel) rows.push(pinned('Narration', s.orSpeechModel));
+    else rows.push(...(await fromOpenRouter()).filter((r) => r.job === 'Narration'));
+  } else if (s.speechModel) rows.push(pinned('Narration', s.speechModel));
+  return rows;
 }
 
 // --- Export helpers ---
@@ -271,19 +459,16 @@ async function exportEpub(input = {}) {
   });
   const css = typeof input.css === 'string' ? input.css.slice(0, 2_000_000) : '';
   if (/@import|url\(\s*['"]?(?!images\/)/i.test(css)) throw new Error('The stylesheet may only reference book images');
-  // Only images that really exist in this book's folder are packaged.
-  const wanted = new Set();
-  for (const { body } of bodies) for (const match of body.matchAll(/images\/([a-z0-9-]{1,64}\.(?:png|jpg|webp|gif))/g)) wanted.add(match[1]);
-  for (const match of css.matchAll(/images\/([a-z0-9-]{1,64}\.(?:png|jpg|webp|gif))/g)) wanted.add(match[1]);
-  const images = [];
-  for (const name of wanted) images.push({ name, data: await fs.readFile(store.mediaPath(book.id, name)) });
+  // Only images that really exist in this book's folder are packaged; references to missing ones are dropped.
+  const packed = await collectImages({ pages: bodies, css, read: (name) => fs.readFile(store.mediaPath(book.id, name)) });
+  const { images } = packed;
   const coverFirst = typeof input.coverImage === 'string' ? images.findIndex((img) => img.name === input.coverImage) : -1;
   if (coverFirst > 0) images.unshift(...images.splice(coverFirst, 1));
   const width = Math.min(4000, Math.max(100, Math.round(Number(input.width) || 816)));
   const height = Math.min(4000, Math.max(100, Math.round(Number(input.height) || 816)));
   const epub = buildEpub({
     book: { id: book.id, title: book.title, author: book.author, isbn: book.isbn, language: ISO_LANG[book.language.toLowerCase()] || 'en', modified: new Date() },
-    pages: bodies, css, width, height, images,
+    pages: packed.pages, css: packed.css, width, height, images,
   });
   const file = await chooseSaveFile(book.title, 'epub', 'EPUB book');
   if (!file) return null;
@@ -383,6 +568,28 @@ function registerHandlers() {
   handle('ai:chapter', (_e, input) => generateChapter(input && typeof input === 'object' ? input : {}));
   handle('ai:image', (_e, input) => generateImage(input && typeof input === 'object' ? input : {}));
   handle('ai:speech', (_e, input) => generateSpeech(input && typeof input === 'object' ? input : {}));
+  // Expected failures (not signed in, declined, offline) come back as { error } rather than a logged exception.
+  const soft = (fn) => async (...args) => {
+    try { return { ok: await fn(...args) }; } catch (error) { return { error: String(error?.message || error) }; }
+  };
+  handle('ai:recommendations', soft(() => aiRecommendations()));
+  handle('ai:chatgpt-status', soft(() => getChatGpt().status()));
+  handle('ai:chatgpt-sign-in', soft(async () => { const result = await getChatGpt().signIn(); chatGptModels = null; return result; }));
+  handle('ai:chatgpt-cancel', () => { getChatGpt().cancelSignIn(); return true; });
+  handle('ai:chatgpt-welcomed', soft(() => getChatGpt().markWelcomed()));
+  handle('ai:chatgpt-sign-out', soft(async () => { chatGptModels = null; return getChatGpt().signOut(); }));
+  handle('ai:chatgpt-models', soft(() => chatGptModelList(true)));
+  handle('ai:claude-status', soft((_e, force) => claudeStatus(force === true)));
+  handle('ai:open-link', (_e, name) => {
+    const links = {
+      'chatgpt-usage': 'https://chatgpt.com/settings/usage',
+      'openrouter-keys': 'https://openrouter.ai/settings/keys',
+      'claude-code': 'https://claude.com/product/claude-code',
+    };
+    if (!links[name]) throw new Error('Unknown link');
+    if (!selfTest) shell.openExternal(links[name]);
+    return true;
+  });
   handle('app:close-ready', () => { allowClose = true; setImmediate(() => win?.close()); });
 }
 
@@ -490,7 +697,7 @@ app.whenReady().then(async () => {
   await win.loadURL('app://local/index.html');
   if (selfTest) {
     try {
-      await require('./selftest/index.cjs').run({ app, win, store, argv: process.argv, root: __dirname, setOpenFile: (file) => { selfTestOpenFile = file; } });
+      await require('./selftest/index.cjs').run({ app, win, store, argv: process.argv, root: __dirname, setOpenFile: (file) => { selfTestOpenFile = file; }, useTestServices });
       cleanSelfTestData();
       app.exit(0);
     } catch (error) {

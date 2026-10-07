@@ -125,7 +125,7 @@
     const progress = progressModal('Making a coloring book');
     try {
       progress.set('Writing page ideas…', 0);
-      const story = await api.generateStory({ idea, length: 'tiny', pages: count });
+      const story = await api.generateStory({ idea, length: 'tiny', pages: count, purpose: 'coloring' });
       const captions = story.pages.slice(0, count);
       const book = await api.createBook({
         kind: 'coloring', title: story.title || 'My coloring book',
@@ -190,7 +190,8 @@
     } },
     h('label', { class: 'field' }, h('span', { class: 'field-label' }, 'Your idea'), ideaInput),
     h('label', { class: 'field coloring-pages-field' }, h('span', { class: 'field-label' }, 'Number of pages (4–12)'), pagesInput),
-    h('p', { class: 'muted small-print' }, 'Uses the AI service you connected in Settings to write captions and draw outline pictures.'),
+    h('p', { class: 'muted small-print' }, 'Captions are written by your writing service; outline pictures use your picture service (both set in Account).'),
+    aiWriterNote(),
     h('div', { class: 'form-actions' }, ideaButton));
 
     host.replaceChildren(h('div', { class: 'library-main coloring-home' },

@@ -225,7 +225,7 @@
       h('input', { type: 'checkbox', id: 'ms-allow-longer', checked: allowLonger.has(book.id), onchange: (e) => { if (e.target.checked) allowLonger.add(book.id); else allowLonger.delete(book.id); updateCounts(); } }),
       'Allow longer chapters');
     const foot = h('div', { class: 'ms-foot' }, ui.chapterCount, h('span', { class: 'muted' }, `Limit ${limit} words per chapter`), h('span', { class: 'ms-spacer' }), longer);
-    const ai = h('div', { class: 'ms-ai-row' }, ui.instruction, ui.aiButton);
+    const ai = h('div', { class: 'ms-ai-wrap' }, h('div', { class: 'ms-ai-row' }, ui.instruction, ui.aiButton), aiWriterNote());
 
     ui.main.replaceChildren(head, h('div', { class: 'ms-sheet' }, ui.titleInput, toolbar, ui.editor, ui.notice, foot), ai);
     updateCounts();

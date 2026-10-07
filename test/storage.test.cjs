@@ -136,6 +136,13 @@ test('keeps crops, sound elements, and book-level story data', async () => {
   assert.deepEqual(Object.keys(saved.audio.narration), [saved.pages[0].id]);
   assert.equal(saved.audio.music.volume, 1);
   assert.equal((await store.save({ ...saved, isbn: '12345' })).isbn, '');
+  // Wrong check digits and an ISBN-13 ending in X are not real ISBNs; a valid ISBN-10 is kept.
+  assert.equal((await store.save({ ...saved, isbn: '978-3-16-148410-1' })).isbn, '');
+  assert.equal((await store.save({ ...saved, isbn: '978316148410X' })).isbn, '');
+  assert.equal((await store.save({ ...saved, isbn: '0-306-40615-2' })).isbn, '0-306-40615-2');
+  // Voice names from OpenRouter contain a colon; they must survive a save.
+  const voiced = await store.save({ ...saved, audio: { ...saved.audio, voice: 'en-US-Nova:MAI' } });
+  assert.equal(voiced.audio.voice, 'en-US-Nova:MAI');
   assert.deepEqual(await store.listAudio(book.id), [sound]);
   assert.equal(store.mediaPath(book.id, sound), path.join(root, 'books', book.id, 'assets', sound));
 });

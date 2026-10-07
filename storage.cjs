@@ -216,15 +216,28 @@ function sanitizeAudio(a, pageIds) {
   return {
     narration,
     music: musicFile ? { file: musicFile, volume: num(src.music.volume, 0, 1, 0.3), loop: src.music.loop !== false } : null,
-    voice: typeof src.voice === 'string' && /^[\w.-]{1,60}$/.test(src.voice) ? src.voice : '',
+    voice: typeof src.voice === 'string' && /^[\w.:-]{1,80}$/.test(src.voice) ? src.voice : '',
   };
 }
 
-const ISBN = /^(97[89])?\d{9}[\dX]$/;
+// Keeps an ISBN only if it is a real ISBN-10 or ISBN-13 (correct length, prefix, and check digit).
+function isValidIsbn(digits) {
+  if (/^\d{9}[\dX]$/.test(digits)) {
+    let sum = 0;
+    for (let i = 0; i < 10; i++) sum += (10 - i) * (digits[i] === 'X' ? 10 : Number(digits[i]));
+    return sum % 11 === 0;
+  }
+  if (/^97[89]\d{10}$/.test(digits)) {
+    let sum = 0;
+    for (let i = 0; i < 13; i++) sum += Number(digits[i]) * (i % 2 ? 3 : 1);
+    return sum % 10 === 0;
+  }
+  return false;
+}
 function sanitizeIsbn(value) {
   if (typeof value !== 'string') return '';
   const digits = value.toUpperCase().replace(/[\s-]/g, '');
-  return ISBN.test(digits) ? value.trim().slice(0, 20) : '';
+  return isValidIsbn(digits) ? value.trim().slice(0, 20) : '';
 }
 
 function sanitizeBook(book, now = Date.now()) {

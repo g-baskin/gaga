@@ -163,4 +163,34 @@ ${pages.map((_p, i) => `<itemref idref="p${i + 1}"/>`).join('\n')}
   ]);
 }
 
-module.exports = { zip, unzip, crc32, buildEpub };
+// Finds the book pictures that pages and the stylesheet refer to and loads them with read(name).
+// A picture that no longer exists is left out, and references to it are removed so the EPUB has no
+// broken links; any other read error still fails the export.
+const IMAGE_REF = /images\/([a-z0-9-]{1,64}\.(?:png|jpg|webp|gif))/g;
+async function collectImages({ pages, css, read }) {
+  const wanted = new Set();
+  for (const { body } of pages) for (const match of body.matchAll(IMAGE_REF)) wanted.add(match[1]);
+  for (const match of css.matchAll(IMAGE_REF)) wanted.add(match[1]);
+  const images = [];
+  const missing = [];
+  for (const name of wanted) {
+    try {
+      images.push({ name, data: await read(name) });
+    } catch (error) {
+      if (error?.code !== 'ENOENT') throw error;
+      missing.push(name);
+    }
+  }
+  if (missing.length === 0) return { pages, css, images, missing };
+  const names = missing.map((n) => n.replace(/[.-]/g, '\\$&')).join('|');
+  const tag = new RegExp(`<img\\b[^>]*images\\/(?:${names})[^>]*>`, 'g');
+  const url = new RegExp(`url\\(\\s*(['"]?)images\\/(?:${names})\\1\\s*\\)`, 'g');
+  return {
+    pages: pages.map((p) => ({ ...p, body: p.body.replace(tag, '') })),
+    css: css.replace(url, 'none'),
+    images,
+    missing,
+  };
+}
+
+module.exports = { zip, unzip, crc32, buildEpub, collectImages };

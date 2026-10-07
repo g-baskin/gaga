@@ -263,7 +263,7 @@
       slot,
       h('hr', { class: 'studio-rule' }),
       h('h3', {}, 'AI voice'),
-      h('p', { class: 'muted small-print' }, 'Uses the voice service you set up in Settings. The page’s words are sent to it.'),
+      h('p', { class: 'muted small-print' }, 'Uses the voice service chosen in Account (OpenRouter or your own service). The page’s words are sent to it.'),
       h('label', { class: 'field' }, h('span', { class: 'field-label' }, 'Voice'), voice),
       pageText(page) ? null : h('p', { class: 'muted small-print' }, 'This page has no words to read.'),
       h('div', { class: 'studio-row' }, readPage, all),

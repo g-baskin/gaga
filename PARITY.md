@@ -4,7 +4,22 @@ Storyloom is an original picture-book app that runs entirely on this Mac. Scrive
 
 Status: ✅ built and tested · 🟡 partly built · ⛔ not available (clearly labelled in the app) · ➖ not needed in a local app
 
-"Own key" means the feature works with the user's own OpenAI-compatible AI service, set up on the Account screen. Without one, the feature explains what it needs; everything else still works.
+"Own key" means the feature needs an AI service chosen on the Account screen. Without one, the feature explains what it needs; everything else still works.
+
+## AI services
+
+| Service | Writing | Pictures | Voices | How it signs in |
+| --- | --- | --- | --- | --- |
+| Claude plan (Claude Code) | ✅ | — | — | Runs the user's installed, signed-in Claude Code (`claude -p`) with all tools, settings, MCP servers and history switched off. Storyloom never touches the Claude login. |
+| ChatGPT plan | ✅ | — | — | OpenAI's official "Sign in with ChatGPT" self-serve flow for open-source local apps (preview): PKCE, verified ID token, `chatgpt.tokens.use.direct`, Responses API with `store:false`. |
+| OpenRouter | ✅ | ✅ | ✅ | User's OpenRouter key, encrypted with the Mac keychain. |
+| Your own service | ✅ | ✅ | ✅ | Any OpenAI-compatible address and key. |
+
+Automatic model choice (`ai/model-picker.cjs`) picks a model per job from a budget (Best quality / Balanced / Lowest cost):
+- **Writing (OpenRouter):** starts from OpenRouter's live usage ranking for creative writing. It ranks by measured quality scores (OpenRouter benchmarks, when a key is saved) and applies a price cap per budget. It skips routers, models about to be retired, models with too little context, free (rate-limited) models and non-text models. Non-English books favour models also popular for translation. Two backup models are sent so a busy model doesn't fail the job. Simple jobs (coloring captions) drop one budget step.
+- **Pictures / coloring pages / voices (OpenRouter):** per-budget model families matched against OpenRouter's live lists. Line-art models are used for coloring pages, vector-only models are skipped, and a voice the model actually has is chosen.
+- **Claude / ChatGPT plans:** Opus/Sonnet/Haiku by job and budget; ChatGPT uses the account's own model list in OpenAI's order.
+- Any job can be pinned to a specific model.
 
 ## Matrix
 
@@ -53,12 +68,13 @@ Status: ✅ built and tested · 🟡 partly built · ⛔ not available (clearly 
 
 ## How this was verified
 
-- `npm test`: 14 unit tests (storage, sanitizing, file sniffing, EPUB/zip writer) pass.
+- `npm test`: 30 unit tests pass. They cover storage, sanitizing, file sniffing, the EPUB/zip writer, the model picker, the ChatGPT sign-in (registration, refresh rotation, sign-out revocation, and rejection of tampered identity tokens), OpenRouter, and the locked-down Claude Code call.
 - `npm run self-test`: the full run drives every screen with real mouse and keyboard events. It also visits every sidebar item and book tab and checks none shows the "isn't built yet" placeholder. All modules pass. Screenshots are in `verification/`.
 - `npm run package`: builds an unsigned `releases/Storyloom-darwin-x64/Storyloom.app`. The built app launched and stayed running.
 
 ## Known limits
 
-- AI features were tested only against a local mock AI server, never a real provider (no key was available).
+- AI features were tested only against local fake services (OpenRouter, ChatGPT sign-in and API, and a stand-in `claude` program), never real accounts.
+- ChatGPT plan use in other apps is an OpenAI preview; it covers writing only. Claude plans are meant for personal use; anyone building a product on Storyloom should use an API key.
 - The line-art filter's quality depends on the picture.
 - The app is unsigned. macOS may ask for confirmation the first time it opens.

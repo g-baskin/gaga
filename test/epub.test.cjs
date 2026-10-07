@@ -1,7 +1,26 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { zip, unzip, crc32, buildEpub } = require('../epub.cjs');
+const { zip, unzip, crc32, buildEpub, collectImages } = require('../epub.cjs');
+
+test('a picture that no longer exists is skipped and its references removed', async () => {
+  const files = { 'here.png': Buffer.from('png') };
+  const read = async (name) => {
+    if (files[name]) return files[name];
+    throw Object.assign(new Error('missing'), { code: 'ENOENT' });
+  };
+  const out = await collectImages({
+    pages: [{ label: 'One', body: '<p>Hi</p><img src="images/here.png" alt=""/><img class="x" src="images/gone-1.png" alt=""/>' }],
+    css: '.a { background: url("images/gone-1.png"); } .b { background: url(images/here.png); }',
+    read,
+  });
+  assert.deepEqual(out.images.map((i) => i.name), ['here.png']);
+  assert.deepEqual(out.missing, ['gone-1.png']);
+  assert.equal(out.pages[0].body, '<p>Hi</p><img src="images/here.png" alt=""/>');
+  assert.equal(out.css, '.a { background: none; } .b { background: url(images/here.png); }');
+  // Other read errors still stop the export.
+  await assert.rejects(collectImages({ pages: [{ body: 'images/x.png' }], css: '', read: async () => { throw Object.assign(new Error('denied'), { code: 'EACCES' }); } }), /denied/);
+});
 
 test('crc32 matches the standard check value', () => {
   assert.equal(crc32(Buffer.from('123456789')), 0xcbf43926);

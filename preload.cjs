@@ -2,6 +2,12 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 const call = (channel, ...args) => ipcRenderer.invoke(channel, ...args);
+// For handlers that return { ok } or { error } instead of throwing.
+const soft = async (channel, ...args) => {
+  const result = await call(channel, ...args);
+  if (result?.error) throw new Error(result.error);
+  return result?.ok;
+};
 
 contextBridge.exposeInMainWorld('storyloom', {
   // Books
@@ -47,6 +53,15 @@ contextBridge.exposeInMainWorld('storyloom', {
   generateChapter: (input) => call('ai:chapter', input), // → { text }
   generateImage: (input) => call('ai:image', input), // { bookId, prompt, style?, lineArt? } → asset name
   generateSpeech: (input) => call('ai:speech', input), // { bookId, text, voice? } → asset name
+  aiRecommendations: () => soft('ai:recommendations'), // → [{ job, model, fallbacks, reason }]
+  chatGptStatus: () => soft('ai:chatgpt-status'), // → { signedIn, planEnabled, email, signingIn }
+  chatGptSignIn: () => soft('ai:chatgpt-sign-in'), // opens the browser → { signedIn, planEnabled, email, firstTime } | { declined }
+  chatGptCancel: () => call('ai:chatgpt-cancel'),
+  chatGptWelcomed: () => soft('ai:chatgpt-welcomed'),
+  chatGptSignOut: () => soft('ai:chatgpt-sign-out'), // → { revoked }
+  chatGptModels: () => soft('ai:chatgpt-models'), // → [{ slug, display_name }]
+  claudeStatus: (force) => soft('ai:claude-status', force), // → { installed, signedIn, method, version, message? }
+  openLink: (name) => call('ai:open-link', name), // 'chatgpt-usage' | 'openrouter-keys' | 'claude-code'
   onBeforeClose: (fn) => ipcRenderer.on('app:before-close', () => fn()),
   onMenuAction: (fn) => ipcRenderer.on('menu:action', (_event, action) => {
     if (action === 'undo' || action === 'redo') fn(action);

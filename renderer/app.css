@@ -251,7 +251,7 @@ select {
 .inspector-inner { padding: 18px; display: grid; gap: 24px; }
 .inspector section { display: grid; gap: 10px; }
 .inspector h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
-textarea, .field input:not([type="color"]):not([type="range"]):not([type="checkbox"]), .field select {
+textarea, .field input:not([type="color"]):not([type="range"]):not([type="checkbox"]):not([type="radio"]), .field select {
   width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--panel); resize: vertical;
 }
 textarea:focus, .field input:focus, .field select:focus { border-color: var(--teal); outline: none; }
@@ -373,3 +373,7 @@ textarea:focus, .field input:focus, .field select:focus { border-color: var(--te
   .print-page { break-after: page; }
   .print-page:last-child { break-after: auto; }
 }
+
+/* Inline text button, and the "who is writing" note shown next to AI actions. */
+.link-btn { background: none; border: 0; padding: 0; color: var(--teal); text-decoration: underline; cursor: pointer; font: inherit; }
+.ai-writer-note { display: inline; }

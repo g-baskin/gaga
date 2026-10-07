@@ -9,7 +9,9 @@
     "start": "electron .",
     "test": "node --test test/*.test.cjs",
     "self-test": "electron . --self-test",
-    "package": "node package.mjs"
+    "package": "node package.mjs",
+    "dist": "node dist.mjs",
+    "release": "node scripts/changelog.mjs release"
   },
   "devDependencies": {
     "@electron/packager": "20.3.0",

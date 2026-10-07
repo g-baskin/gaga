@@ -46,4 +46,40 @@
 .account-form .form-actions { align-items: center; }
 .account-path { display: block; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 12px; overflow-wrap: anywhere; }
 .modal.export-modal { width: min(880px, 94vw); max-height: 90vh; }
+
+/* Account → AI services */
+.account-ai { display: grid; gap: 12px; }
+.account-ai > p { margin: 0; }
+.ai-subhead { font-size: 15px; margin: 4px 0 0; }
+.ai-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.ai-choice {
+  position: relative; display: grid; gap: 2px; padding: 10px 12px 10px 34px; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--paper); cursor: pointer;
+}
+.ai-choice input[type="radio"] { position: absolute; left: 12px; top: 13px; margin: 0; accent-color: var(--teal); }
+.ai-key-input { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--panel); }
+.ai-key-input:focus { border-color: var(--teal); outline: none; }
+.ai-choice:has(input:checked) { border-color: var(--teal); background: var(--teal-soft); }
+.ai-choice:has(input:focus-visible) { outline: 2px solid var(--teal); outline-offset: 2px; }
+.ai-choice-label { font-weight: 600; font-size: 14px; }
+.ai-choice-hint { font-size: 12px; color: var(--muted); line-height: 1.35; }
+.ai-media-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ai-status:empty { display: none; }
+.ai-panel { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 10px; background: #fffdf9; }
+.ai-panel p { margin: 0; }
+.ai-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.ai-badge { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: #efe8dc; color: var(--muted); white-space: nowrap; }
+.ai-badge.ok { background: var(--teal-soft); color: var(--teal); }
+.ai-badge.warn { background: #fff4dc; color: #7a5410; }
+.ai-picks ul { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 8px; }
+.ai-picks li { display: grid; grid-template-columns: 130px 1fr; column-gap: 10px; row-gap: 2px; align-items: baseline; }
+.ai-picks code { font-size: 12px; overflow-wrap: anywhere; }
+.ai-pick-job { font-size: 13px; font-weight: 600; }
+.ai-pick-why { grid-column: 2; }
+.ai-advanced summary { cursor: pointer; font-size: 13px; color: var(--teal); }
+.ai-advanced[open] { display: grid; gap: 8px; }
+/* "Continue with ChatGPT": OpenAI's guidance is a neutral black button with the ChatGPT name. */
+.btn.chatgpt-btn { background: #0d0d0d; color: #fff; }
+.btn.chatgpt-btn:hover:not(:disabled) { background: #2b2b2b; }
 .export-modal .export-panel { padding: 16px 20px 20px; }
+.ai-fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 6px; min-width: 0; }

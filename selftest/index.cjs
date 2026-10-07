@@ -8,7 +8,7 @@ const fsSync = require('node:fs');
 const path = require('node:path');
 const mockAi = require('./mock-ai.cjs');
 
-const FULL_ORDER = ['designer', 'home', 'bookshelf', 'story-builder', 'manuscript', 'templates', 'studio', 'coloring', 'export-orders-account'];
+const FULL_ORDER = ['designer', 'home', 'bookshelf', 'story-builder', 'manuscript', 'templates', 'studio', 'coloring', 'export-orders-account', 'ai-services'];
 const EXPECTED_SCREENS = ['home', 'bookshelf', 'templates', 'coloring', 'orders', 'account', 'story-builder', 'manuscript', 'designer', 'studio', 'export'];
 const APP_NAV = ['home', 'bookshelf', 'templates', 'coloring', 'orders', 'account'];
 const BOOK_TABS = ['story-builder', 'manuscript', 'designer', 'studio', 'export'];
@@ -17,7 +17,7 @@ const MODULE = /^[a-z-]+$/;
 
 const argValues = (argv, flag) => argv.filter((a) => a.startsWith(`${flag}=`)).flatMap((a) => a.slice(flag.length + 1).split(',')).filter(Boolean);
 
-async function run({ app, win, store, argv, root, setOpenFile }) {
+async function run({ app, win, store, argv, root, setOpenFile, useTestServices }) {
   const only = argValues(argv, '--only');
   const loads = argValues(argv, '--load');
   const full = only.length === 0;
@@ -78,6 +78,7 @@ async function run({ app, win, store, argv, root, setOpenFile }) {
   const ctx = {
     app, win, wc, store, userData, root, js, pause, centerOf,
     mockAi: mock,
+    useTestServices,
     module: null,
     // The next "open file" dialog returns this path instead of asking (null = Cancel).
     setOpenFile,

@@ -399,7 +399,7 @@
         h('aside', { class: 'sb-preview' }, h('h3', {}, 'Cover preview'), view.preview)),
       h('footer', { class: 'sb-footer' },
         h('span', { class: 'sb-progress muted', id: 'sb-progress', hidden: true }, h('span', { class: 'sb-spinner' }), 'Writing — this can take a minute…'),
-        h('span', { class: 'muted small-print sb-footer-note' }, 'AI writing uses the service in Settings. An outline works offline.'),
+        h('span', { class: 'sb-footer-note' }, aiWriterNote('An outline works offline.')),
         h('button', { type: 'button', class: 'btn ghost large', id: 'sb-outline', onclick: () => run(startOutline) }, 'Start with an outline'),
         writeBtn)));
     updatePreview();

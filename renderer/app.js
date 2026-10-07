@@ -200,6 +200,29 @@ function openAiSettings() {
   return run(() => navigate('account'));
 }
 
+// A small line naming the service that will write, e.g. "Writing with your ChatGPT plan · Manage usage".
+// OpenAI asks apps to show "Using ChatGPT plan" near where AI is used, with a Manage usage link.
+const WRITER_LABEL = {
+  claude: 'Writing with your Claude plan (Claude Code)',
+  chatgpt: 'Using ChatGPT plan',
+  openrouter: 'Writing with OpenRouter',
+  custom: 'Writing with your own AI service',
+};
+function aiWriterNote(extra = '') {
+  const note = h('span', { class: 'muted small-print ai-writer-note' }, 'AI writing uses the service in Settings.', extra ? ` ${extra}` : '');
+  api.getSettings().then((s) => {
+    state.settings = s;
+    const label = WRITER_LABEL[s.writer];
+    if (!label) return;
+    note.replaceChildren(label, ' · ',
+      s.writer === 'chatgpt'
+        ? h('button', { type: 'button', class: 'link-btn', onclick: () => api.openLink('chatgpt-usage') }, 'Manage usage')
+        : h('button', { type: 'button', class: 'link-btn', onclick: () => openAiSettings() }, 'Change'),
+      extra ? `. ${extra}` : '');
+  }, () => {});
+  return note;
+}
+
 // ---------- the designer is a book screen ----------
 registerScreen('designer', { label: 'Designer', scope: 'book', render: () => renderEditor() });
 

@@ -50,6 +50,17 @@ function makeWav(seconds = 1, rate = 16000) {
   return out;
 }
 
+// What every fake writing service answers: one chapter, or a whole story with the requested number of pages.
+function writerReply(system, user) {
+  if (/one chapter/.test(system)) return JSON.stringify({ text: 'The moon hummed a quiet song.\n\nEveryone in the meadow listened.' });
+  const count = Math.min(30, Number(/Number of pages: (\d+)/.exec(user)?.[1]) || 4);
+  const star = /Characters: ([^—;\n]+)/.exec(user)?.[1]?.trim() || 'Pip';
+  return `Here you go:\n${JSON.stringify({
+    title: 'The Moon That Hummed',
+    chapters: Array.from({ length: count }, (_v, i) => ({ title: `Part ${i + 1}`, text: `${star} took step number ${i + 1} toward the humming moon.` })),
+  })}`;
+}
+
 function start() {
   const calls = [];
   const server = http.createServer((req, res) => {
@@ -61,19 +72,7 @@ function start() {
       calls.push({ path: req.url, body });
       const json = (data) => { res.writeHead(200, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(data)); };
       if (req.method === 'POST' && req.url === '/chat/completions') {
-        const system = body.messages?.[0]?.content || '';
-        const user = body.messages?.[1]?.content || '';
-        let content;
-        if (/one chapter/.test(system)) {
-          content = JSON.stringify({ text: 'The moon hummed a quiet song.\n\nEveryone in the meadow listened.' });
-        } else {
-          const count = Math.min(30, Number(/Number of pages: (\d+)/.exec(user)?.[1]) || 4);
-          const star = /Characters: ([^—;\n]+)/.exec(user)?.[1]?.trim() || 'Pip';
-          content = `Here you go:\n${JSON.stringify({
-            title: 'The Moon That Hummed',
-            chapters: Array.from({ length: count }, (_v, i) => ({ title: `Part ${i + 1}`, text: `${star} took step number ${i + 1} toward the humming moon.` })),
-          })}`;
-        }
+        const content = writerReply(body.messages?.[0]?.content || '', body.messages?.[1]?.content || '');
         return json({ choices: [{ message: { role: 'assistant', content } }] });
       }
       if (req.method === 'POST' && req.url === '/images/generations') {
@@ -94,4 +93,4 @@ function start() {
   });
 }
 
-module.exports = { start, makePng, makeWav };
+module.exports = { start, makePng, makeWav, writerReply };
