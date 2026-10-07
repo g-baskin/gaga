@@ -11,7 +11,9 @@ const { promisify } = require('node:util');
 const { PLATFORMS, signedMessage } = require('../updater.cjs');
 
 const run = promisify(execFile);
-const LAUNCHER = path.join(__dirname, '..', 'node_modules', 'electron', 'dist', 'Electron.app', 'Contents', 'MacOS', 'Electron');
+// Electron's launcher for this Mac. Requiring 'electron' from plain Node gives its path, and downloads
+// Electron first if this checkout doesn't have it yet (a fresh CI machine, for example).
+const LAUNCHER = require('electron');
 
 async function makeAppZip({ dir, version, bundleId = 'local.storyloom.app' }) {
   const app = path.join(dir, 'build', 'Storyloom.app');
