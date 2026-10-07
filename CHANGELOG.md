@@ -10,12 +10,29 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
-- A children's storybook look, and `npm run preview`, which opens that look in a browser at http://127.0.0.1:4173. The desktop app is unchanged: the preview fills in a stand-in library so the pages can be clicked without Electron.
+- `npm run preview`, which opens Storyloom's screens in a browser at http://127.0.0.1:4173 with a sample library, so the look can be checked without building the app.
 
 ### Changed
 
-- The app navigation, Create page, library, and catalogue use a soft picture-book look: a lavender sky, pill buttons, and books standing on shelves.
+- A new printed-picture-book look: paper-coloured pages, a slab-serif headline type, a brick-red main button, and books standing on a wooden shelf.
+- The Home page is now an open notebook page with "Start writing", and long story ideas wrap instead of being cut off.
+- The bookshelf title uses your author name, such as "Kelly's bookshelf".
+
+## [0.2.0] - 2026-10-07
+
+### Added
+
+- fal.ai for AI pictures: paste a fal.ai key, and Storyloom picks a picture model from fal.ai's live list to match your budget (Best quality, Balanced, or Lowest cost), with a clean line-art model for coloring pages.
+
+### Changed
+
 - Download file names now say which Mac they're for: "Intel" or "Apple-Silicon".
+- The cover preview in the Story builder updates as you type and edit characters, including a new portrait before you save, and now shows where the story is set and who's in it.
+- Drawing a portrait or generating a picture now says who draws it and who pays. Claude and ChatGPT plans write your stories; pictures come from OpenRouter, fal.ai, or your own AI service. (ChatGPT can draw in its own app, but OpenAI doesn't let other apps use your plan for pictures yet.) The button is turned off, with directions, until pictures are set up.
+
+### Fixed
+
+- The cover preview no longer shows the word "null" when a story has no writing style.
 
 ## [0.1.0] - 2026-10-07
 
@@ -42,5 +59,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Saving several settings at once no longer risks losing one of the changes.
 - An ISBN is only stored if its check digit is correct.
 
-[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/g-baskin/gaga/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/g-baskin/gaga/releases/tag/v0.1.0

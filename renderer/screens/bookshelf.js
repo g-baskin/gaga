@@ -96,7 +96,7 @@
   function drawShelves() {
     const coloring = ui.books.filter((b) => b.kind === 'coloring').length;
     return h('aside', { class: 'bs-shelves', 'aria-label': 'Shelves' },
-      h('h2', { class: 'bs-side-title' }, 'Bookshelves'),
+      h('h2', { class: 'bs-side-title' }, 'Shelves'),
       h('ul', { class: 'bs-shelf-list' },
         shelfRow('all', 'All books', ui.books.length),
         shelfRow('coloring', 'Coloring books', coloring)),
@@ -114,7 +114,7 @@
   function drawMain() {
     const shelf = currentShelf();
     const author = (ui.profile.authorName || '').trim();
-    const title = ui.shelf === 'all' ? (author ? `${author}'s Library` : 'My Library') : ui.shelf === 'coloring' ? 'Coloring books' : shelf?.name || 'Shelf';
+    const title = ui.shelf === 'all' ? (author ? `${author}'s bookshelf` : 'Your bookshelf') : ui.shelf === 'coloring' ? 'Coloring books' : shelf?.name || 'Shelf';
     const books = visibleBooks();
     const header = h('header', { class: 'bs-header' },
       h('div', { class: 'bs-title-row' },
@@ -151,7 +151,7 @@
         h('p', {}, 'Start a picture book and it will live here, ready to open, copy, and arrange.'),
         h('div', { class: 'empty-actions' },
           h('button', { class: 'btn primary large', onclick: () => run(createBlankBook) }, 'New book'),
-          h('button', { class: 'btn secondary large', onclick: () => run(() => navigate('home')) }, 'Go to Create')));
+          h('button', { class: 'btn secondary large', onclick: () => run(() => navigate('home')) }, 'Go to Home')));
     }
     if (ui.query.trim()) {
       return h('div', { class: 'empty bs-empty', 'data-empty': 'no-results' },

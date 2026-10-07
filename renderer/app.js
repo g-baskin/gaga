@@ -47,10 +47,9 @@ api.onBeforeClose(async () => {
 // ---------- screens and navigation ----------
 const screens = new Map();
 const APP_NAV = [
-  ['home', 'Create', '✦'], ['bookshelf', 'My Library', '▥'], ['templates', 'Catalogue', '❖'],
-  ['coloring', 'Colorburst', '✎'], ['orders', 'Orders', '⎙'], ['account', 'Account', '☺'],
+  ['home', 'Home', '⌂'], ['bookshelf', 'Bookshelf', '▥'], ['templates', 'Templates', '❖'],
+  ['coloring', 'Coloring', '✎'], ['orders', 'Print orders', '⎙'], ['account', 'Account', '◉'],
 ];
-const NAV_ORDER = ['home', 'templates', 'bookshelf', 'coloring', 'orders'];
 const BOOK_TABS = [
   ['story-builder', 'Story builder'], ['manuscript', 'Manuscript'], ['designer', 'Designer'], ['studio', 'Studio'], ['export', 'Export'],
 ];
@@ -104,25 +103,12 @@ async function navigate(name, params = {}) {
   }
 }
 
-function navButton(item, label, icon) {
-  const current = item === state.screen;
-  return h('button', {
-    class: `app-nav-item${current ? ' active' : ''}${item === 'account' ? ' account-orb' : ''}`,
-    type: 'button', 'data-nav': item, 'aria-current': current ? 'page' : null,
-    'aria-label': item === 'account' ? 'Account' : null,
-    onclick: () => run(() => navigate(item)),
-  },
-  h('span', { class: 'app-nav-icon', 'aria-hidden': 'true' }, icon),
-  item === 'account' ? null : label,
-  item === 'coloring' ? h('span', { class: 'nav-addon' }, 'ADDON') : null);
-}
-
 function renderShell(scope, name) {
   const host = h('main', { class: `screen-host screen-${name}`, id: 'screen', 'data-screen': name });
   if (scope === 'book') {
     const { book } = state;
     const bar = h('header', { class: 'topbar book-bar' },
-      h('button', { class: 'btn ghost', id: 'back-to-shelf', onclick: () => run(() => navigate('bookshelf')) }, '← My Library'),
+      h('button', { class: 'btn ghost', id: 'back-to-shelf', onclick: () => run(() => navigate('bookshelf')) }, '← Bookshelf'),
       h('div', { class: 'title-fields' },
         h('input', {
           id: 'book-title', class: 'title-input', value: book.title, 'aria-label': 'Book title', maxlength: '200',
@@ -140,24 +126,14 @@ function renderShell(scope, name) {
       h('span', { id: 'save-status', class: 'muted save-status' }, pendingSave ? 'Editing…' : 'All changes saved'));
     root.replaceChildren(bar, host);
   } else {
-    const byId = Object.fromEntries(APP_NAV.map(([id, label, icon]) => [id, [label, icon]]));
-    const pills = [];
-    for (const id of NAV_ORDER) {
-      pills.push(navButton(id, byId[id][0], byId[id][1]));
-      if (id === 'bookshelf') {
-        pills.push(h('button', {
-          class: 'app-nav-item', type: 'button', id: 'open-studio',
-          onclick: () => run(openLatestStudio),
-        }, 'Studio', h('span', { class: 'nav-addon' }, 'ADDON')));
-      }
-    }
-    const account = APP_NAV.find(([item]) => item === 'account');
-    const nav = h('header', { class: 'sky-nav app-nav', 'aria-label': 'Storyloom' },
+    const nav = h('nav', { class: 'app-nav', 'aria-label': 'Storyloom' },
       h('div', { class: 'brand' }, h('span', { class: 'brand-mark', 'aria-hidden': 'true' }), 'Storyloom'),
-      h('div', { class: 'app-nav-list' }, pills),
-      h('div', { class: 'sky-nav-end' },
-        h('button', { class: 'btn primary', id: 'new-book', type: 'button', onclick: () => run(createBlankBook) }, 'New book'),
-        navButton(account[0], account[1], account[2])));
+      h('button', { class: 'btn primary block', id: 'new-book', type: 'button', onclick: () => run(createBlankBook) }, 'New book'),
+      h('div', { class: 'app-nav-list' }, APP_NAV.map(([item, label, icon]) =>
+        h('button', {
+          class: `app-nav-item${item === name ? ' active' : ''}`, type: 'button', 'data-nav': item, 'aria-current': item === name ? 'page' : null,
+          onclick: () => run(() => navigate(item)),
+        }, h('span', { class: 'app-nav-icon', 'aria-hidden': 'true' }, icon), label))));
     root.replaceChildren(h('div', { class: 'app-shell' }, nav, host));
   }
 }
@@ -187,16 +163,6 @@ async function createBlankBook() {
   const profile = await api.getProfile().catch(() => ({ authorName: '' }));
   const book = await api.createBook({ title: 'Untitled story', author: profile.authorName || '', pages: [{ layout: 'cover', text: '', fontSize: 48 }] });
   await openBook(book.id);
-}
-
-async function openLatestStudio() {
-  const books = await api.listBooks();
-  const latest = [...(books || [])].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0];
-  if (!latest) {
-    toast('Make a book first, then open it in Studio');
-    return navigate('home');
-  }
-  return openBook(latest.id, 'studio');
 }
 
 window.__storyloom = { screens: () => [...screens.keys()], current: () => state.screen };
@@ -242,6 +208,46 @@ const WRITER_LABEL = {
   openrouter: 'Writing with OpenRouter',
   custom: 'Writing with your own AI service',
 };
+// Whether AI pictures can be drawn with the saved settings (mirrors what the main process requires).
+const picturesReady = (s) => (s.pictures === 'openrouter' ? Boolean(s.hasOpenrouterKey)
+  : s.pictures === 'fal' ? Boolean(s.hasFalKey) : Boolean(s.baseUrl && s.imageModel));
+const PICTURE_SERVICE = { openrouter: 'OpenRouter', fal: 'fal.ai' };
+
+// Explains who draws AI pictures and who pays. In Storyloom, Claude and ChatGPT plans only write: ChatGPT
+// draws pictures in OpenAI's own apps, but OpenAI's "Sign in with ChatGPT" for other apps doesn't include
+// image generation yet (developers.openai.com/siwc, preview limitations). So pictures come from OpenRouter,
+// fal.ai, or the author's own API service. Calls onReady(true|false) once settings load.
+function aiPictureNote({ onReady } = {}) {
+  const note = h('p', { class: 'muted small-print ai-picture-note', role: 'status' }, 'Checking your picture service\u2026');
+  api.getSettings().then((s) => {
+    state.settings = s;
+    const ready = picturesReady(s);
+    const subscriptions = s.writer === 'chatgpt'
+      ? 'ChatGPT draws pictures in its own app, but OpenAI doesn\u2019t let other apps use your plan for pictures yet, so your ChatGPT plan writes your stories here. '
+      : s.writer === 'claude'
+        ? 'Your Claude plan writes your stories, but Claude can\u2019t draw pictures. '
+        : 'Claude and ChatGPT plans don\u2019t draw pictures in Storyloom. ';
+    let pictures;
+    const service = PICTURE_SERVICE[s.pictures];
+    if (ready && service) {
+      pictures = `Pictures are drawn by ${service} and charged to your ${service} credit for each picture.`;
+    } else if (ready) {
+      pictures = `Pictures are drawn by your own AI service (${s.imageModel}) and charged to that account.`;
+    } else if (service) {
+      pictures = `To draw pictures, add ${/^[AEIOU]/i.test(service) ? 'an' : 'a'} ${service} key in Account \u2192 AI services.`;
+    } else {
+      pictures = 'To draw pictures, choose OpenRouter, fal.ai, or your own AI service under Pictures in Account \u2192 AI services.';
+    }
+    note.classList.toggle('ai-picture-note-missing', !ready);
+    note.replaceChildren(h('strong', {}, ready ? 'AI pictures: ' : 'AI pictures aren\u2019t set up. '), subscriptions, pictures);
+    onReady?.(ready);
+  }, () => {
+    note.textContent = 'AI pictures use OpenRouter, fal.ai, or your own AI service (Account \u2192 AI services).';
+    onReady?.(true);
+  });
+  return note;
+}
+
 function aiWriterNote(extra = '') {
   const note = h('span', { class: 'muted small-print ai-writer-note' }, 'AI writing uses the service in Settings.', extra ? ` ${extra}` : '');
   api.getSettings().then((s) => {

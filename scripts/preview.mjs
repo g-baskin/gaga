@@ -18,7 +18,12 @@ const types = {
 };
 
 function fileFor(urlPath) {
-  const rel = decodeURIComponent(urlPath.split('?')[0]);
+  let rel;
+  try {
+    rel = decodeURIComponent(urlPath.split('?')[0]);
+  } catch {
+    return null; // a malformed address like /%E0
+  }
   const name = rel === '/' ? 'index.html' : rel.replace(/^\/+/, '');
   const file = path.resolve(renderer, name);
   if (file !== renderer && !file.startsWith(renderer + path.sep)) return null;
@@ -28,8 +33,8 @@ function fileFor(urlPath) {
 const server = http.createServer((req, res) => {
   const file = fileFor(req.url || '/');
   if (!file) {
-    res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end('Forbidden');
+    res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Bad request');
     return;
   }
   fs.readFile(file, (error, body) => {

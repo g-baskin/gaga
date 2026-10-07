@@ -22,11 +22,14 @@ module.exports = async function aiServices(ctx) {
 
   const openRouter = await mocks.startOpenRouter({ key: 'sk-or-selftest' });
   const chatGpt = await mocks.startChatGpt();
+  const fal = await mocks.startFal({ key: 'fal-selftest-key' });
   const fakeClaude = await mocks.makeFakeClaude(path.join(userData, 'fake-claude'));
   ctx.useTestServices({
     STORYLOOM_TEST_OPENROUTER: openRouter.url,
     STORYLOOM_TEST_CHATGPT_AUTH: chatGpt.url,
     STORYLOOM_TEST_CHATGPT_API: `${chatGpt.url}/v1`,
+    STORYLOOM_TEST_FAL_RUN: fal.runBase,
+    STORYLOOM_TEST_FAL_API: fal.apiBase,
   });
 
   try {
@@ -150,12 +153,50 @@ module.exports = async function aiServices(ctx) {
     const pinned = await api(`return api.generateStory({ idea: 'A pinned story', pages: 3 })`);
     checks.pinnedModel = pinned.model === 'mock/grand-writer';
     await api(`return api.saveSettings({ orTextModel: '' })`);
+
+    // ---------- fal.ai pictures ----------
+    await ctx.navigate('account');
+    await ctx.waitFor('#account-pictures');
+    await js(`(() => { const s = $must('#account-pictures'); s.value = 'fal'; s.dispatchEvent(new Event('change')); return true; })()`);
+    await until((s) => s.pictures === 'fal');
+    await ctx.waitFor('#account-fal-key');
+    await ctx.click('#account-fal-key');
+    await ctx.type('fal-selftest-key');
+    await ctx.click('#account-fal-save');
+    await waitText('#account-fal-state', /Key saved/);
+    await until((s) => s.hasFalKey);
+    const falKeyFile = await fs.readFile(path.join(userData, 'settings.json'), 'utf8');
+    checks.falKeyEncrypted = !falKeyFile.includes('fal-selftest-key') && JSON.parse(falKeyFile).falKeyEnc.length > 0;
+    // Thrifty budget (still set from above) → FLUX schnell; coloring pages stay on it too.
+    await waitText('#account-fal-picks', /fal-ai\/flux\/schnell/);
+    checks.falPicks = true;
+    // fal.ai's picks show once, in its own panel, not again in OpenRouter's.
+    checks.falPicksOnce = await js(`!/fal-ai\\//.test(document.getElementById('account-openrouter-picks')?.textContent || '')`);
+    await ctx.screenshot('ai-services-fal');
+
+    const falPicture = await api(`return api.generateImage({ bookId: ${JSON.stringify(book.id)}, prompt: 'A kite over a hill' })`);
+    const falCall = fal.calls.find((c) => c.path === '/run/fal-ai/flux/schnell');
+    checks.falPicture = typeof falPicture === 'string' && falCall?.auth === 'Key fal-selftest-key' && falCall.body.image_size === 'square_hd' && falCall.body.sync_mode === true;
+
+    // The picture note in the character dialog names fal.ai as the one drawing and billing.
+    await ctx.navigate('story-builder', { bookId: book.id });
+    await ctx.click('#sb-add-character');
+    const falNote = await js(`$waitFor(() => document.querySelector('dialog[open] .ai-picture-note strong') && document.querySelector('dialog[open] .ai-picture-note').textContent, 5000)`);
+    checks.falPictureNote = /drawn by fal\.ai and charged to your fal\.ai credit/.test(falNote);
+    await js(`document.querySelector('dialog[open]').close(); true`);
+
+    // An empty fal.ai balance is explained, not shown as a crash.
+    fal.options.outOfCredit = true;
+    const creditError = await api(`try { await api.generateImage({ bookId: ${JSON.stringify(book.id)}, prompt: 'x' }); return ''; } catch (e) { return cleanError(e); }`);
+    checks.falOutOfCredit = /out of credit/.test(creditError);
+    fal.options.outOfCredit = false;
   } finally {
     // Back to the plain "own service" setup so later modules behave the same.
-    await api(`return api.saveSettings({ writer: 'custom', pictures: 'custom', voices: 'custom', tier: 'balanced', clearOpenrouterKey: true, claudePath: '' })`).catch(() => {});
-    ctx.useTestServices({ STORYLOOM_TEST_OPENROUTER: undefined, STORYLOOM_TEST_CHATGPT_AUTH: undefined, STORYLOOM_TEST_CHATGPT_API: undefined });
+    await api(`return api.saveSettings({ writer: 'custom', pictures: 'custom', voices: 'custom', tier: 'balanced', clearOpenrouterKey: true, clearFalKey: true, claudePath: '' })`).catch(() => {});
+    ctx.useTestServices({ STORYLOOM_TEST_OPENROUTER: undefined, STORYLOOM_TEST_CHATGPT_AUTH: undefined, STORYLOOM_TEST_CHATGPT_API: undefined, STORYLOOM_TEST_FAL_RUN: undefined, STORYLOOM_TEST_FAL_API: undefined });
     openRouter.close();
     chatGpt.close();
+    fal.close();
   }
   await pause(10);
   return checks;

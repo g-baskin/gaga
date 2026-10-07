@@ -13,10 +13,13 @@ Status: ✅ built and tested · 🟡 partly built · ⛔ not available (clearly 
 | Claude plan (Claude Code) | ✅ | — | — | Runs the user's installed, signed-in Claude Code (`claude -p`) with all tools, settings, MCP servers and history switched off. Storyloom never touches the Claude login. |
 | ChatGPT plan | ✅ | — | — | OpenAI's official "Sign in with ChatGPT" self-serve flow for open-source local apps (preview): PKCE, verified ID token, `chatgpt.tokens.use.direct`, Responses API with `store:false`. |
 | OpenRouter | ✅ | ✅ | ✅ | User's OpenRouter key, encrypted with the Mac keychain. |
+| fal.ai | — | ✅ | — | User's fal.ai key, encrypted with the Mac keychain. Pictures only. |
 | Your own service | ✅ | ✅ | ✅ | Any OpenAI-compatible address and key. |
 
 Automatic model choice (`ai/model-picker.cjs`) picks a model per job from a budget (Best quality / Balanced / Lowest cost):
 - **Writing (OpenRouter):** starts from OpenRouter's live usage ranking for creative writing. It ranks by measured quality scores (OpenRouter benchmarks, when a key is saved) and applies a price cap per budget. It skips routers, models about to be retired, models with too little context, free (rate-limited) models and non-text models. Non-English books favour models also popular for translation. Two backup models are sent so a busy model doesn't fail the job. Simple jobs (coloring captions) drop one budget step.
+- **Pictures (fal.ai):** reads fal.ai's live text-to-image list and picks a model family per budget (GPT Image / Nano Banana / FLUX schnell today), the newest Recraft for coloring pages, and skips vector, LoRA and inactive models. Each model's published input schema decides which settings are sent (square size, PNG, inline result).
+- ChatGPT draws pictures in OpenAI's own apps, but OpenAI's "Sign in with ChatGPT" for other apps doesn't support image generation yet (preview limitations, developers.openai.com/siwc), so the ChatGPT plan only writes here.
 - **Pictures / coloring pages / voices (OpenRouter):** per-budget model families matched against OpenRouter's live lists. Line-art models are used for coloring pages, vector-only models are skipped, and a voice the model actually has is chosen.
 - **Claude / ChatGPT plans:** Opus/Sonnet/Haiku by job and budget; ChatGPT uses the account's own model list in OpenAI's order.
 - Any job can be pinned to a specific model.

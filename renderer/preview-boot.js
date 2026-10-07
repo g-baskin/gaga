@@ -76,12 +76,12 @@
 
   const now = Date.now();
   const books = [
-    story('The Magical Pet Store', '#7c5cff', '#fff', [shape('star', 40, 36, 100, 100, '#ffe27a'), shape('heart', 450, 460, 110, 100, '#ff8fb8')], 'A shop where every pet can grant one small wish.', now - 1000),
-    story('The Dragon Who Lost His Roar', '#ff8a5b', '#fff', [shape('cloud', 380, 30, 180, 110, '#fff'), shape('star', 48, 470, 90, 90, '#ffe27a')], 'A quiet dragon looks for the roar he misplaced.', now - 2000),
-    story('The Mystery of the Singing Soap Bubbles', '#5ec8e6', '#1c3358', [shape('ellipse', 430, 40, 120, 120, '#fff'), shape('star', 50, 450, 80, 80, '#ffe27a')], 'Bubbles float through town, each one singing a clue.', now - 3000),
-    story('The Puppy Who Could Talk', '#ffd36e', '#5a3114', [shape('heart', 40, 40, 100, 90, '#ff8fb8'), shape('cloud', 400, 450, 160, 100, '#fff')], 'A puppy says one true thing, and the street listens.', now - 4000),
-    story('The Baby Elephant Parade', '#ff9ec8', '#5a2450', [shape('star', 36, 400, 90, 90, '#ffe27a'), shape('ellipse', 450, 48, 100, 100, '#fff')], 'The smallest elephant leads the parade home.', now - 5000),
-    story('Dance Studio Mystery', '#3a2f86', '#fff', [shape('star', 60, 50, 80, 80, '#ffe27a'), shape('star', 460, 420, 90, 90, '#ff8fb8')], 'The music box is missing, and rehearsal is tonight.', now - 6000),
+    story('Otto and the Low Tide', '#2e6f8e', '#fff8e8', [shape('ellipse', 430, 40, 120, 120, '#ffd27a'), shape('rounded', 40, 480, 520, 70, '#9fd3e0')], 'An otter has one evening to find his way back before the sea returns.', now - 1000),
+    story('The Button Jar Kingdom', '#c8553d', '#fff8e8', [shape('ellipse', 60, 50, 90, 90, '#f2c14e'), shape('ellipse', 440, 440, 110, 110, '#88b04b')], 'Every button in Grandma’s jar was once a crown.', now - 2000),
+    story('Mabel Plants a Moon', '#3d4a6b', '#f6eedc', [shape('ellipse', 400, 40, 130, 130, '#f6eedc'), shape('star', 60, 470, 80, 80, '#f2c14e')], 'A girl plants a silver seed and waits all winter.', now - 3000),
+    story('Pip’s Paper Boat', '#f2c14e', '#3d2a14', [shape('triangle', 60, 420, 140, 120, '#c8553d'), shape('cloud', 380, 40, 170, 100, '#fff8e8')], 'A boat folded from a spelling test sails the whole gutter river.', now - 4000),
+    story('Ten Snails to Supper', '#88b04b', '#24331a', [shape('ellipse', 40, 40, 100, 100, '#f6eedc'), shape('ellipse', 450, 450, 90, 90, '#c8553d')], 'A counting book where nobody is in a hurry.', now - 5000),
+    story('The Quiet Lighthouse', '#26304a', '#f6eedc', [shape('star', 60, 50, 80, 80, '#f2c14e'), shape('star', 460, 420, 90, 90, '#f6eedc')], 'The lighthouse keeper’s cat keeps the light on alone.', now - 6000),
   ];
 
   let shelves = [{ id: uid(), name: 'Bedtime', bookIds: books.slice(0, 2).map((book) => book.id), order: 0 }];
@@ -178,7 +178,7 @@
     exportWav: unsupported,
     revealExport: unsupported,
     openDataFolder: unsupported,
-    appInfo: () => ok({ version: '0.1.0', dataFolder: 'This browser tab (preview only)' }),
+    appInfo: () => ok({ version: 'preview', dataFolder: 'This browser tab (preview only)' }),
     getSettings: () => ok(structuredClone(settings)),
     saveSettings: (input) => { settings = { ...settings, ...input, hasKey: settings.hasKey }; return ok(structuredClone(settings)); },
     generateStory: unsupported,
@@ -196,6 +196,6 @@
     openLink: () => ok(null),
     onBeforeClose: (fn) => { onClose = fn; },
     onMenuAction: (fn) => { onMenu = fn; },
-    closeReady: () => { onClose = onClose; onMenu = onMenu; },
+    closeReady: () => {}, // nothing to flush in a browser tab
   };
 })();

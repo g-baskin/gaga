@@ -151,7 +151,7 @@
   }
   window.openCropDialog = openCropDialog;
 
-  // ---------- "Generate a picture" (uses the author's own AI service) ----------
+  // ---------- "Generate a picture" (OpenRouter, fal.ai, or the author's own AI service) ----------
   const STYLES = ['Soft watercolour', 'Crayon drawing', 'Paper cut-out', 'Pencil sketch', 'Bright flat colours'];
 
   function openGenerateDialog(book) {
@@ -169,7 +169,7 @@
             close();
             await addImageToPage(name);
           } catch (error) {
-            submit.disabled = false;
+            submit.disabled = false; // only reachable when pictures were set up
             submit.textContent = 'Generate';
             toast(cleanError(error), { label: 'Open settings', run: openAiSettings });
           }
@@ -179,7 +179,8 @@
         h('textarea', { name: 'prompt', rows: '3', required: true, maxlength: '1000', placeholder: 'A hedgehog in a straw hat waving from a garden gate' })),
       h('label', { class: 'field' }, h('span', { class: 'field-label' }, 'Style'),
         h('select', { name: 'style' }, STYLES.map((s) => h('option', { value: s }, s)))),
-      h('p', { class: 'muted small-print' }, 'Uses the picture model in your AI settings. The description is sent to that service.'),
+      aiPictureNote({ onReady: (ready) => { submit.disabled = !ready; } }),
+      h('p', { class: 'muted small-print' }, 'Your description is sent to that service.'),
       h('div', { class: 'form-actions' }, h('button', { type: 'button', class: 'btn ghost', onclick: close }, 'Cancel'), submit));
       return form;
     });

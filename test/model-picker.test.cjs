@@ -124,3 +124,24 @@ test('Claude and ChatGPT plan models follow the budget', () => {
   assert.equal(picker.pickChatGptModel({ models, task: 'story', tier: 'thrifty' }), 'gpt-6.1-mini');
   assert.equal(picker.pickChatGptModel({ models: [], tier: 'best' }), null);
 });
+
+test('fal.ai picture models: per-budget choice, newest line-art model for coloring pages, no vector/LoRA', () => {
+  const m = (endpoint_id, status = 'active') => ({ endpoint_id, metadata: { display_name: endpoint_id, status } });
+  const models = [
+    m('fal-ai/flux/schnell'), m('fal-ai/flux-lora'), m('fal-ai/nano-banana-2'), m('fal-ai/recraft/v4.1/text-to-vector'),
+    m('fal-ai/recraft/v3/text-to-image'), m('fal-ai/recraft/v4.1/text-to-image'), m('openai/gpt-image-2.5/sunburst/text-to-image'),
+    m('fal-ai/nano-banana-pro', 'deprecated'),
+  ];
+  assert.equal(picker.pickFalModel({ models, tier: 'best' }).model, 'openai/gpt-image-2.5/sunburst/text-to-image');
+  assert.equal(picker.pickFalModel({ models, tier: 'balanced' }).model, 'fal-ai/nano-banana-2');
+  assert.equal(picker.pickFalModel({ models, tier: 'thrifty' }).model, 'fal-ai/flux/schnell');
+  const lineArt = picker.pickFalModel({ models, tier: 'balanced', lineArt: true });
+  assert.equal(lineArt.model, 'fal-ai/recraft/v4.1/text-to-image');
+  assert.match(lineArt.reason, /^Coloring pages: .* on fal\.ai\.$/);
+  // Thrifty coloring pages stay on the cheap model rather than switching to Recraft.
+  assert.equal(picker.pickFalModel({ models, tier: 'thrifty', lineArt: true }).model, 'fal-ai/flux/schnell');
+  // Only vector/LoRA/inactive models left: nothing usable.
+  assert.equal(picker.pickFalModel({ models: [m('fal-ai/flux-lora'), m('x/text-to-vector'), m('fal-ai/nano-banana-pro', 'deprecated')] }), null);
+  // An unknown model list still yields its most-used usable model.
+  assert.equal(picker.pickFalModel({ models: [m('someone/new-painter')], tier: 'best' }).model, 'someone/new-painter');
+});

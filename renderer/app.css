@@ -377,3 +377,5 @@ textarea:focus, .field input:focus, .field select:focus { border-color: var(--te
 /* Inline text button, and the "who is writing" note shown next to AI actions. */
 .link-btn { background: none; border: 0; padding: 0; color: var(--teal); text-decoration: underline; cursor: pointer; font: inherit; }
 .ai-writer-note { display: inline; }
+.ai-picture-note { margin: 0; line-height: 1.45; }
+.ai-picture-note-missing { color: #7a5410; background: #fff4dc; border-radius: 8px; padding: 8px 10px; }

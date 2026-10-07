@@ -20,7 +20,7 @@ sources: []
 
 # AI provider routing
 
-Writing can use own service / OpenRouter / ChatGPT plan / Claude Code ([[entities/settings-writer]]); pictures and voices only own service or OpenRouter (main.cjs:58). [[entities/writeText]] dispatches; [[entities/settings-tier]] feeds the model picker; pinned models override auto-pick.
+Writing can use own service / OpenRouter / ChatGPT plan / Claude Code ([[entities/settings-writer]]); pictures use own service, OpenRouter, or fal.ai (`ai/fal.cjs`); voices only own service or OpenRouter (`PICTURES` / `VOICES` in main.cjs). The ChatGPT plan can't draw here: OpenAI's Sign in with ChatGPT for other apps doesn't support image generation yet. [[entities/writeText]] dispatches; [[entities/settings-tier]] feeds the model picker; pinned models override auto-pick.
 
 ## Entities
 

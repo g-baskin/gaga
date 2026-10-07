@@ -196,7 +196,7 @@
 
     host.replaceChildren(h('div', { class: 'library-main coloring-home' },
       h('header', { class: 'coloring-head' },
-        h('div', {}, h('h1', {}, 'Colorburst'),
+        h('div', {}, h('h1', {}, 'Coloring'),
           h('p', { class: 'muted' }, 'Turn any book into pages to color, then paint them right here. Free, and it all happens on this Mac.'))),
       h('div', { class: 'coloring-starts' },
         h('section', { class: 'coloring-start' },

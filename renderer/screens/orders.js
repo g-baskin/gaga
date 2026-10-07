@@ -26,7 +26,7 @@
     label: 'Print orders', scope: 'app',
     render(host) {
       host.replaceChildren(h('div', { class: 'export-main' },
-        h('header', { class: 'export-head' }, h('h1', {}, 'My Orders')),
+        h('header', { class: 'export-head' }, h('h1', {}, 'Print orders')),
         h('div', { class: 'export-unavailable export-unavailable-large', 'data-unavailable': 'print-ordering' },
           h('h2', {}, 'Print ordering isn’t available in Storyloom'),
           h('p', {}, 'Ordering printed copies needs a print partner and a payments server, and Storyloom runs entirely on this Mac. You can still get beautiful printed books: export a print-ready PDF and upload it to any print-on-demand service.')),
