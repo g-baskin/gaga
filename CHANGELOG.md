@@ -8,6 +8,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-07
+
 ### Added
 
 - Storyloom can now update itself. When a new version is out, click **Download update** in the sidebar or in **Account → Updates**, then **Restart to update**. Updates are checked against Storyloom's signature before they install.
@@ -78,7 +80,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Saving several settings at once no longer risks losing one of the changes.
 - An ISBN is only stored if its check digit is correct.
 
-[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/g-baskin/gaga/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/g-baskin/gaga/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/g-baskin/gaga/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/g-baskin/gaga/compare/v0.1.0...v0.2.0
