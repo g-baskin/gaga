@@ -14,7 +14,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Changed
 
-- A new printed-picture-book look: paper-coloured pages, a slab-serif headline type, a brick-red main button, and books standing on a wooden shelf.
+- A new picture-book look: a soft lavender sky, deep purple buttons, a slab-serif headline type, and books standing on a wooden shelf.
 - The Home page is now an open notebook page with "Start writing", and long story ideas wrap instead of being cut off.
 - The bookshelf title uses your author name, such as "Kelly's bookshelf".
 

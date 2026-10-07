@@ -9,15 +9,14 @@
 - Body and controls: the system font, for clear, native-feeling forms.
 - Scale: 13 / 14 / 16 / 20 / 28 / 40 px.
 
-**Colour** (OKLCH with hex equivalents):
-- paper `oklch(97% 0.012 85)` #f8f4ea: the background, like uncoated book paper.
-- ink `oklch(30% 0.04 255)` #26304a: headings and text, a deep printer's navy.
-- primary #b84a33: brick red for the main action. White text on it is 5.2:1; as text on paper it is 4.7:1.
-- leaf `oklch(65% 0.12 130)` #6b8f3a: selected states and success. Darker #4f6b2a for text (5.6:1 on paper).
-- mustard `oklch(82% 0.13 85)` #f2c14e: small highlights only, never under text smaller than 18px.
+**Colour** (Kelly's lavender palette, kept by request):
+- paper #f4f0fa and panels #ffffff; a lilac sky gradient (#c9b6ff to #eadbff to #fff0f7) behind the Home page and the sidebar.
+- ink #2c2458 for headings and text; muted #655e86 for secondary text (darkened from #6e6594 so it stays readable on lilac).
+- main buttons #2a2158 (deep purple) with white text; selected states #3a2f86 on lilac #efe7ff.
+- violet #5b4fd6 for focus rings and highlights; #7c5cff, pink #ff8fb8 and sun #ffd36e only as decoration (the logo, the notebook margin, selection bars).
 - shelf wood #b07a45 with a darker edge #8a5a2e.
 
-Contrast pairs (measured): ink on paper 11.9:1, muted #5b647a on paper 5.4:1, white on brick 5.2:1, leaf text #4f6b2a on paper 5.5:1, ink on mustard 7.8:1.
+Contrast pairs (measured): ink on paper 12.5:1, muted on paper 5.3:1 and on lilac 5.5:1, white on the main button 14.4:1, purple on lilac 9.1:1, placeholder #6b6488 on white 5.5:1.
 
 **Space and density.** 4px base; 8 / 12 / 16 / 24 / 32 / 48. Comfortable, not dense.
 
@@ -29,4 +28,4 @@ Contrast pairs (measured): ink on paper 11.9:1, muted #5b647a on paper 5.4:1, wh
 
 **Alignment.** Left sidebar navigation (Storyloom's own), content on one 1040px rail, left-aligned headings.
 
-**Rejected defaults.** Lavender sky gradient, pill navigation across the top, centered hero headline, "Addon" badges on free features, emoji-style decorations, violet accents, and any wording from other picture-book apps.
+**Rejected defaults.** Pill navigation across the top, a centered hero headline, "Addon" badges on free features, emoji-style decorations, and any wording from other picture-book apps.
