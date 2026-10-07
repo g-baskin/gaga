@@ -43,6 +43,8 @@ contextBridge.exposeInMainWorld('storyloom', {
   // App and AI services
   openDataFolder: () => call('app:open-data-folder'),
   appInfo: () => call('app:info'),
+  checkForUpdate: (force) => call('app:check-update', force), // → { available, current, latest?, url? }
+  openUpdate: () => call('app:open-update'), // opens the release page for the newer version
   getSettings: () => call('settings:get'),
   saveSettings: async (input) => {
     const result = await call('settings:save', input);

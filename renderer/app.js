@@ -198,17 +198,50 @@ const notBuilt = () => toast(NOT_BUILT);
 
 // The running app's version, shown at the foot of the sidebar. It comes from the app itself
 // (package.json, which `npm run release` updates), so it always matches the installed build.
+// Below it, a notice appears when GitHub has a newer release (checked once per launch, if allowed).
 let appVersion = null;
+let updateInfo = null; // { available, latest } from the last check
+let updateCheck = null; // the check in progress or done, so it runs once per launch
+function updateNotice() {
+  if (!updateInfo?.available) return null;
+  return h('div', { class: 'app-update', id: 'app-update', role: 'status' },
+    h('span', {}, `Version ${updateInfo.latest} is available`),
+    h('button', { type: 'button', class: 'link-btn', id: 'app-update-open', onclick: () => run(() => api.openUpdate()) }, 'Download it'));
+}
+function refreshVersionBox() {
+  const box = document.getElementById('app-version-box');
+  if (!box) return;
+  box.replaceChildren(...[
+    h('p', { class: 'app-version', id: 'app-version' }, appVersion ? `Version ${appVersion}` : ''),
+    updateNotice(),
+  ].filter(Boolean));
+}
+// Runs the check (again, if `force`) and updates the sidebar. Also used by Account's on/off switch.
+let updateRequest = 0;
+function checkUpdateNow(force = false) {
+  if (force || !updateCheck) {
+    const request = ++updateRequest;
+    // Only the newest check may change the notice, so a slow older answer can't overwrite a newer one.
+    updateCheck = Promise.resolve()
+      .then(() => api.checkForUpdate(force))
+      .then((info) => { if (request === updateRequest) updateInfo = info; },
+        () => { if (request === updateRequest) updateInfo = null; });
+  }
+  return updateCheck.then(refreshVersionBox);
+}
 function versionLabel() {
-  const label = h('p', { class: 'app-version', id: 'app-version' }, appVersion ? `Version ${appVersion}` : '');
+  const box = h('div', { class: 'app-version-box', id: 'app-version-box' },
+    h('p', { class: 'app-version', id: 'app-version' }, appVersion ? `Version ${appVersion}` : ''),
+    updateNotice());
   if (!appVersion) {
     api.appInfo().then((info) => {
       if (typeof info?.version !== 'string' || !info.version) return;
       appVersion = info.version;
-      label.textContent = `Version ${appVersion}`;
+      refreshVersionBox();
     }, () => {});
   }
-  return label;
+  if (!updateCheck) queueMicrotask(() => checkUpdateNow());
+  return box;
 }
 
 // AI service settings live on the Account screen.

@@ -179,6 +179,8 @@
     revealExport: unsupported,
     openDataFolder: unsupported,
     appInfo: () => ok({ version: 'preview', dataFolder: 'This browser tab (preview only)' }),
+    checkForUpdate: () => ok({ available: false, current: 'preview' }), // the preview never contacts GitHub
+    openUpdate: unsupported,
     getSettings: () => ok(structuredClone(settings)),
     saveSettings: (input) => { settings = { ...settings, ...input, hasKey: settings.hasKey }; return ok(structuredClone(settings)); },
     generateStory: unsupported,

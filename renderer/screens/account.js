@@ -312,7 +312,21 @@
           h('div', { class: 'form-actions export-start' },
             h('button', { class: 'btn secondary', id: 'account-open-data', onclick: () => run(() => api.openDataFolder()) }, 'Open data folder'))),
         h('section', { class: 'export-details', id: 'account-about' }, h('h2', {}, 'About'),
-          h('p', {}, `Storyloom ${info.version}`, h('span', { class: 'muted' }, ' — a picture-book maker that works offline.'))),
+          h('p', {}, `Storyloom ${info.version}`, h('span', { class: 'muted' }, ' — a picture-book maker that works offline.')),
+          h('label', { class: 'check' },
+            h('input', { type: 'checkbox', id: 'account-check-updates', checked: settings.checkUpdates !== false, onchange: async (e) => {
+              const on = e.target.checked;
+              try {
+                state.settings = await api.saveSettings({ checkUpdates: on });
+                await checkUpdateNow(true);
+                toast(on ? 'Storyloom will tell you about new versions' : 'Storyloom won’t check for new versions');
+              } catch (err) {
+                e.target.checked = !on;
+                toast(cleanError(err));
+              }
+            } }),
+            'Tell me when a new version is out'),
+          h('p', { class: 'muted small-print' }, 'When Storyloom opens, it asks GitHub for the latest release. Nothing about you or your books is sent.')),
         h('div', { class: 'export-unavailable', 'data-unavailable': 'cloud-account' },
           h('strong', {}, 'Storyloom account — not needed'),
           h('span', {}, ': Storyloom runs entirely on this Mac, so there is no Storyloom account, password, or subscription. AI services above are optional and billed by their own providers.'))));

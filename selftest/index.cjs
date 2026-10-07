@@ -8,7 +8,7 @@ const fsSync = require('node:fs');
 const path = require('node:path');
 const mockAi = require('./mock-ai.cjs');
 
-const FULL_ORDER = ['designer', 'home', 'bookshelf', 'story-builder', 'manuscript', 'templates', 'studio', 'coloring', 'export-orders-account', 'ai-services'];
+const FULL_ORDER = ['designer', 'home', 'bookshelf', 'story-builder', 'manuscript', 'templates', 'studio', 'coloring', 'export-orders-account', 'ai-services', 'updates'];
 const EXPECTED_SCREENS = ['home', 'bookshelf', 'templates', 'coloring', 'orders', 'account', 'story-builder', 'manuscript', 'designer', 'studio', 'export'];
 const APP_NAV = ['home', 'bookshelf', 'templates', 'coloring', 'orders', 'account'];
 const BOOK_TABS = ['story-builder', 'manuscript', 'designer', 'studio', 'export'];

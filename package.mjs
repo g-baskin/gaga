@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export const root = path.dirname(fileURLToPath(import.meta.url));
-const keep = new Set(['', '/package.json', '/main.cjs', '/preload.cjs', '/storage.cjs', '/epub.cjs']);
+const keep = new Set(['', '/package.json', '/main.cjs', '/preload.cjs', '/storage.cjs', '/epub.cjs', '/updates.cjs']);
 
 export async function readManifest() {
   return JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));

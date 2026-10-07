@@ -11,6 +11,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 ### Added
 
 - The version number now shows at the bottom of the sidebar on every screen, so you can tell which Storyloom you're running.
+- When a newer version is out, a notice under the version number links to its download page. Storyloom checks GitHub once when it opens; you can turn this off in Account → About.
 
 ## [0.3.0] - 2026-10-07
 

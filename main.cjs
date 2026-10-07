@@ -12,6 +12,7 @@ const { createOpenRouter } = require('./ai/openrouter.cjs');
 const { createChatGpt } = require('./ai/chatgpt.cjs');
 const { createClaudeCode } = require('./ai/claude-code.cjs');
 const { createFal } = require('./ai/fal.cjs');
+const { createUpdateChecker } = require('./updates.cjs');
 
 const selfTest = process.argv.includes('--self-test');
 app.setName('Storyloom');
@@ -78,6 +79,7 @@ async function readSettings() {
     openrouterKeyEnc: str(raw.openrouterKeyEnc), orTextModel: str(raw.orTextModel), orImageModel: str(raw.orImageModel), orSpeechModel: str(raw.orSpeechModel),
     falKeyEnc: str(raw.falKeyEnc), falImageModel: str(raw.falImageModel),
     chatgptModel: str(raw.chatgptModel), claudeModel: str(raw.claudeModel), claudePath: str(raw.claudePath),
+    checkUpdates: raw.checkUpdates !== false, // on unless turned off
   };
 }
 function checkBaseUrl(value) {
@@ -154,6 +156,7 @@ async function saveSettingsNow(input = {}) {
     chatgptModel: checkModel(keep('chatgptModel'), 'Model'),
     claudeModel: checkModel(keep('claudeModel'), 'Model'),
     claudePath,
+    checkUpdates: 'checkUpdates' in input ? input.checkUpdates === true : current.checkUpdates,
   };
   if (input.clearKey) next.apiKeyEnc = '';
   if (typeof input.apiKey === 'string' && input.apiKey.trim()) next.apiKeyEnc = encryptSecret(input.apiKey, 'API key');
@@ -171,6 +174,7 @@ const publicSettings = (s) => ({
   orTextModel: s.orTextModel, orImageModel: s.orImageModel, orSpeechModel: s.orSpeechModel,
   hasFalKey: Boolean(s.falKeyEnc), falImageModel: s.falImageModel,
   chatgptModel: s.chatgptModel, claudeModel: s.claudeModel, claudePath: s.claudePath,
+  checkUpdates: s.checkUpdates,
 });
 
 // Test-only service addresses, set by the self-test runner. They exist only in --self-test, so a real
@@ -180,10 +184,31 @@ const testUrl = (name) => (selfTest ? testUrls[name] : undefined);
 function useTestServices(urls) {
   if (!selfTest) throw new Error('Test services are only available in the self-test');
   Object.assign(testUrls, urls);
-  openRouter = null; chatGpt = null; claudeCode = null; claudeStatusCache = null; chatGptModels = null; fal = null;
+  openRouter = null; chatGpt = null; claudeCode = null; claudeStatusCache = null; chatGptModels = null; fal = null; updateChecker = null;
 }
 let openRouter = null;
 let fal = null;
+
+// New-version notice. The self-test never contacts GitHub: it uses a local fake, or the check is off.
+let updateChecker = null;
+let lastUpdate = null; // the last answer, so "Get it" opens only a page the app itself checked
+async function checkForUpdate(force) {
+  // When there's nothing to offer, forget any earlier answer so "Download it" can't open an old link.
+  if (!(await readSettings()).checkUpdates) {
+    lastUpdate = null;
+    return { available: false, current: app.getVersion(), disabled: true };
+  }
+  if (selfTest && !testUrls.STORYLOOM_TEST_UPDATES) {
+    lastUpdate = null;
+    return { available: false, current: app.getVersion() };
+  }
+  updateChecker ||= createUpdateChecker({
+    currentVersion: app.getVersion(),
+    ...(selfTest ? { apiUrl: testUrls.STORYLOOM_TEST_UPDATES } : {}),
+  });
+  lastUpdate = await updateChecker.check({ force });
+  return lastUpdate;
+}
 let chatGpt = null;
 let claudeCode = null;
 let claudeStatusCache = null;
@@ -581,6 +606,12 @@ function registerHandlers() {
   handle('books:reveal-export', () => { if (lastExport) shell.showItemInFolder(lastExport); });
   handle('app:open-data-folder', () => (selfTest ? true : shell.openPath(app.getPath('userData')).then((err) => !err)));
   handle('app:info', () => ({ version: app.getVersion(), dataFolder: app.getPath('userData'), platform: process.platform }));
+  handle('app:check-update', (_e, force) => checkForUpdate(force === true));
+  handle('app:open-update', () => {
+    if (!lastUpdate?.available) throw new Error('No newer version to open');
+    if (!selfTest) shell.openExternal(lastUpdate.url);
+    return lastUpdate.url;
+  });
   handle('settings:get', async () => publicSettings(await readSettings()));
   // Invalid settings are an expected user mistake, so return the message instead of throwing
   // (a thrown handler error is logged by Electron as if the app had failed).
