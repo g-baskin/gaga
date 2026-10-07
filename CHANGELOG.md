@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- The version number now shows at the bottom of the sidebar on every screen, so you can tell which Storyloom you're running.
+
 ## [0.3.0] - 2026-10-07
 
 ### Added

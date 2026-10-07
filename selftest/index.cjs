@@ -183,6 +183,10 @@ async function run({ app, win, store, argv, root, setOpenFile, useTestServices }
       await js(`$waitFor(() => window.__storyloom.current() === ${JSON.stringify(item)} && document.querySelector('#screen')).then(() => $settle())`);
       await ctx.assertNoMissing();
     }
+    // The sidebar shows the running version, which must be package.json's (the number `npm run release` sets).
+    const { version } = JSON.parse(fsSync.readFileSync(path.join(root, 'package.json'), 'utf8'));
+    const shown = await js(`$waitFor(() => document.getElementById('app-version')?.textContent || null, 5000).catch(() => '')`);
+    if (shown !== `Version ${version}`) throw new Error(`Sidebar shows "${shown}", expected "Version ${version}"`);
     const book = await store.create({ title: 'Tab tour' });
     await js(`openBook(${JSON.stringify(book.id)}).then(() => $settle())`);
     for (const tab of BOOK_TABS) {
@@ -191,7 +195,7 @@ async function run({ app, win, store, argv, root, setOpenFile, useTestServices }
       await ctx.assertNoMissing();
       await js(`document.querySelector('dialog[open]')?.close()`);
     }
-    checks.navigation = { screens: registered.length, appNav: APP_NAV.length, bookTabs: BOOK_TABS.length };
+    checks.navigation = { screens: registered.length, appNav: APP_NAV.length, bookTabs: BOOK_TABS.length, version: shown };
   }
 
   mock.close();

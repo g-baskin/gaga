@@ -133,7 +133,8 @@ function renderShell(scope, name) {
         h('button', {
           class: `app-nav-item${item === name ? ' active' : ''}`, type: 'button', 'data-nav': item, 'aria-current': item === name ? 'page' : null,
           onclick: () => run(() => navigate(item)),
-        }, h('span', { class: 'app-nav-icon', 'aria-hidden': 'true' }, icon), label))));
+        }, h('span', { class: 'app-nav-icon', 'aria-hidden': 'true' }, icon), label))),
+      versionLabel());
     root.replaceChildren(h('div', { class: 'app-shell' }, nav, host));
   }
 }
@@ -194,6 +195,21 @@ function confirmDialog(message, { title = 'Are you sure?', confirmLabel = 'Conti
 }
 
 const notBuilt = () => toast(NOT_BUILT);
+
+// The running app's version, shown at the foot of the sidebar. It comes from the app itself
+// (package.json, which `npm run release` updates), so it always matches the installed build.
+let appVersion = null;
+function versionLabel() {
+  const label = h('p', { class: 'app-version', id: 'app-version' }, appVersion ? `Version ${appVersion}` : '');
+  if (!appVersion) {
+    api.appInfo().then((info) => {
+      if (typeof info?.version !== 'string' || !info.version) return;
+      appVersion = info.version;
+      label.textContent = `Version ${appVersion}`;
+    }, () => {});
+  }
+  return label;
+}
 
 // AI service settings live on the Account screen.
 function openAiSettings() {

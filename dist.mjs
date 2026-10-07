@@ -40,6 +40,10 @@ async function makeDmg({ app, arch, version, outDir }) {
   const { stdout } = await run('lipo', ['-archs', path.join(app, 'Contents/MacOS/Storyloom')]);
   const want = arch === 'x64' ? 'x86_64' : 'arm64';
   if (stdout.trim() !== want) throw new Error(`Expected a ${want} app but got ${stdout.trim()}`);
+  // The version the app shows comes from this field, so it must match package.json.
+  const plist = path.join(app, 'Contents/Info.plist');
+  const { stdout: shown } = await run('/usr/libexec/PlistBuddy', ['-c', 'Print :CFBundleShortVersionString', plist]);
+  if (shown.trim() !== version) throw new Error(`The built app says version ${shown.trim()}, but package.json says ${version}`);
 
   // The disk image shows the app next to an Applications shortcut, so people can drag to install.
   const staging = await mkdtemp(path.join(os.tmpdir(), 'storyloom-dmg-'));
