@@ -8,6 +8,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-07
+
 ### Added
 
 - 17 free fonts included with Storyloom, for 21 in all: easy-reading fonts for young readers, book fonts, bold title fonts, and handwriting. Font menus group them by kind and show each name in its own font.
@@ -97,7 +99,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Saving several settings at once no longer risks losing one of the changes.
 - An ISBN is only stored if its check digit is correct.
 
-[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/g-baskin/gaga/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/g-baskin/gaga/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/g-baskin/gaga/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/g-baskin/gaga/compare/v0.2.0...v0.3.0
