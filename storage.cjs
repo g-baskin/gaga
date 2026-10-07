@@ -15,7 +15,17 @@ const FRAMES = new Set(['none', 'thin', 'thick', 'double', 'dashed', 'dotted', '
 const SHAPES = new Set(['rect', 'rounded', 'ellipse', 'triangle', 'star', 'burst', 'heart', 'cloud', 'speech', 'arrow']);
 const FITS = new Set(['cover', 'contain']);
 const MAX_ELEMENTS = 200;
-const FONTS = new Set(['serif', 'sans', 'rounded', 'hand']);
+// Font keys a book may use: the four Mac fonts plus every bundled font (renderer/fonts/fonts.json).
+// Read once, so the list always matches what the app ships.
+const FONTS = new Set(['serif', 'sans', 'rounded', 'hand', ...bundledFontKeys()]);
+function bundledFontKeys() {
+  try {
+    const manifest = JSON.parse(require('node:fs').readFileSync(path.join(__dirname, 'renderer', 'fonts', 'fonts.json'), 'utf8'));
+    return (manifest.fonts || []).map((f) => f.key).filter((key) => typeof key === 'string' && /^[a-z0-9-]{1,32}$/.test(key));
+  } catch {
+    return [];
+  }
+}
 const SIZES = new Set(['square', 'portrait', 'landscape']);
 const ALIGN = new Set(['left', 'center', 'right']);
 const COLOR = /^#[0-9a-f]{6}$/i;
@@ -143,6 +153,8 @@ function sanitizePage(page = {}) {
     background: color(page.background, '#ffffff'),
     color: color(page.color, '#2a2433'),
     font: pick(page.font, FONTS, 'serif'),
+    // Font for a cover's title line; '' means "same as the page font".
+    titleFont: FONTS.has(page.titleFont) ? page.titleFont : '',
     fontSize: Number.isFinite(page.fontSize)
       ? Math.min(96, Math.max(10, Math.round(page.fontSize)))
       : layout === 'cover' ? 48 : 24,

@@ -117,9 +117,10 @@
     if (page.layout !== 'blank' && (words || isCover)) {
       const byline = isCover && book.author
         ? `<p class="sl-byline" style="${style({ 'font-size': px(Math.max(12, Math.round(page.fontSize * 0.4))) })}">by ${xmlText(book.author)}</p>` : '';
+      const titleStyle = isCover && FONTS[page.titleFont] ? ` style="${style({ 'font-family': FONTS[page.titleFont] })}"` : '';
       parts.push(`<div class="sl-text" style="${style({
         'font-family': FONTS[page.font] || FONTS.serif, 'font-size': px(page.fontSize), 'text-align': page.align, color: page.color,
-      })}">${words ? `<p>${xmlText(words)}</p>` : ''}${byline}</div>`);
+      })}">${words ? `<p${titleStyle}>${xmlText(words)}</p>` : ''}${byline}</div>`);
     }
     if (page.frame && page.frame !== 'none') parts.push(`<div class="sl-frame frame-${attr(page.frame)}" style="${style({ 'border-color': page.frameColor })}"></div>`);
     parts.push(`<div class="sl-elements">${(page.elements || []).map(elementXhtml).join('')}</div>`);
@@ -160,6 +161,8 @@
     const cover = book.pages[0]?.layout === 'cover' ? imgName(book.pages[0].image) : null;
     return {
       bookId: book.id, css: EPUB_CSS, width: size[0], height: size[1], coverImage: cover || undefined,
+      // Only the font names; the app adds the matching bundled font files itself.
+      fonts: bookFontKeys(book).filter((key) => FONT_FILES[key]),
       pages: pages.map((page, i) => ({
         body: pageXhtml(page, book, size),
         label: withCopyright && i === pages.length - 1 ? 'Copyright' : page.layout === 'cover' && i === 0 ? 'Cover' : `Page ${i + 1}`,

@@ -51,7 +51,8 @@ Automatic model choice (`ai/model-picker.cjs`) picks a model per job from a budg
 | Designer: image crop | ✅ | Free, square, 4:3, 3:4, 16:9. |
 | Designer: AI page illustration | ✅ AI service | "Generate a picture" in the Pictures drawer. |
 | Designer: image upscale | ⛔ | Labelled as not available. |
-| Templates catalogue + premade books | ✅ | 12 original themes, 4 original starter books, preview, use or apply. |
+| Templates catalogue + premade books | ✅ | 24 original themes in 7 categories (each with its own title + body font pairing), 7 original starter books, preview, use or apply. |
+| Fonts | ✅ | 21 fonts: 4 Mac fonts plus 17 free fonts bundled with the app (easy-reading, book, title, and handwriting). Browse them in Templates → Fonts; pick per page, per text box, and a separate title font on covers. PDFs wait for fonts to load, and e-books carry the fonts they use. |
 | Studio: per-page voice recording | ✅ | Record, play, re-record, delete, import. |
 | Studio: AI voice narration | ✅ AI service | Per page or all pages. |
 | Studio: background music | ✅ | User's own files (volume, loop). No bundled music library. |

@@ -41,3 +41,12 @@
 }
 .templates-book:hover { border-color: var(--teal); background: var(--teal-soft); }
 .templates-book-cover { width: 56px; height: 56px; display: grid; place-items: center; flex: none; }
+
+/* Fonts section and each theme's font pairing */
+.templates-fonts { font-size: 12px; }
+.templates-font-group { display: grid; gap: 10px; margin-top: 16px; }
+.templates-font-group h3 { margin: 0; font-size: 15px; }
+.templates-font-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.templates-font { display: grid; gap: 6px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+.templates-font-name { font-size: 12px; color: var(--muted); font-weight: 600; }
+.templates-font-sample { font-size: 20px; line-height: 1.3; color: var(--ink); overflow-wrap: anywhere; }

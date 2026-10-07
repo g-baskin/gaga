@@ -17,6 +17,32 @@
   const themeBook = (theme) => ({ id: 'template-preview', title: theme.name, author: '', size: 'square' });
   const starterBook = (s) => ({ id: 'template-preview', title: s.title, author: '', size: s.size });
 
+  // "Fredoka + Quicksand": the title font and the body font a theme pairs.
+  const pairing = (theme) => [theme.titleFont, theme.font].filter((key, i, all) => key && all.indexOf(key) === i)
+    .map((key) => (FONT_LABEL[key] || key).replace(/ \(.*\)$/, '')).join(' + ');
+
+  // One sample per font, shown in that font.
+  const SAMPLE = 'Once upon a time, a small fox found a big red kite.';
+  function fontSection() {
+    const q = view.query.trim().toLowerCase();
+    if (view.category !== 'all' && view.category !== 'Fonts') return null;
+    const groups = FONT_GROUPS.map((group) => ({
+      ...group, keys: group.keys.filter((key) => !q || `${FONT_LABEL[key]} ${group.label} fonts`.toLowerCase().includes(q)),
+    })).filter((group) => group.keys.length);
+    const count = groups.reduce((n, g) => n + g.keys.length, 0);
+    if (!count) return null;
+    // Loading only matters for the samples; nothing waits on it.
+    loadFonts(groups.flatMap((g) => g.keys)).catch(() => {});
+    return h('section', { class: 'templates-section', id: 'templates-fonts' },
+      h('h2', {}, 'Fonts', h('span', { class: 'muted templates-count' }, ` ${count}`)),
+      h('p', { class: 'muted templates-lede' }, 'Pick any of these for page words or text boxes in the Designer. The free fonts come with Storyloom and travel inside your PDFs and e-books.'),
+      ...groups.map((group) => h('div', { class: 'templates-font-group' },
+        h('h3', {}, group.label),
+        h('div', { class: 'templates-font-grid' }, group.keys.map((key) => h('div', { class: 'templates-font', 'data-font': key },
+          h('span', { class: 'templates-font-name' }, FONT_LABEL[key]),
+          h('span', { class: 'templates-font-sample', style: { fontFamily: FONTS[key] } }, SAMPLE)))))));
+  }
+
   function matches(item, category) {
     const q = view.query.trim().toLowerCase();
     if (view.category !== 'all' && category !== view.category) return false;
@@ -31,7 +57,7 @@
     }
     const results = h('div', { class: 'templates-results' });
     const chips = h('div', { class: 'templates-chips', role: 'toolbar', 'aria-label': 'Categories' });
-    const drawChips = () => chips.replaceChildren(...['all', ...data.categories].map((c) => h('button', {
+    const drawChips = () => chips.replaceChildren(...['all', ...data.categories, 'Fonts'].map((c) => h('button', {
       class: `templates-chip${view.category === c ? ' active' : ''}`, 'data-category': c, 'aria-pressed': String(view.category === c),
       onclick: () => { view.category = c; drawChips(); drawResults(); },
     }, c === 'all' ? 'All' : c)));
@@ -40,7 +66,11 @@
       const themeOf = (s) => data.themes.find((t) => t.id === s.themeId);
       const themes = data.themes.filter((t) => matches(t, t.category));
       const starters = data.starters.filter((s) => matches(s, themeOf(s)?.category));
-      results.replaceChildren(
+      if (view.category === 'Fonts') {
+        results.replaceChildren(fontSection() || h('p', { class: 'muted' }, 'No fonts match.'));
+        return;
+      }
+      results.replaceChildren(...[
         h('section', { class: 'templates-section' },
           h('h2', {}, 'Page themes', h('span', { class: 'muted templates-count' }, ` ${themes.length}`)),
           themes.length ? h('div', { class: 'templates-grid' }, themes.map((theme) => h('button', {
@@ -49,7 +79,8 @@
           h('div', { class: 'templates-cover' }, preview(theme.cover, themeBook(theme), 180, 180)),
           h('span', { class: 'templates-name' }, theme.name),
           h('span', { class: 'templates-meta muted' }, theme.category),
-          h('span', { class: 'templates-desc muted' }, theme.description))))
+          h('span', { class: 'templates-desc muted' }, theme.description),
+          h('span', { class: 'templates-fonts muted' }, `Fonts: ${pairing(theme)}`))))
             : h('p', { class: 'muted' }, 'No themes match.')),
         h('section', { class: 'templates-section' },
           h('h2', {}, 'Starter books', h('span', { class: 'muted templates-count' }, ` ${starters.length}`)),
@@ -61,7 +92,9 @@
           h('span', { class: 'templates-name' }, s.name),
           h('span', { class: 'templates-meta muted' }, `${s.text.length + 1} pages · ${themeOf(s)?.name || ''}`),
           h('span', { class: 'templates-desc muted' }, s.description))))
-            : h('p', { class: 'muted' }, 'No starter books match.')));
+            : h('p', { class: 'muted' }, 'No starter books match.')),
+        fontSection(),
+      ].filter(Boolean));
     };
 
     const search = h('input', {
@@ -96,9 +129,13 @@
     };
     const flip = (d) => { index = Math.max(0, Math.min(pages.length - 1, index + d)); draw(); };
     draw();
+    // Redraw in the theme's real fonts as soon as they're ready.
+    const theme = data.themes.find((t) => t.id === themeId);
+    if (theme) loadFonts([theme.font, theme.titleFont]).then(() => { if (stage.isConnected) draw(); });
 
     const dialog = modal(item.name, (close) => h('div', { class: 'form templates-preview-body' },
       h('p', { class: 'muted' }, item.description),
+      theme ? h('p', { class: 'muted small-print', id: 'templates-preview-fonts' }, `Fonts: ${pairing(theme)}`) : null,
       stage,
       h('div', { class: 'templates-flipper' }, prev, counter, next),
       h('div', { class: 'form-actions' },

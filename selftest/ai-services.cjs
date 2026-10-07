@@ -159,6 +159,8 @@ module.exports = async function aiServices(ctx) {
     await ctx.waitFor('#account-pictures');
     await js(`(() => { const s = $must('#account-pictures'); s.value = 'fal'; s.dispatchEvent(new Event('change')); return true; })()`);
     await until((s) => s.pictures === 'fal');
+    // Wait for the model lists to load: the screen redraws (and the fal.ai box moves) when they arrive.
+    await ctx.waitFor('#account-fal-picks li');
     await ctx.waitFor('#account-fal-key');
     await ctx.click('#account-fal-key');
     await ctx.type('fal-selftest-key');

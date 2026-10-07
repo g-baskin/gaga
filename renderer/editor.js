@@ -708,8 +708,9 @@ function pageInspector() {
         placeholder: page.layout === 'cover' ? `Leave blank to show “${state.book.title}”` : 'What happens on this page?',
         oninput: change('text'),
       }),
-      field('Font', h('select', { onchange: change('font') },
-        Object.keys(FONTS).map((key) => h('option', { value: key, selected: page.font === key }, FONT_LABEL[key])))),
+      field('Font', h('select', { id: 'page-font', onchange: change('font') }, fontOptions(page.font))),
+      page.layout === 'cover' ? field('Title font', h('select', { id: 'page-title-font', onchange: change('titleFont') },
+        h('option', { value: '', selected: !page.titleFont }, 'Same as the page font'), fontOptions(page.titleFont))) : null,
       slider('Size', page.fontSize, 10, 96, 1, ' pt', (v) => { checkpoint('page:fontSize'); page.fontSize = v; refreshPage(); scheduleSave(); }),
       segmented('Text alignment', [['left', 'Left'], ['center', 'Center'], ['right', 'Right']], page.align, (v) => set('align', v)),
       field('Text color', h('input', { type: 'color', value: page.color, oninput: change('color') }))),
@@ -784,8 +785,7 @@ function elementInspector(el) {
         oninput: (e) => { apply('text', e.target.value); },
         onblur: () => { if (!el.text.trim()) deleteElement(el); },
       }),
-      field('Font', h('select', { onchange: (e) => apply('font', e.target.value, false) },
-        Object.keys(FONTS).map((key) => h('option', { value: key, selected: el.font === key }, FONT_LABEL[key])))),
+      field('Font', h('select', { id: 'element-font', onchange: (e) => apply('font', e.target.value, false) }, fontOptions(el.font))),
       slider('Size', el.fontSize, 6, 200, 1, ' pt', (v) => apply('fontSize', v)),
       h('div', { class: 'tool-row' },
         h('button', { class: `btn small ${el.bold ? 'secondary' : 'ghost'}`, 'aria-pressed': String(el.bold), onclick: () => toggle('bold') }, h('b', {}, 'B')),
@@ -952,7 +952,10 @@ async function exportPdf({ mode = 'digital' } = {}) {
     sheet.classList.remove('print-page');
     return h('div', { class: `print-page bleed-sheet size-${state.book.size}-bleed`, style: { backgroundColor: page.background } }, sheet);
   }));
-  await Promise.all([...printRoot.querySelectorAll('img')].map((img) => img.decode().catch(() => {})));
+  await Promise.all([
+    ...[...printRoot.querySelectorAll('img')].map((img) => img.decode().catch(() => {})),
+    loadFonts(bookFontKeys(state.book)),
+  ]);
   try {
     const name = await api.exportPdf({ title: state.book.title, size: state.book.size, mode });
     if (name) toast(`Exported “${name}”`, { label: 'Show in Finder', run: () => api.revealExport() });

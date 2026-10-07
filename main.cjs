@@ -37,7 +37,7 @@ protocol.registerSchemesAsPrivileged([
 const RENDERER = path.join(__dirname, 'renderer');
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css',
-  '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.gif': 'image/gif',
+  '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.gif': 'image/gif',
   '.wav': 'audio/wav', '.mp3': 'audio/mpeg', '.m4a': 'audio/mp4', '.ogg': 'audio/ogg', '.webm': 'audio/webm',
 };
 let win;
@@ -575,6 +575,23 @@ function toBuffer(bytes, max, label) {
 }
 const ISO_LANG = { english: 'en', spanish: 'es', french: 'fr', german: 'de', italian: 'it', portuguese: 'pt', dutch: 'nl', polish: 'pl', swedish: 'sv', japanese: 'ja', chinese: 'zh', korean: 'ko', arabic: 'ar', hindi: 'hi' };
 
+// The bundled font files for the requested font keys, read from the app's own renderer/fonts folder.
+// Only keys listed in fonts.json are used, so the page can't pull any other file into the e-book.
+async function bundledFontsFor(keys) {
+  if (!Array.isArray(keys) || keys.length === 0) return [];
+  const manifest = JSON.parse(await fs.readFile(path.join(RENDERER, 'fonts', 'fonts.json'), 'utf8'));
+  const out = [];
+  for (const key of new Set(keys.filter((k) => typeof k === 'string').slice(0, 40))) {
+    const font = manifest.fonts.find((f) => f.key === key);
+    if (!font?.cssFamily) continue;
+    for (const f of font.files) {
+      if (!/^[a-z0-9-]+\.woff2$/.test(f.file)) continue;
+      out.push({ family: font.cssFamily, weight: f.weight, style: f.style, file: f.file, data: await fs.readFile(path.join(RENDERER, 'fonts', f.file)) });
+    }
+  }
+  return out;
+}
+
 async function exportEpub(input = {}) {
   const book = await store.read(input.bookId);
   const pages = Array.isArray(input.pages) ? input.pages.slice(0, 500) : [];
@@ -594,9 +611,10 @@ async function exportEpub(input = {}) {
   if (coverFirst > 0) images.unshift(...images.splice(coverFirst, 1));
   const width = Math.min(4000, Math.max(100, Math.round(Number(input.width) || 816)));
   const height = Math.min(4000, Math.max(100, Math.round(Number(input.height) || 816)));
+  const fonts = await bundledFontsFor(input.fonts);
   const epub = buildEpub({
     book: { id: book.id, title: book.title, author: book.author, isbn: book.isbn, language: ISO_LANG[book.language.toLowerCase()] || 'en', modified: new Date() },
-    pages: packed.pages, css: packed.css, width, height, images,
+    pages: packed.pages, css: packed.css, width, height, images, fonts,
   });
   const file = await chooseSaveFile(book.title, 'epub', 'EPUB book');
   if (!file) return null;
@@ -835,6 +853,9 @@ app.whenReady().then(async () => {
   win.on('closed', () => { win = null; });
   await win.loadURL('app://local/index.html');
   if (selfTest) {
+    // The self-test drives the app with simulated input (webContents.sendInputEvent). Ignore the real mouse,
+    // so someone moving their pointer over the test window can't disturb a drag or click.
+    win.setIgnoreMouseEvents(true);
     try {
       await require('./selftest/index.cjs').run({ app, win, store, argv: process.argv, root: __dirname, setOpenFile: (file) => { selfTestOpenFile = file; }, useTestServices });
       cleanSelfTestData();

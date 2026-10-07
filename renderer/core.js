@@ -49,13 +49,7 @@ async function run(task) {
 const PT_PX = 4 / 3; // CSS pixels per point
 const PAGE_PT = { square: [612, 612], portrait: [612, 792], landscape: [792, 612] };
 const SIZE_LABEL = { square: 'Square 8.5 × 8.5 in', portrait: 'Portrait 8.5 × 11 in', landscape: 'Landscape 11 × 8.5 in' };
-const FONTS = {
-  serif: 'Georgia, "Iowan Old Style", "Times New Roman", serif',
-  sans: 'system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif',
-  rounded: '"Arial Rounded MT Bold", ui-rounded, "SF Pro Rounded", system-ui, sans-serif',
-  hand: '"Chalkboard SE", "Marker Felt", "Comic Sans MS", cursive',
-};
-const FONT_LABEL = { serif: 'Storybook serif', sans: 'Clean sans', rounded: 'Rounded', hand: 'Hand-drawn' };
+// FONTS and FONT_LABEL live in fonts.js (the Mac fonts plus the bundled ones in renderer/fonts/).
 const LAYOUTS = [
   ['cover', 'Cover'], ['image-top', 'Picture above'], ['image-left', 'Side by side'],
   ['image-full', 'Full picture'], ['text-only', 'Words only'], ['blank', 'Blank canvas'],
@@ -106,7 +100,7 @@ function fillElement(box, el, book) {
   box.replaceChildren();
   if (el.type === 'text') {
     const style = {
-      fontFamily: FONTS[el.font], fontSize: `${el.fontSize}pt`, color: el.color, textAlign: el.align,
+      fontFamily: FONTS[el.font] || FONTS.serif, fontSize: `${el.fontSize}pt`, color: el.color, textAlign: el.align,
       fontWeight: el.bold ? '800' : '400', fontStyle: el.italic ? 'italic' : 'normal',
       lineHeight: String(el.lineHeight), letterSpacing: `${el.letterSpacing}pt`,
     };
@@ -183,9 +177,10 @@ function renderPage(page, book, { print = false } = {}) {
   if (page.layout !== 'blank' && (words || isCover)) {
     el.append(h('div', {
       class: 'page-text',
-      style: { fontFamily: FONTS[page.font], fontSize: `${page.fontSize}pt`, textAlign: page.align, color: page.color },
+      style: { fontFamily: FONTS[page.font] || FONTS.serif, fontSize: `${page.fontSize}pt`, textAlign: page.align, color: page.color },
     },
-    words ? h('p', {}, words) : null,
+    // A cover's title can use its own font (a theme's title font); the byline keeps the page font.
+    words ? h('p', isCover && FONTS[page.titleFont] ? { class: 'cover-title', style: { fontFamily: FONTS[page.titleFont] } } : {}, words) : null,
     isCover && book.author ? h('p', { class: 'byline', style: { fontSize: `${Math.max(12, Math.round(page.fontSize * 0.4))}pt` } }, `by ${book.author}`) : null));
   }
   if (page.frame && page.frame !== 'none') {

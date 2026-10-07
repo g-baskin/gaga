@@ -210,7 +210,7 @@
     return {
       id: 'sb-preview', layout: 'cover', text: '', image: first?.image || hero?.image || null, crop: first?.image ? first.crop : null,
       background: p.background || first?.background || '#ffffff', color: p.ink || first?.color || '#2a2433',
-      font: theme?.font || first?.font || 'serif', fontSize: 44, align: 'center',
+      font: theme?.font || first?.font || 'serif', titleFont: theme ? theme.titleFont || '' : first?.titleFont || '', fontSize: 44, align: 'center',
       frame: theme?.frame || first?.frame || 'none', frameColor: p.accent || theme?.frameColor || '#2a2433', elements: [],
     };
   }

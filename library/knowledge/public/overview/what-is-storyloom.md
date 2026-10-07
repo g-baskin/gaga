@@ -7,7 +7,7 @@ Storyloom is a Mac app for writing, illustrating, narrating, and exporting child
 - **Plan it** in the Story builder: characters (with a reusable character library), genre, place, reading level, length, template, page size.
 - **Write it** in the Manuscript, with word limits that fit the reader's age.
 - **Design pages** in the Designer: text, shapes, stickers, pictures, frames, layers, crop.
-- **Start from templates**: 12 themes and 4 starter books.
+- **Start from templates**: 24 themes and 7 starter books, plus 21 fonts to choose from.
 - **Add sound** in the Studio: record your voice, add your own music, tappable sound buttons, and a full-screen read-along.
 - **Make coloring books** from any book, then paint them.
 - **Stay up to date**: the version is shown at the bottom of the sidebar; a notice appears there when an update is available, and Account → Updates checks, downloads, and installs it.

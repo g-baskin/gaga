@@ -8,6 +8,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- 17 free fonts included with Storyloom, for 21 in all: easy-reading fonts for young readers, book fonts, bold title fonts, and handwriting. Font menus group them by kind and show each name in its own font.
+- 12 new page themes, for 24 in all, including a new **Animals** category, and 3 new starter books.
+- Every theme now pairs a title font with a body font, and cover pages can have their own **Title font**.
+- **Templates → Fonts** shows every font with a sample, and search finds fonts by name.
+
+### Changed
+
+- PDFs wait until every font in the book has loaded, so no page prints in a stand-in font.
+- E-books now carry the fonts they use, so they look the same on any reader.
+
 ### Fixed
 
 - If Storyloom can't close to install an update, it now says so and cleans up the download, instead of showing "Installing…" until you restart it.

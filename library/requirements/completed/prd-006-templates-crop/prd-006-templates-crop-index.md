@@ -10,10 +10,10 @@
 ## What was built
 
 ### Template data (`renderer/data/templates.js`)
-`window.STORYLOOM_TEMPLATES = { themes, starters, categories, applyTheme, bookFromTemplate }` (templates.js:424). **12 original themes** (cover/page layouts, palette, fonts, frame, decorations built from shapes and stickers) and **4 original starter books**. Decorations are authored for a 612 × 612 pt square page and scaled to the book size; decoration elements are tagged with a `tpl-` prefix so re-applying a theme replaces them.
+`window.STORYLOOM_TEMPLATES = { themes, starters, categories, applyTheme, bookFromTemplate }` (templates.js:424). **24 original themes** in 7 categories (Bedtime, Adventure, Nature, Seasons, Learning, Celebration, Animals), each with a palette, a title font + body font pairing (`titleFont`, `font`), a frame, and decorations built from shapes and stickers, plus **7 original starter books**. `applyTheme` sets both fonts on every page. Decorations are authored for a 612 × 612 pt square page and scaled to the book size; decoration elements are tagged with a `tpl-` prefix so re-applying a theme replaces them.
 
 ### Templates screen (`renderer/screens/templates.js`, app scope)
-Categories, search, a page-flipping preview modal, **Use this template** (new book) and **Apply to this book**.
+Categories, search, a page-flipping preview modal, **Use this template** (new book) and **Apply to this book**. Each card and preview names its font pairing. A **Fonts** category lists every font with a sample in that font; search also finds fonts by name.
 
 ### Crop dialog (`renderer/screens/crop.js`)
 `window.openCropDialog({bookId, image, crop}, onApply)` (crop.js:12, 152): drag-to-crop with handles and aspect presets Free, Square, 4:3, 3:4, 16:9; returns `{x,y,w,h}` fractions or `null`. `core.js` renders the crop without changing the stored picture.

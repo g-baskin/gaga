@@ -11,7 +11,7 @@
 
 The Designer is the book-scoped page editor in `renderer/editor.js`; page rendering is shared from `renderer/core.js` (`renderPage`, `PAGE_PT` sizes) so the editor, previews, PDF print root, templates and read-along all draw pages the same way.
 
-- Pages: add, reorder, delete; layouts cover / image-top / image-left / image-full / text-only / blank; page background, text colour, font (serif, sans, rounded, hand), alignment, frames (thin, thick, double, dashed, dotted, rounded).
+- Pages: add, reorder, delete; layouts cover / image-top / image-left / image-full / text-only / blank; page background, text colour, font (21 choices from `renderer/fonts.js`: 4 Mac fonts plus 17 bundled free fonts, grouped by kind and shown in their own type), a separate **Title font** on cover pages (`titleFont`), alignment, frames (thin, thick, double, dashed, dotted, rounded).
 - Elements: text, shapes (rect, rounded, ellipse, triangle, star, burst, heart, cloud, speech, arrow), stickers, pictures, `sound` buttons (PRD-007 Studio). Drag / resize / rotate, layers, lock, opacity.
 - Undo / redo via the app menu (main.cjs `buildMenu` sends `menu:action`; the page decides text-field vs designer undo).
 - Pictures drawer: import (sniffed, ≤25 MB) and list book images.

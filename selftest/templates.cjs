@@ -14,18 +14,37 @@ module.exports = async function templates(ctx) {
   const counts = await js(`({ themes: document.querySelectorAll('[data-theme-id]').length, starters: document.querySelectorAll('[data-starter-id]').length,
     data: STORYLOOM_TEMPLATES.themes.length, starterData: STORYLOOM_TEMPLATES.starters.length,
     pagesOk: STORYLOOM_TEMPLATES.starters.every((s) => s.pages.length >= 6 && s.pages.length <= 8) })`);
-  checks.twelveThemes = counts.themes === 12 && counts.data === 12;
-  checks.fourStarters = counts.starters === 4 && counts.starterData === 4;
+  checks.allThemesShown = counts.data >= 24 && counts.themes === counts.data;
+  checks.allStarters = counts.starterData >= 7 && counts.starters === counts.starterData;
   checks.starterLengths = counts.pagesOk;
   await ctx.screenshot('templates');
 
   await ctx.click('[data-category="Seasons"]');
-  checks.filterCategory = await js(`[...document.querySelectorAll('[data-theme-id]')].map((b) => b.dataset.themeId).join(',') === 'maple-lane,first-snow'
-    && document.querySelectorAll('[data-starter-id]').length === 1`);
+  checks.filterCategory = await js(`[...document.querySelectorAll('[data-theme-id]')].map((b) => b.dataset.themeId).join(',') === 'maple-lane,first-snow,spring-showers,summer-shore'
+    && document.querySelectorAll('[data-starter-id]').length === 1 && !document.getElementById('templates-fonts')`);
+  // The new Animals category.
+  await ctx.click('[data-category="Animals"]');
+  checks.animalsCategory = await js(`[...document.querySelectorAll('[data-theme-id]')].map((b) => b.dataset.themeId).join(',') === 'barnyard,polar-pals,buzzing-garden'
+    && [...document.querySelectorAll('[data-starter-id]')].map((b) => b.dataset.starterId).join(',') === 'penguin-hats'`);
+  // Each card names its font pairing.
+  checks.cardShowsFonts = await js(`/Fonts: Sniglet \\+ Andika/.test(document.querySelector('[data-theme-id="barnyard"] .templates-fonts')?.textContent || '')`);
+  // The Fonts category lists every font, each sample shown in that font.
+  await ctx.click('[data-category="Fonts"]');
+  checks.fontsCategory = await js(`(() => {
+    const cards = [...document.querySelectorAll('#templates-fonts [data-font]')];
+    return cards.length === Object.keys(FONTS).length && cards.length >= 21 && !document.querySelector('[data-theme-id]')
+      && cards.every((c) => c.querySelector('.templates-font-sample').style.fontFamily.length > 0);
+  })()`);
+  // Bundled fonts really load (not just fall back): Fredoka's regular file.
+  checks.bundledFontLoads = await js(`loadFonts(['fredoka']).then(() => document.fonts.check('400 16px "Storyloom Fredoka"'))`);
+  await ctx.screenshot('templates-fonts');
   await ctx.click('[data-category="all"]');
   await ctx.click('#templates-search');
-  await ctx.type('tide');
-  checks.search = await js(`document.querySelectorAll('[data-theme-id]').length === 1`);
+  await ctx.type('tide pool');
+  checks.search = await js(`[...document.querySelectorAll('[data-theme-id]')].map((b) => b.dataset.themeId).join(',') === 'tide-pool'`);
+  // Searching also finds fonts by name.
+  await js(`(() => { const s = $must('#templates-search'); s.value = 'caveat'; s.dispatchEvent(new Event('input')); return true; })()`);
+  checks.searchFindsFont = await js(`[...document.querySelectorAll('#templates-fonts [data-font]')].map((c) => c.dataset.font).join(',') === 'caveat'`);
   await js(`(() => { const s = $must('#templates-search'); s.value = ''; s.dispatchEvent(new Event('input')); return true; })()`);
 
   // Preview a starter and flip pages.
@@ -50,7 +69,7 @@ module.exports = async function templates(ctx) {
   const usedId = await js('state.book.id');
   const used = await ctx.store.read(usedId);
   checks.usedThemeStyling = used.builder.templateId === 'moonlit-quilt' && used.pages.length === 2
-    && used.pages.every((p) => p.background === '#1f2a4a' && p.frame === 'double' && p.font === 'serif') && tplCount(used) > 0;
+    && used.pages.every((p) => p.background === '#1f2a4a' && p.frame === 'double' && p.font === 'literata' && p.titleFont === 'playfair') && tplCount(used) > 0;
 
   // ---------- apply to an existing book ----------
   const existing = await ctx.store.create({

@@ -96,8 +96,12 @@ const MIME = { png: 'image/png', jpg: 'image/jpeg', webp: 'image/webp', gif: 'im
  * book: { id, title, author, language (BCP 47 code), isbn, modified (Date) }
  * pages: [{ body: XHTML fragment string, label }]   width/height: viewport in CSS px
  * css: stylesheet text   images: [{ name, data }] referenced from pages as images/<name>
+ * fonts: [{ family, weight, style, file, data }] embedded as fonts/<file> with matching @font-face rules
  */
-function buildEpub({ book, pages, css, width, height, images = [] }) {
+function buildEpub({ book, pages, css, width, height, images = [], fonts = [] }) {
+  const fontFiles = fonts.filter((f) => /^[a-z0-9-]+\.woff2$/.test(f.file) && /^[\w ]{1,80}$/.test(f.family));
+  const fontCss = fontFiles.map((f) => `@font-face { font-family: "${f.family}"; src: url("fonts/${f.file}") format("woff2"); `
+    + `font-weight: ${Number(f.weight) || 400}; font-style: ${f.style === 'italic' ? 'italic' : 'normal'}; }`).join('\n');
   if (!Array.isArray(pages) || pages.length === 0) throw new Error('The book has no pages');
   const identifier = book.isbn ? `urn:isbn:${book.isbn.replace(/[\s-]/g, '')}` : `urn:uuid:${book.id}`;
   const modified = (book.modified || new Date()).toISOString().replace(/\.\d+Z$/, 'Z');
@@ -142,6 +146,7 @@ ${coverImage ? '<meta name="cover" content="cover-image"/>' : ''}
 <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
 <item id="css" href="book.css" media-type="text/css"/>
 ${images.map((img, i) => `<item id="${i === 0 ? 'cover-image' : `img-${i}`}" href="images/${esc(img.name)}" media-type="${MIME[img.name.split('.').pop()]}"${i === 0 ? ' properties="cover-image"' : ''}/>`).join('\n')}
+${fontFiles.map((f, i) => `<item id="font-${i + 1}" href="fonts/${esc(f.file)}" media-type="font/woff2"/>`).join('\n')}
 ${pages.map((_p, i) => `<item id="p${i + 1}" href="${pageName(i)}" media-type="application/xhtml+xml"/>`).join('\n')}
 </manifest>
 <spine>
@@ -157,8 +162,9 @@ ${pages.map((_p, i) => `<itemref idref="p${i + 1}"/>`).join('\n')}
     },
     { name: 'OEBPS/content.opf', data: opf },
     { name: 'OEBPS/nav.xhtml', data: nav },
-    { name: 'OEBPS/book.css', data: `@page { margin: 0; }\nhtml, body { margin: 0; padding: 0; width: ${width}px; height: ${height}px; overflow: hidden; }\n${css}` },
+    { name: 'OEBPS/book.css', data: `@page { margin: 0; }\nhtml, body { margin: 0; padding: 0; width: ${width}px; height: ${height}px; overflow: hidden; }\n${fontCss}\n${css}` },
     ...images.map((img) => ({ name: `OEBPS/images/${img.name}`, data: img.data })),
+    ...fontFiles.map((f) => ({ name: `OEBPS/fonts/${f.file}`, data: f.data })),
     ...pageFiles,
   ]);
 }

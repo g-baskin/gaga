@@ -14,7 +14,7 @@ Storyloom is a free, open-source Mac app for parents, teachers, and new authors.
 
 - **Start from one line.** Type an idea, pick a star for the story, and Storyloom sets up the book.
 - **Write.** A manuscript editor with chapters and word limits that match the reading level. Ask AI to write or rewrite a chapter, or start from an outline without any AI.
-- **Design every page.** Text, shapes, stickers, your own pictures, frames, layers, cropping, and undo. Start from 12 page themes or 4 starter books.
+- **Design every page.** Text, shapes, stickers, your own pictures, frames, layers, cropping, and undo. Choose from 21 fonts, and start from 24 page themes or 7 starter books.
 - **Add characters.** Describe them once, give them a photo or an AI portrait, and reuse them in other books.
 - **Make it talk.** Record narration for each page, add background music and tap-to-play sound buttons, then play it back as a full-screen read-along.
 - **Make coloring books.** Turn any book into outline pages, or make one from an idea, then paint with fill, brush, and eraser.
@@ -104,3 +104,5 @@ Issues and pull requests are welcome. Run `npm test` and `npm run self-test` bef
 ## License
 
 Storyloom is free software under the [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0-only). You can use, change, and share it. If you share a changed version, or let people use a changed version over a network, you must share your changed source code under the same license.
+
+The bundled fonts in `renderer/fonts/` keep their own licenses (SIL Open Font License 1.1 or Apache 2.0); each font's license is in `renderer/fonts/licenses/`. Both allow including the fonts in the app and in the PDFs and e-books you export.
