@@ -109,7 +109,8 @@
       return h('div', { class: 'form illustrate-dialog', id: 'illustrate-dialog' },
         h('p', {}, 'Storyloom plans a picture for each page from its words, then draws them one at a time. You can keep working while it draws.'),
         references.length
-          ? h('p', { class: 'muted small-print', id: 'illustrate-cast' }, `Characters will match their portraits: ${characters.filter((c) => c.image).slice(0, 4).map((c) => c.name).join(', ')}.`)
+          ? h('p', { class: 'muted small-print', id: 'illustrate-cast' }, `Characters will match their portraits: ${characters.filter((c) => c.image).slice(0, 4).map((c) => c.name).join(', ')}. `,
+            h('span', { id: 'illustrate-sends' }, 'Their portraits are sent to your picture service with each page’s description.'))
           : h('p', { class: 'muted small-print', id: 'illustrate-cast' }, 'Tip: give your characters a portrait in the Story builder first, so they look the same on every page.'),
         choice,
         aiPictureNote({ onReady: (ready) => { start.disabled = !ready || !all.length; } }),

@@ -105,6 +105,9 @@ module.exports = async function exportOrdersAccount(ctx) {
   checks.accountPrefilled = await js(`$must('#account-base-url').value`) === before.baseUrl;
   checks.cloudUnavailable = await js(`!!document.querySelector('[data-unavailable="cloud-account"]')`);
   checks.licenseShown = await js(`/GNU AGPL v3/.test(document.getElementById('account-about')?.textContent || '')`);
+  // The privacy link goes through the fixed allow-list in main.cjs (open-link opens nothing under --self-test).
+  checks.privacyLink = await js(`(() => { const b = document.querySelector('[data-action="privacy"]'); return !!b && b.textContent === 'What leaves your Mac'; })()`)
+    && (await js(`api.openLink('privacy')`)) === true;
   checks.notOfflineOnly = await js(`!/runs entirely on this Mac|works offline/i.test(document.querySelector('.screen-host')?.textContent || document.body.textContent)`);
   checks.dataPath = await js(`$must('#account-data-path').textContent.length > 0`);
   await ctx.click('#account-author');

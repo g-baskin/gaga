@@ -10,6 +10,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Changed
 
+- Account → About links to a short privacy note (also in the README and FAQ) listing exactly what leaves your Mac. Nothing is sent to Storyloom's makers.
+- Illustrate the whole book now says that character portraits are sent to your picture service with each page's description.
+- Storyloom.app now includes Electron's and Chromium's licence notices.
 - Updated the built-in Electron runtime to 44.7.0, which includes the latest Chromium and V8 security fixes.
 
 ### Added

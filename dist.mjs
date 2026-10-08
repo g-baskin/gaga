@@ -12,7 +12,7 @@ import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
-import { buildApp, readManifest, root } from './package.mjs';
+import { buildApp, checkRuntimeNotices, readManifest, root } from './package.mjs';
 import { sha256 } from './scripts/sha256.mjs';
 
 const run = promisify(execFile);
@@ -29,6 +29,7 @@ function chosenArches() {
 
 
 async function makeDmg({ app, arch, version, outDir }) {
+  await checkRuntimeNotices(app); // Electron and Chromium licence notices are inside the app before it is signed.
   // Re-sign the whole bundle ad hoc: packaging renames and edits the app, which breaks Electron's own signature.
   await run('codesign', ['--force', '--deep', '--sign', '-', app]);
   await run('codesign', ['--verify', '--deep', '--strict', app]);

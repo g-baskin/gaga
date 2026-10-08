@@ -351,7 +351,8 @@
             h('button', { type: 'button', class: 'link-btn', onclick: () => run(() => api.openLink('source')) }, 'View the source code'))),
         h('div', { class: 'export-unavailable', 'data-unavailable': 'cloud-account' },
           h('strong', {}, 'Storyloom account — not needed'),
-          h('span', {}, ': your books are saved on this Mac, so there is no Storyloom account, password, or subscription. The AI services above are online and billed by their own providers.'))));
+          h('span', {}, ': your books are saved on this Mac, so there is no Storyloom account, password, or subscription. The AI services above are online and billed by their own providers. '),
+          h('button', { type: 'button', class: 'link-btn', 'data-action': 'privacy', onclick: () => run(() => api.openLink('privacy')) }, 'What leaves your Mac'))));
       drawAi();
     },
   });

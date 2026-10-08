@@ -4,6 +4,8 @@
 
 **Does it need the internet?** Your books are saved on your Mac, and writing, designing, recording, and exporting work without AI. AI writing, pictures, and voices use online services you connect (your Claude or ChatGPT plan, OpenRouter, fal.ai, or your own service). Update checks also go online to GitHub; you can turn the automatic check off in Account → Updates.
 
+**What does Storyloom send, and to whom?** Nothing to us: there's no analytics, tracking, or account. AI features send what they need (story text, picture descriptions, and character portraits when you draw pictures with characters) to the AI service you chose, under that service's privacy policy. Update checks go to GitHub. The README's Privacy section lists everything.
+
 **How do I update?** When a new version is out, a notice appears at the bottom of the sidebar, or use Account → Updates → Check for updates. Click Download update, then Restart to update. Only updates signed by Storyloom's release key install. Keep Storyloom in your Applications folder so it can update itself.
 
 **Which download is mine?** `Storyloom_<version>_Apple-Silicon_arm64.dmg` for M1 and newer, `Storyloom_<version>_Intel_x64.dmg` for Intel Macs (Apple menu → About This Mac).

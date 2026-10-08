@@ -40,6 +40,7 @@ module.exports = async function illustrate(ctx) {
     await ctx.click('#illustrate-book');
     await ctx.waitFor('#illustrate-dialog');
     checks.castNamed = await js(`/match their portraits: Pip/.test(document.getElementById('illustrate-cast')?.textContent || '')`);
+    checks.sendingDisclosed = await js(`/portraits are sent to your picture service/.test(document.getElementById('illustrate-sends')?.textContent || '')`);
     checks.countsPages = await js(`/Pages without a picture \\(2\\)/.test(document.getElementById('illustrate-dialog').textContent)`);
     await until(`!document.getElementById('illustrate-start').disabled`);
     await ctx.click('#illustrate-start');

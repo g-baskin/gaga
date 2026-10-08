@@ -62,6 +62,17 @@ With OpenRouter and fal.ai, pick a budget (**Best quality**, **Balanced**, or **
 
 Your keys are encrypted with your Mac's keychain. Your story text is sent only to the services you choose.
 
+## Privacy
+
+Storyloom has no account and no server, and it collects nothing about you: no analytics, no tracking, no crash reports. Your books, pictures, and recordings are saved in a folder on your Mac (**Account → open data folder**).
+
+Things leave your Mac only in these cases:
+
+- **AI writing, pictures, and voices.** When you use an AI feature, the words it needs (your story idea, page text, or a picture description) go to the service you chose in **Account → AI services**. When you draw pictures with characters, their portraits go too, so the characters look the same on every page. fal.ai keeps those portraits for about an hour to draw from them. Each service handles what it receives under its own privacy policy: [OpenRouter](https://openrouter.ai/privacy), [fal.ai](https://fal.ai/legal/privacy-policy), [OpenAI](https://openai.com/policies/) for a ChatGPT plan, and [Anthropic](https://www.anthropic.com/legal/privacy) for a Claude plan. Your own service (such as Ollama) can keep everything on your Mac.
+- **Update checks.** Storyloom asks GitHub whether a new version is out, and downloads it from GitHub when you choose to update. You can turn the automatic check off in **Account → Updates**.
+
+Nothing is ever sent to the people who make Storyloom.
+
 ## For developers
 
 You need macOS and Node.js 22 or newer.

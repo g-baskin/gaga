@@ -813,6 +813,7 @@ function registerHandlers() {
       'openrouter-keys': 'https://openrouter.ai/settings/keys',
       'fal-keys': 'https://fal.ai/dashboard/keys',
       source: 'https://github.com/g-baskin/gaga',
+      privacy: 'https://github.com/g-baskin/gaga#privacy',
       'claude-code': 'https://claude.com/product/claude-code',
     };
     if (!links[name]) throw new Error('Unknown link');
