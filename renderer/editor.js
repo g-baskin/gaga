@@ -996,66 +996,70 @@ async function exportPdf({ mode = 'digital' } = {}) {
 // ---------- keyboard, clipboard, menu ----------
 const isTyping = (node) => !!node?.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"])');
 
-api.onMenuAction((action) => {
-  if (isTyping(document.activeElement)) { document.execCommand(action); return; }
-  if (state.view === 'editor' && !document.querySelector('dialog[open]')) (action === 'undo' ? undo : redo)();
-});
+// Installed by app.js once every script has run: these listeners read `state` (declared in app.js, which loads
+// after this file), so a key press, menu command, or resize during a page (re)load must not reach them earlier.
+function installEditorListeners() {
+  api.onMenuAction((action) => {
+    if (isTyping(document.activeElement)) { document.execCommand(action); return; }
+    if (state.view === 'editor' && !document.querySelector('dialog[open]')) (action === 'undo' ? undo : redo)();
+  });
 
-document.addEventListener('keydown', (e) => {
-  if (state.view !== 'editor' || document.querySelector('dialog[open]')) return;
-  if (isTyping(e.target)) {
-    if (e.key === 'Escape' && editor.editingId) e.target.blur();
-    return;
-  }
-  const mod = e.metaKey || e.ctrlKey;
-  const el = selectedElement();
-  if (e.key === 'Escape') { select(null); return; }
-  if (!el) return;
-  if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deleteElement(el); return; }
-  if (mod && e.key.toLowerCase() === 'd') { e.preventDefault(); duplicateElement(el); return; }
-  if (e.key === 'Enter' && el.type === 'text') { e.preventDefault(); startEditing(el.id); return; }
-  if (e.key === ']' || e.key === '[') {
+  document.addEventListener('keydown', (e) => {
+    if (state.view !== 'editor' || document.querySelector('dialog[open]')) return;
+    if (isTyping(e.target)) {
+      if (e.key === 'Escape' && editor.editingId) e.target.blur();
+      return;
+    }
+    const mod = e.metaKey || e.ctrlKey;
+    const el = selectedElement();
+    if (e.key === 'Escape') { select(null); return; }
+    if (!el) return;
+    if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deleteElement(el); return; }
+    if (mod && e.key.toLowerCase() === 'd') { e.preventDefault(); duplicateElement(el); return; }
+    if (e.key === 'Enter' && el.type === 'text') { e.preventDefault(); startEditing(el.id); return; }
+    if (e.key === ']' || e.key === '[') {
+      e.preventDefault();
+      moveLayer(el, e.key === ']' ? (mod ? 'front' : 'forward') : (mod ? 'back' : 'backward'));
+      return;
+    }
+    const nudge = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+    if (nudge && !el.locked) {
+      e.preventDefault();
+      const step = e.shiftKey ? 10 : 1;
+      checkpoint(`nudge:${el.id}`);
+      el.x = round2(el.x + nudge[0] * step);
+      el.y = round2(el.y + nudge[1] * step);
+      updateElementNode(el);
+      drawSelection();
+      refreshThumb();
+      updateHistoryButtons();
+      scheduleSave();
+    }
+  });
+
+  // Copy and paste of design elements (the system clipboard is left alone for text fields).
+  document.addEventListener('copy', (e) => {
+    if (state.view !== 'editor' || isTyping(document.activeElement)) return;
+    const el = selectedElement();
+    if (!el) return;
     e.preventDefault();
-    moveLayer(el, e.key === ']' ? (mod ? 'front' : 'forward') : (mod ? 'back' : 'backward'));
-    return;
-  }
-  const nudge = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
-  if (nudge && !el.locked) {
+    editor.clipboard = structuredClone(el);
+  });
+  document.addEventListener('cut', (e) => {
+    if (state.view !== 'editor' || isTyping(document.activeElement)) return;
+    const el = selectedElement();
+    if (!el) return;
     e.preventDefault();
-    const step = e.shiftKey ? 10 : 1;
-    checkpoint(`nudge:${el.id}`);
-    el.x = round2(el.x + nudge[0] * step);
-    el.y = round2(el.y + nudge[1] * step);
-    updateElementNode(el);
-    drawSelection();
-    refreshThumb();
-    updateHistoryButtons();
-    scheduleSave();
-  }
-});
+    editor.clipboard = structuredClone(el);
+    deleteElement(el);
+  });
+  document.addEventListener('paste', (e) => {
+    if (state.view !== 'editor' || isTyping(document.activeElement) || !editor.clipboard) return;
+    e.preventDefault();
+    const copy = { ...structuredClone(editor.clipboard), id: newId(), locked: false };
+    const onSamePage = findElement(editor.clipboard.id);
+    addElement(copy, { x: copy.x + copy.w / 2 + (onSamePage ? 16 : 0), y: copy.y + copy.h / 2 + (onSamePage ? 16 : 0) });
+  });
 
-// Copy and paste of design elements (the system clipboard is left alone for text fields).
-document.addEventListener('copy', (e) => {
-  if (state.view !== 'editor' || isTyping(document.activeElement)) return;
-  const el = selectedElement();
-  if (!el) return;
-  e.preventDefault();
-  editor.clipboard = structuredClone(el);
-});
-document.addEventListener('cut', (e) => {
-  if (state.view !== 'editor' || isTyping(document.activeElement)) return;
-  const el = selectedElement();
-  if (!el) return;
-  e.preventDefault();
-  editor.clipboard = structuredClone(el);
-  deleteElement(el);
-});
-document.addEventListener('paste', (e) => {
-  if (state.view !== 'editor' || isTyping(document.activeElement) || !editor.clipboard) return;
-  e.preventDefault();
-  const copy = { ...structuredClone(editor.clipboard), id: newId(), locked: false };
-  const onSamePage = findElement(editor.clipboard.id);
-  addElement(copy, { x: copy.x + copy.w / 2 + (onSamePage ? 16 : 0), y: copy.y + copy.h / 2 + (onSamePage ? 16 : 0) });
-});
-
-new ResizeObserver(() => { if (state.view === 'editor' && !editor.editingId) renderCanvas(); }).observe(document.body);
+  new ResizeObserver(() => { if (state.view === 'editor' && !editor.editingId) renderCanvas(); }).observe(document.body);
+}

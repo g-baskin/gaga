@@ -1,7 +1,7 @@
 {
   "name": "storyloom",
   "productName": "Storyloom",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "private": true,
   "description": "Make picture books on your Mac, with optional AI help for writing, pictures, and narration",
   "license": "AGPL-3.0-only",

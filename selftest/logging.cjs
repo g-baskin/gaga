@@ -41,6 +41,36 @@ module.exports = async function logging(ctx) {
     && (await js(`new Promise((r) => { const t = () => (typeof navigate === 'function' && document.querySelector('#screen') ? r(true) : setTimeout(t, 50)); t(); })`));
   await ctx.installHelpers();
 
+  // 3b. Menu commands and key presses that arrive while the page is still loading its scripts must not reach
+  // handlers before the app is ready (they used to throw "state is not defined"). Reload and send both non-stop.
+  const errorsBefore = ctx.pageErrors.length;
+  let loading = true;
+  const loaded = new Promise((resolve) => {
+    const timer = setTimeout(resolve, 15000);
+    win.webContents.once('did-finish-load', () => { clearTimeout(timer); resolve(); });
+  });
+  win.webContents.reload();
+  const pester = (async () => {
+    while (loading) {
+      win.webContents.send('menu:action', 'undo');
+      win.webContents.sendInputEvent({ type: 'keyDown', keyCode: 'Escape' });
+      win.webContents.sendInputEvent({ type: 'keyUp', keyCode: 'Escape' });
+      await new Promise((r) => setImmediate(r));
+    }
+  })();
+  await loaded;
+  await js(`new Promise((r) => { const t = () => (typeof navigate === 'function' && document.querySelector('#screen') ? r(true) : setTimeout(t, 20)); t(); })`);
+  loading = false;
+  await pester;
+  await pause(200);
+  const loadErrors = ctx.pageErrors.slice(errorsBefore).filter((m) => !/selftest-log-probe/.test(m));
+  checks.inputDuringLoadIgnored = loadErrors.length === 0;
+  if (loadErrors.length) {
+    console.error('Input during load reached the page too early:', loadErrors.slice(0, 2).join(' | '));
+    ctx.pageErrors.splice(errorsBefore); // reported by this check, not the run-wide one
+  }
+  await ctx.installHelpers();
+
   // 4. Account → Open log folder.
   await ctx.navigate('account');
   checks.openLogsButton = await js(`!!document.getElementById('account-open-logs')`);

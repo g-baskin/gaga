@@ -41,9 +41,12 @@ async function run({ app, win, store, argv, root, setOpenFile, useTestServices }
 
   const wc = win.webContents;
   const pageErrors = [];
+  let runningModule = 'startup'; // named in page-error reports
   wc.on('console-message', (event) => {
-    const { level, message } = event;
-    if (level === 'error' || level === 3) pageErrors.push(message);
+    const { level, message, sourceId, lineNumber } = event;
+    // Where it came from, so a failure names the file (the module running at the time is the last one logged).
+    const where = sourceId ? ` (${String(sourceId).replace(/^app:\/\/local\//, '')}:${lineNumber})` : '';
+    if (level === 'error' || level === 3) pageErrors.push(`${message}${where} [during ${runningModule}]`);
   });
   const js = (code) => wc.executeJavaScript(code);
   const pause = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -79,7 +82,7 @@ async function run({ app, win, store, argv, root, setOpenFile, useTestServices }
     return box;
   };
   const ctx = {
-    app, win, wc, store, userData, root, js, pause, centerOf, installHelpers,
+    app, win, wc, store, userData, root, js, pause, centerOf, installHelpers, pageErrors,
     mockAi: mock,
     useTestServices,
     module: null,
@@ -157,6 +160,7 @@ async function run({ app, win, store, argv, root, setOpenFile, useTestServices }
 
   for (const name of modules) {
     ctx.module = name;
+    runningModule = name;
     const before = fsSync.existsSync(path.join(shotDir, `${name}.png`)) ? fsSync.statSync(path.join(shotDir, `${name}.png`)).mtimeMs : 0;
     // Every module starts from a clean app-level screen.
     await js(`navigate('bookshelf').then(() => $settle())`);

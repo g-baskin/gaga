@@ -8,12 +8,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-08
+
 ### Changed
 
 - Account → About links to a short privacy note (also in the README and FAQ) listing exactly what leaves your Mac. Nothing is sent to Storyloom's makers.
 - Illustrate the whole book now says that character portraits are sent to your picture service with each page's description.
 - Storyloom.app now includes Electron's and Chromium's licence notices.
 - Updated the built-in Electron runtime to 44.7.0, which includes the latest Chromium and V8 security fixes.
+- The sidebar, the Designer's tools, and its layer list now use clear line icons instead of text symbols.
 
 ### Added
 
@@ -21,6 +24,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Characters look the same on every page: their Story builder portraits are sent as reference pictures with OpenRouter and fal.ai.
 - **Redraw this picture** on pages drawn by AI, using the same description, with no retyping.
 - AI pictures now match the book's shape (square, portrait, or landscape) when the picture model supports it.
+- On the Bookshelf, in Custom order, a book's ⋯ menu now has **Move earlier** and **Move later**, so you can arrange books without dragging. Keyboard focus is now clearly outlined in that menu and in text fields.
 
 ### Fixed
 
@@ -31,13 +35,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - If your books can't be loaded, screens now say so and offer **Try again**, instead of going blank or claiming you have no books yet. Screens show "Loading…" while they read your library.
 - Making a coloring book from a story no longer freezes the window while each picture turns into line art, and painting a coloring page uses far less memory for Undo.
 - Home, Bookshelf, and the other library screens open faster in big libraries: books you haven't changed aren't re-read each time.
-- On the Bookshelf, in Custom order, a book's ⋯ menu now has **Move earlier** and **Move later**, so you can arrange books without dragging. Keyboard focus is now clearly outlined in that menu and in text fields.
 - Storyloom can no longer be started as a plain script runner or with a debugger attached, which keeps other programs on your Mac from using it to read your saved AI keys. The Claude Code location in Account must now point to the `claude` program itself.
 - If a book's saved file is damaged, Storyloom now tells you which folder it's in instead of quietly leaving it out of your library. Saves are written all the way to disk before replacing the old copy, so a power cut can't leave a book empty.
 - A full character library (500 characters) now says so instead of quietly removing your oldest character to make room.
 - If Storyloom's window crashes or freezes, it now offers to reload instead of staying blank. Unexpected errors are saved in a log on your Mac, which you can open from **Account → Open log folder** to attach to a bug report. The log is never sent anywhere.
-- The sidebar, the Designer's tools, and its layer list now use clear line icons instead of text symbols.
 - The Story builder's cover preview no longer gets cut off at the right edge when the window is at its smallest size.
+- Pressing a key or using the Edit menu while Storyloom's window is still loading (for example right after it reloads) no longer causes an error.
 
 ## [0.6.1] - 2026-10-07
 
@@ -137,7 +140,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Saving several settings at once no longer risks losing one of the changes.
 - An ISBN is only stored if its check digit is correct.
 
-[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.6.1...HEAD
+[Unreleased]: https://github.com/g-baskin/gaga/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/g-baskin/gaga/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/g-baskin/gaga/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/g-baskin/gaga/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/g-baskin/gaga/compare/v0.4.0...v0.5.0

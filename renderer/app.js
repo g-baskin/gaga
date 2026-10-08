@@ -368,5 +368,6 @@ registerScreen('designer', { label: 'Designer', scope: 'book', render: () => ren
 
 // Deferred scripts (including every screen) have all run by DOMContentLoaded.
 document.addEventListener('DOMContentLoaded', () => {
+  installEditorListeners();
   run(() => navigate('home'));
 });
