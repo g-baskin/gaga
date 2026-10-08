@@ -1,11 +1,11 @@
 ---
 type: question
 title: "Was a5dac04 an architectural decision?"
-status: developing
+status: answered
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 question: "Was a5dac04 an architectural decision?"
-answer_quality: draft
+answer_quality: settled
 tags:
   - question
   - storyloom
@@ -19,8 +19,8 @@ sources: []
 
 ## Answer
 
-Unanswered. The first commit (`a5dac04`, 2026-10-06) is a feature summary. It contains no Tier-1 decision language, so no ADR was filed. The "original code only" stance may deserve a human-authored ADR.
+Yes, for one decision. The first commit (`a5dac04`, 2026-10-06) set the rule that Storyloom is original work and Scrively is a reference only, now recorded as [ADR-3](../../architecture/ADR-3-original-code-only.md). Its "offline" framing was later replaced; see [ADR-4](../../architecture/ADR-4-main-process-online-renderer-offline.md).
 
 ## Confidence
 
-Draft — raised by wiki-worker-bee scan on 2026-10-06.
+Settled on 2026-10-08 by filing ADR-3.

@@ -4,6 +4,7 @@
 //   node scripts/changelog.mjs check 0.2.0     → fails unless package.json is 0.2.0 and the changelog has a 0.2.0 section
 //   node scripts/changelog.mjs notes 0.2.0     → prints the GitHub release notes for 0.2.0 (used by the release workflow)
 import { execFile } from 'node:child_process';
+import { realpathSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -94,7 +95,9 @@ async function main([command, version]) {
   }
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+// Run only when started directly. Compares real paths: a symlinked folder (macOS /var → /private/var) would otherwise
+// make the command silently do nothing.
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
   main(process.argv.slice(2)).catch((error) => {
     console.error(error.message);
     process.exitCode = 1;

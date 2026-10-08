@@ -231,9 +231,8 @@
     const progress = h('p', { class: 'muted small-print studio-progress', id: 'studio-ai-progress' });
     const readPage = h('button', { class: 'btn secondary', id: 'studio-ai-page', disabled: !pageText(page), onclick: async () => {
       if (n && !(await confirmDialog('Replace this page’s narration with an AI voice?', { confirmLabel: 'Replace' }))) return;
-      readPage.disabled = true; readPage.textContent = 'Reading…';
       try {
-        const name = await api.generateSpeech({ bookId: book().id, text: pageText(page), voice: voice.value });
+        const name = await withBusy(readPage, 'Reading…', () => api.generateSpeech({ bookId: book().id, text: pageText(page), voice: voice.value }));
         setNarration(name, await durationOf(book().id, name), 'ai');
       } catch (error) { aiError(error); }
       draw();

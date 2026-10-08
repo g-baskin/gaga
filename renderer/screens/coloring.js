@@ -176,14 +176,13 @@
         const idea = ideaInput.value.trim();
         if (!idea) return toast('Describe your idea first');
         const count = Math.min(12, Math.max(4, Math.round(Number(pagesInput.value) || 6)));
-        ideaButton.disabled = true;
         try {
-          const id = await makeFromIdea(idea, count);
+          const id = await withBusy(ideaButton, null, () => makeFromIdea(idea, count));
           toast('Coloring book ready');
           await navigate('coloring', { paint: id });
         } catch (error) {
           toast(cleanError(error), { label: 'Open settings', run: openAiSettings });
-        } finally { ideaButton.disabled = false; }
+        }
       });
     } },
     h('label', { class: 'field' }, h('span', { class: 'field-label' }, 'Your idea'), ideaInput),
@@ -379,16 +378,17 @@
     }
     async function save() {
       if (!canvas || !ref) return;
-      saveBtn.disabled = true;
-      try {
+      await withBusy(saveBtn, null, async () => {
         const name = await api.saveImage(book.id, await canvasBytes(canvas));
         ref.set(name);
         await api.saveBook(book);
         ref = pageImageRef(book.pages[paint.index]);
-        overlay = canvasFor(await loadBitmap(book.id, name));
+        const saved = await loadBitmap(book.id, name);
+        overlay = canvasFor(saved);
+        saved.close();
         refreshThumbs();
         toast('Colored page saved');
-      } finally { saveBtn.disabled = false; }
+      });
     }
     function refreshThumbs() {
       pagePicker.replaceChildren(...book.pages.map((page, i) => h('button', {

@@ -115,8 +115,8 @@ function redo() {
 
 // ---------- layout ----------
 const DRAWERS = [
-  ['pages', 'Pages', '▤'], ['text', 'Text', 'T'], ['shapes', 'Shapes', '◆'],
-  ['stickers', 'Stickers', '☺'], ['uploads', 'Pictures', '▣'], ['frames', 'Frames', '▢'],
+  ['pages', 'Pages', 'pages'], ['text', 'Text', 'text'], ['shapes', 'Shapes', 'shapes'],
+  ['stickers', 'Stickers', 'sticker'], ['uploads', 'Pictures', 'picture'], ['frames', 'Frames', 'frame'],
 ];
 
 function renderEditor() {
@@ -139,11 +139,11 @@ function renderEditor() {
       }, Object.keys(PAGE_PT).map((size) => h('option', { value: size, selected: book.size === size }, SIZE_LABEL[size]))),
       h('button', { class: 'btn primary', id: 'export-pdf', onclick: () => (window.openExportDialog ? run(() => window.openExportDialog()) : notBuilt()) }, 'Export…')));
 
-  const rail = h('nav', { class: 'rail', 'aria-label': 'Design tools' }, DRAWERS.map(([id, label, icon]) =>
+  const rail = h('nav', { class: 'rail', 'aria-label': 'Design tools' }, DRAWERS.map(([id, label, iconName]) =>
     h('button', {
       class: `rail-btn${editor.drawer === id ? ' active' : ''}`, 'data-drawer': id, 'aria-pressed': String(editor.drawer === id),
       onclick: () => { editor.drawer = id; renderDrawer(); markRail(); },
-    }, h('span', { class: 'rail-icon', 'aria-hidden': 'true' }, icon), label)));
+    }, h('span', { class: 'rail-icon' }, icon(iconName, { size: 22 })), label)));
 
   const canvas = h('div', {
     class: 'canvas', id: 'canvas',
@@ -872,12 +872,12 @@ function layersPanel() {
       : h('ol', { class: 'layer-list', id: 'layer-list' }, [...elements].reverse().map((el) =>
         h('li', { class: `layer${el.id === editor.selected ? ' active' : ''}`, 'data-id': el.id },
           h('button', { class: 'layer-name', onclick: () => select(el.id) },
-            h('span', { class: 'layer-type', 'aria-hidden': 'true' }, { text: 'T', image: '▣', shape: '◆', sticker: '☺', sound: '♪' }[el.type]),
+            h('span', { class: 'layer-type' }, icon({ text: 'text', image: 'picture', shape: 'shapes', sticker: 'sticker', sound: 'sound' }[el.type] || 'shapes', { size: 16 })),
             layerLabel(el)),
           h('button', {
             class: 'icon-btn small', title: el.locked ? 'Unlock' : 'Lock', 'aria-label': `${el.locked ? 'Unlock' : 'Lock'} ${layerLabel(el)}`,
             onclick: () => toggleLock(el),
-          }, el.locked ? '🔒' : '🔓')))));
+          }, icon(el.locked ? 'lock' : 'unlock', { size: 16 }))))));
 }
 function markLayers() {
   document.querySelectorAll('#layer-list .layer').forEach((row) => row.classList.toggle('active', row.dataset.id === editor.selected));

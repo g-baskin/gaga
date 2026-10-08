@@ -241,14 +241,7 @@
 
   // ---------- panel ----------
   function busyButton(props, label, task) {
-    const btn = h('button', {
-      ...props, onclick: async () => {
-        btn.disabled = true;
-        const old = btn.textContent;
-        btn.textContent = 'Exporting…';
-        try { await run(task); } finally { btn.disabled = false; btn.textContent = old; }
-      },
-    }, label);
+    const btn = h('button', { ...props, onclick: () => withBusy(btn, 'Exporting…', () => run(task)) }, label);
     return btn;
   }
   const card = (id, title, desc, ...rest) => h('article', { class: 'export-card', 'data-export': id },

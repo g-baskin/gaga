@@ -2,6 +2,7 @@
 // `buildApp` is also used by dist.mjs to build the Intel and Apple Silicon versions.
 import { FuseState, FuseV1Options, FuseVersion, flipFuses, getCurrentFuseWire } from '@electron/fuses';
 import { packager } from '@electron/packager';
+import { realpathSync } from 'node:fs';
 import { access, copyFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -65,7 +66,7 @@ export async function buildApp({ arch = process.arch, out = path.join(root, 'rel
     overwrite: true,
     quiet,
     // Ship only the app itself: no tests, build tools, verification output, or the browser preview's stand-in data.
-    ignore: (file) => DEV_ONLY.has(file) || !(keep.has(file) || ['/renderer', '/ai'].some((dir) => file === dir || file.startsWith(`${dir}/`))),
+    ignore: (file) => DEV_ONLY.has(file) || !(keep.has(file) || ['/renderer', '/ai', '/main'].some((dir) => file === dir || file.startsWith(`${dir}/`))),
   });
   for (const output of outputs) {
     const resources = path.join(output, 'Storyloom.app', 'Contents', 'Resources');
@@ -76,7 +77,8 @@ export async function buildApp({ arch = process.arch, out = path.join(root, 'rel
   return outputs;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+// Run only when started directly (compares real paths, so a symlinked folder still builds).
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
   const outputs = await buildApp();
   console.log(`Built: ${outputs.join('\n')}`);
 }

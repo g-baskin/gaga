@@ -44,6 +44,53 @@ function svg(tag, attrs, ...children) {
   return el;
 }
 
+// Storyloom's icons: simple line drawings on a 24 × 24 grid, drawn in the current text colour. Always decorative
+// (aria-hidden): the button or link next to them carries the words.
+const ICONS = {
+  home: [['path', { d: 'M4 11 12 4l8 7' }], ['path', { d: 'M6 10v10h12V10' }], ['path', { d: 'M10 20v-5h4v5' }]],
+  bookshelf: [['path', { d: 'M4 20h16' }], ['rect', { x: 5, y: 5, width: 3.5, height: 15, rx: 0.5 }], ['rect', { x: 10.25, y: 7, width: 3.5, height: 13, rx: 0.5 }], ['path', { d: 'm15.6 8.2 3.4-.9 3 12' }]],
+  templates: [['rect', { x: 4, y: 4, width: 7, height: 7, rx: 1.5 }], ['rect', { x: 13, y: 4, width: 7, height: 7, rx: 1.5 }], ['rect', { x: 4, y: 13, width: 7, height: 7, rx: 1.5 }], ['rect', { x: 13, y: 13, width: 7, height: 7, rx: 1.5 }]],
+  coloring: [['path', { d: 'm5 19 1-4L16 5l3 3L9 18z' }], ['path', { d: 'm14 7 3 3' }]],
+  printer: [['path', { d: 'M7 9V4h10v5' }], ['rect', { x: 4, y: 9, width: 16, height: 7, rx: 1.5 }], ['path', { d: 'M7 14h10v6H7z' }]],
+  account: [['circle', { cx: 12, cy: 8, r: 4 }], ['path', { d: 'M4.5 20c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5' }]],
+  pages: [['rect', { x: 6, y: 3, width: 12, height: 15, rx: 1.5 }], ['path', { d: 'M9 21h11V8' }]],
+  text: [['path', { d: 'M5 6V4h14v2' }], ['path', { d: 'M12 4v16' }], ['path', { d: 'M9 20h6' }]],
+  shapes: [['circle', { cx: 8, cy: 8, r: 4 }], ['rect', { x: 12, y: 12, width: 8, height: 8, rx: 1 }]],
+  sticker: [['path', { d: 'm12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z' }]],
+  picture: [['rect', { x: 3.5, y: 5, width: 17, height: 14, rx: 1.5 }], ['circle', { cx: 9, cy: 10, r: 1.6 }], ['path', { d: 'm4 18 5.5-5 4 3.5 2.5-2 4 3.5' }]],
+  frame: [['rect', { x: 3.5, y: 3.5, width: 17, height: 17, rx: 1.5 }], ['rect', { x: 7.5, y: 7.5, width: 9, height: 9, rx: 0.5 }]],
+  sound: [['path', { d: 'M4 10v4h3l5 4V6L7 10z' }], ['path', { d: 'M16 9c1.3 1.6 1.3 4.4 0 6' }], ['path', { d: 'M18.5 6.5c2.7 3 2.7 8 0 11' }]],
+  lock: [['rect', { x: 5, y: 11, width: 14, height: 9, rx: 1.5 }], ['path', { d: 'M8 11V8a4 4 0 0 1 8 0v3' }]],
+  unlock: [['rect', { x: 5, y: 11, width: 14, height: 9, rx: 1.5 }], ['path', { d: 'M8 11V8a4 4 0 0 1 7.7-1.5' }]],
+};
+function icon(name, { size = 20 } = {}) {
+  const parts = ICONS[name];
+  if (!parts) throw new Error(`Unknown icon "${name}"`);
+  return svg('svg', {
+    class: 'icon', width: size, height: size, viewBox: '0 0 24 24', 'aria-hidden': 'true', focusable: 'false',
+    fill: 'none', stroke: 'currentColor', 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round',
+  }, ...parts.map(([tag, attrs]) => svg(tag, attrs)));
+}
+
+// Shows a button as busy while `task` runs: disabled, marked aria-busy, and (if `label` is given) showing it, e.g.
+// 'Writing…'. Afterwards the button gets its own words and disabled state back, unless the screen redrew it away.
+// Errors are left to the caller (they still throw), so each place keeps its own message.
+async function withBusy(button, label, task) {
+  const before = { text: button.textContent, disabled: button.disabled };
+  button.disabled = true;
+  button.setAttribute('aria-busy', 'true');
+  if (label) button.textContent = label;
+  try {
+    return await task();
+  } finally {
+    button.removeAttribute('aria-busy');
+    if (button.isConnected) {
+      button.disabled = before.disabled;
+      if (label) button.textContent = before.text;
+    }
+  }
+}
+
 const cleanError = (error) => String(error?.message || error).replace(/^Error invoking remote method '[^']+': (Error: )?/, '');
 const newId = () => crypto.randomUUID();
 

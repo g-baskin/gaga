@@ -47,8 +47,8 @@ api.onBeforeClose(async () => {
 // ---------- screens and navigation ----------
 const screens = new Map();
 const APP_NAV = [
-  ['home', 'Home', '⌂'], ['bookshelf', 'Bookshelf', '▥'], ['templates', 'Templates', '❖'],
-  ['coloring', 'Coloring', '✎'], ['orders', 'Print orders', '⎙'], ['account', 'Account', '◉'],
+  ['home', 'Home', 'home'], ['bookshelf', 'Bookshelf', 'bookshelf'], ['templates', 'Templates', 'templates'],
+  ['coloring', 'Coloring', 'coloring'], ['orders', 'Print orders', 'printer'], ['account', 'Account', 'account'],
 ];
 const BOOK_TABS = [
   ['story-builder', 'Story builder'], ['manuscript', 'Manuscript'], ['designer', 'Designer'], ['studio', 'Studio'], ['export', 'Export'],
@@ -145,11 +145,11 @@ function renderShell(scope, name) {
     const nav = h('nav', { class: 'app-nav', 'aria-label': 'Storyloom' },
       h('div', { class: 'brand' }, h('span', { class: 'brand-mark', 'aria-hidden': 'true' }), 'Storyloom'),
       h('button', { class: 'btn primary block', id: 'new-book', type: 'button', onclick: () => run(createBlankBook) }, 'New book'),
-      h('div', { class: 'app-nav-list' }, APP_NAV.map(([item, label, icon]) =>
+      h('div', { class: 'app-nav-list' }, APP_NAV.map(([item, label, iconName]) =>
         h('button', {
           class: `app-nav-item${item === name ? ' active' : ''}`, type: 'button', 'data-nav': item, 'aria-current': item === name ? 'page' : null,
           onclick: () => run(() => navigate(item)),
-        }, h('span', { class: 'app-nav-icon', 'aria-hidden': 'true' }, icon), label))),
+        }, h('span', { class: 'app-nav-icon' }, icon(iconName)), label))),
       versionLabel());
     root.replaceChildren(h('div', { class: 'app-shell' }, nav, host));
   }

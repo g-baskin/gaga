@@ -263,13 +263,12 @@
       drawBtn.onclick = async () => {
         const prompt = `${form.elements.name.value}: ${form.elements.description.value}`.trim();
         if (!form.elements.description.value.trim()) { toast('Describe the character first so the artist knows what to draw'); return; }
-        drawBtn.disabled = true; drawBtn.textContent = 'Drawing…';
         try {
-          draft.image = await api.generateImage({ bookId: state.book.id, prompt, style: builder().illustrationStyle || undefined });
+          draft.image = await withBusy(drawBtn, 'Drawing…', () => api.generateImage({ bookId: state.book.id, prompt, style: builder().illustrationStyle || undefined }));
         } catch (error) {
           toast(cleanError(error), { label: 'Open settings', run: openAiSettings });
         }
-        drawBtn.disabled = !canDraw; drawBtn.textContent = 'Draw a portrait with AI';
+        drawBtn.disabled = !canDraw; // AI pictures may have been switched off while it was drawing
         showPicture();
         showDraft();
       };
@@ -380,14 +379,13 @@
     if (!(await confirmReplace())) return;
     const b = builder();
     const progress = view.host.querySelector('#sb-progress');
-    button.disabled = true; button.textContent = 'Writing your story…';
     progress.hidden = false;
     try {
-      const story = await api.generateStory({
+      const story = await withBusy(button, 'Writing your story…', () => api.generateStory({
         idea: b.idea, title: state.book.title, genre: b.genre, writingStyle: b.writingStyle, location: b.location, era: b.era,
         extras: b.extras, language: state.book.language || 'English', readingLevel: b.readingLevel, length: b.length,
         characters: b.characters.map(({ name, role, description }) => ({ name, role, description })),
-      });
+      }));
       const chapters = (story.chapters?.length ? story.chapters : (story.pages || []).map((text, i) => ({ title: `Page ${i + 1}`, text })))
         .map((ch, i) => ({ id: newId(), title: ch.title || `Page ${i + 1}`, blocks: toBlocks(ch.text) }));
       if (!chapters.length) throw new Error('The writer sent back an empty story. Try again.');
@@ -397,7 +395,7 @@
       await navigate('manuscript');
     } catch (error) {
       toast(cleanError(error), { label: 'Open settings', run: openAiSettings });
-      if (button.isConnected) { button.disabled = false; button.textContent = 'Write the story with AI'; progress.hidden = true; }
+      if (button.isConnected) progress.hidden = true;
     }
   }
 

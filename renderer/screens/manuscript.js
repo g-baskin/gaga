@@ -532,20 +532,18 @@
     const index = chapters().indexOf(ch);
     const context = chapters().slice(0, index).map((c) => `${c.title}\n${chapterText(c)}`).join('\n\n').slice(-4000);
     const button = ui.aiButton;
-    button.disabled = true;
-    button.textContent = 'Writing…';
     try {
-      const result = await api.generateChapter({
+      const result = await withBusy(button, 'Writing…', () => api.generateChapter({
         bookTitle: book.title, chapterTitle: ch.title, readingLevel: book.builder?.readingLevel || 'early-reader', language: book.language || 'en',
         wordLimit: limitFor(book), context, current: existing, instruction: ui.instruction?.value.trim() || '',
-      });
+      }));
       ch.blocks = textToBlocks(result?.text);
       scheduleSave();
       if (ui && ui.currentId === ch.id) { drawList(); drawMain(); }
     } catch (error) {
       toast(cleanError(error), { label: 'Open settings', run: openAiSettings });
     } finally {
-      if (button.isConnected) { button.disabled = false; updateCounts(); }
+      if (button.isConnected) updateCounts();
     }
   }
 

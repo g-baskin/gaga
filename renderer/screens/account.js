@@ -92,12 +92,10 @@
         .map(([v, l]) => h('option', { value: v, selected: v === s.chatgptModel }, l)));
     const signIn = async () => {
       const button = document.getElementById('account-chatgpt-sign-in');
-      button.disabled = true;
-      button.textContent = 'Waiting for your browser…';
       const error = document.getElementById('account-ai-error');
       error.textContent = '';
       try {
-        const result = await api.chatGptSignIn();
+        const result = await withBusy(button, 'Waiting for your browser…', () => api.chatGptSignIn());
         if (result?.firstTime && result.planEnabled) await welcome();
       } catch (err) {
         error.textContent = cleanError(err);

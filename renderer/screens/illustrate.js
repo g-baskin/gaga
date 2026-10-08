@@ -147,12 +147,7 @@
   window.pagePictureExtras.push((book, page) => (page.image && page.imagePrompt && DRAWABLE.has(page.layout)
     ? h('button', {
       class: 'btn ghost', id: 'redraw-picture', title: page.imagePrompt,
-      onclick: (e) => {
-        const button = e.currentTarget;
-        button.disabled = true;
-        button.textContent = 'Redrawing…';
-        run(() => redrawPage(book, page)).finally(() => { if (button.isConnected) { button.disabled = false; button.textContent = 'Redraw this picture'; } });
-      },
+      onclick: (e) => withBusy(e.currentTarget, 'Redrawing…', () => run(() => redrawPage(book, page))),
     }, 'Redraw this picture')
     : null));
 

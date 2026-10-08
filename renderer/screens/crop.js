@@ -162,15 +162,12 @@
         onsubmit: async (e) => {
           e.preventDefault();
           const data = new FormData(form);
-          submit.disabled = true;
-          submit.textContent = 'Painting…';
           try {
-            const name = await api.generateImage({ bookId: book.id, prompt: String(data.get('prompt') || ''), style: String(data.get('style') || '') });
+            const name = await withBusy(submit, 'Painting…',
+              () => api.generateImage({ bookId: book.id, prompt: String(data.get('prompt') || ''), style: String(data.get('style') || '') }));
             close();
             await addImageToPage(name);
           } catch (error) {
-            submit.disabled = false; // only reachable when pictures were set up
-            submit.textContent = 'Generate';
             toast(cleanError(error), { label: 'Open settings', run: openAiSettings });
           }
         },

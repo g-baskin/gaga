@@ -13,7 +13,7 @@ Storyloom is a free, open-source Mac app for parents, teachers, and new authors.
 ## What you can do
 
 - **Start from one line.** Type an idea, pick a star for the story, and Storyloom sets up the book.
-- **Write.** A manuscript editor with chapters and word limits that match the reading level. Ask AI to write or rewrite a chapter, or start from an outline without any AI.
+- **Write.** A manuscript with chapters and word limits that match the reading level. Ask AI to write or rewrite a chapter, or start from an outline without any AI.
 - **Design every page.** Text, shapes, stickers, your own pictures, frames, layers, cropping, and undo. Choose from 21 fonts, and start from 24 page themes or 7 starter books.
 - **Add characters.** Describe them once, give them a photo or an AI portrait, and reuse them in other books.
 - **Illustrate the whole book in one go.** Storyloom plans a picture for every page and draws them, keeping your characters looking the same from page to page. Redraw any picture you don't like.

@@ -67,3 +67,45 @@ test('the real CHANGELOG.md is well formed: an Unreleased section, and notes for
     assert.match(text, new RegExp(`^\\[${version.replace(/\./g, '\\.')}\\]: https://`, 'm'), `version ${version} has no link`);
   }
 });
+
+// The command-line entry the release workflow runs (check, notes) and `npm run release` uses, run for real on a copy
+// of the script in a temporary folder, so it reads that folder's package.json and CHANGELOG.md.
+test('the changelog command checks, prints notes, and releases a version', async (t) => {
+  const os = require('node:os');
+  const { execFile } = require('node:child_process');
+  const run = (dir, args) => new Promise((resolve) => {
+    execFile(process.execPath, [path.join(dir, 'scripts', 'changelog.mjs'), ...args], { cwd: dir }, (error, stdout, stderr) => {
+      resolve({ code: error ? error.code : 0, stdout, stderr });
+    });
+  });
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'storyloom-changelog-'));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  fs.mkdirSync(path.join(dir, 'scripts'));
+  fs.copyFileSync(path.join(__dirname, '..', 'scripts', 'changelog.mjs'), path.join(dir, 'scripts', 'changelog.mjs'));
+  fs.writeFileSync(path.join(dir, 'package.json'), `${JSON.stringify({ name: 'changelog-cli-test', version: '0.1.0', private: true }, null, 2)}\n`);
+  fs.writeFileSync(path.join(dir, 'CHANGELOG.md'), SAMPLE);
+
+  const ok = await run(dir, ['check', '0.1.0']);
+  assert.equal(ok.code, 0, ok.stderr);
+  assert.match(ok.stdout, /Version 0\.1\.0 is ready to release\./);
+
+  const mismatch = await run(dir, ['check', '0.2.0']);
+  assert.equal(mismatch.code, 1);
+  assert.match(mismatch.stderr, /package\.json says 0\.1\.0, but the release is 0\.2\.0/);
+
+  const printed = await run(dir, ['notes', '0.1.0']);
+  assert.equal(printed.code, 0, printed.stderr);
+  assert.match(printed.stdout, /^### Added\n\n- First thing\./);
+
+  const usage = await run(dir, ['check']);
+  assert.equal(usage.code, 1);
+  assert.match(usage.stderr, /Usage: node scripts\/changelog\.mjs/);
+  assert.equal((await run(dir, ['publish', '0.1.0'])).code, 1);
+
+  const released = await run(dir, ['release', '0.2.0']);
+  assert.equal(released.code, 0, released.stderr);
+  assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8')).version, '0.2.0');
+  const changelog = fs.readFileSync(path.join(dir, 'CHANGELOG.md'), 'utf8');
+  assert.match(changelog, /^## \[0\.2\.0\] - \d{4}-\d{2}-\d{2}\n\n### Added\n\n- New thing\./m);
+  assert.equal((await run(dir, ['check', '0.2.0'])).code, 0);
+});

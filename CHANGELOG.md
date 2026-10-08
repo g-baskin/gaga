@@ -36,6 +36,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - If a book's saved file is damaged, Storyloom now tells you which folder it's in instead of quietly leaving it out of your library. Saves are written all the way to disk before replacing the old copy, so a power cut can't leave a book empty.
 - A full character library (500 characters) now says so instead of quietly removing your oldest character to make room.
 - If Storyloom's window crashes or freezes, it now offers to reload instead of staying blank. Unexpected errors are saved in a log on your Mac, which you can open from **Account → Open log folder** to attach to a bug report. The log is never sent anywhere.
+- The sidebar, the Designer's tools, and its layer list now use clear line icons instead of text symbols.
 - The Story builder's cover preview no longer gets cut off at the right edge when the window is at its smallest size.
 
 ## [0.6.1] - 2026-10-07
