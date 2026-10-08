@@ -65,7 +65,12 @@ module.exports = async function coloring(ctx) {
   const outside = await px(0.05, 0.05);
   checks.fillInside = inside.join() === '29,112,184';
   checks.fillStopsAtLine = outside.join() === '255,255,255';
+  // Undo steps are kept compressed, not as raw pixels (4 bytes per pixel).
+  checks.undoCompact = await js(`(async () => { const blob = await window.__coloringPaint.undo.at(-1); const c = document.getElementById('coloring-canvas');
+    return blob instanceof Blob && blob.size < (c.width * c.height * 4) / 4; })()`);
   await ctx.click('#coloring-undo');
+  // Undo restores a compressed snapshot, which finishes a moment later.
+  await js(`$waitFor(() => { const c = document.getElementById('coloring-canvas'); return c.getContext('2d').getImageData(Math.floor(c.width * 0.5), Math.floor(c.height * 0.5), 1, 1).data[0] === 255; }, 3000).catch(() => null)`);
   checks.undoRestores = (await px(0.5, 0.5)).join() === '255,255,255';
 
   // Brush stroke near the top (outside the circle).

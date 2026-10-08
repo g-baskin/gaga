@@ -5,7 +5,7 @@
 .templates-search {
   width: 260px; border: 1px solid var(--line); border-radius: 999px; padding: var(--space-8) var(--space-16); background: var(--panel); font: inherit;
 }
-.templates-search:focus { border-color: var(--teal); outline: none; }
+.templates-search:focus { border-color: var(--teal); }
 .templates-chips { display: flex; flex-wrap: wrap; gap: var(--space-8); margin-bottom: var(--space-8); }
 .templates-chip {
   border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: var(--space-6) var(--space-16); font: inherit; font-weight: 600;

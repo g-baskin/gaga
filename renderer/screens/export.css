@@ -58,7 +58,7 @@
 }
 .ai-choice input[type="radio"] { position: absolute; left: 12px; top: 13px; margin: 0; accent-color: var(--teal); }
 .ai-key-input { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: var(--radius-control); padding: var(--space-8) var(--space-10); background: var(--panel); }
-.ai-key-input:focus { border-color: var(--teal); outline: none; }
+.ai-key-input:focus { border-color: var(--teal); }
 .ai-choice:has(input:checked) { border-color: var(--teal); background: var(--teal-soft); }
 .ai-choice:has(input:focus-visible) { outline: 2px solid var(--teal); outline-offset: 2px; }
 .ai-choice-label { font-weight: 600; font-size: var(--text-base); }

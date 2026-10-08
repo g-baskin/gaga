@@ -34,6 +34,9 @@ module.exports = async function aiServices(ctx) {
 
   try {
     // ---------- Claude Code ----------
+    // Settings refuse a Claude Code location that isn't a program named claude.
+    const refused = await api(`return api.saveSettings({ claudePath: '/bin/bash' }).then(() => '', (error) => error.message)`);
+    checks.claudePathOnlyClaude = /claude program/.test(refused) && (await settings()).claudePath !== '/bin/bash';
     await api(`return api.saveSettings({ claudePath: ${JSON.stringify(fakeClaude.program)} })`);
     await ctx.navigate('account');
     await ctx.click('#account-writer-claude');

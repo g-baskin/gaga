@@ -42,6 +42,8 @@ contextBridge.exposeInMainWorld('storyloom', {
   revealExport: () => call('books:reveal-export'),
   // App and AI services
   openDataFolder: () => call('app:open-data-folder'),
+  openLogs: () => call('app:open-logs'),
+  logError: (entry) => call('app:log-error', entry),
   appInfo: () => call('app:info'),
   // In-app updates. State: { phase: idle|checking|up-to-date|available|downloading|ready|installing|failed, ... }
   updateState: () => call('app:update-state'),

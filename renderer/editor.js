@@ -30,9 +30,9 @@ const TEXT_PRESETS = {
 const TEXT_STYLES = [
   { label: 'Bubble', text: 'POP!', font: 'rounded', fontSize: 64, bold: true, color: '#ffffff', outline: true, outlineColor: '#d9553f', w: 240, h: 90 },
   { label: 'Glow', text: 'Magic', font: 'serif', fontSize: 54, bold: true, italic: true, color: '#fff6c9', shadow: true, w: 280, h: 80 },
-  { label: 'Label', text: 'Chapter One', font: 'sans', fontSize: 22, bold: true, color: '#2a2433', highlight: '#ffd96a', w: 260, h: 38 },
+  { label: 'Label', text: 'Chapter One', font: 'sans', fontSize: 22, bold: true, color: BOOK_INK, highlight: '#ffd96a', w: 260, h: 38 },
   { label: 'Note', text: 'Remember this!', font: 'hand', fontSize: 30, color: '#2f7f75', w: 300, h: 48 },
-  { label: 'Title', text: 'THE END', font: 'serif', fontSize: 56, bold: true, letterSpacing: 6, color: '#2a2433', w: 380, h: 80 },
+  { label: 'Title', text: 'THE END', font: 'serif', fontSize: 56, bold: true, letterSpacing: 6, color: BOOK_INK, w: 380, h: 80 },
   { label: 'Whisper', text: 'shh… quiet now', font: 'serif', fontSize: 24, italic: true, color: '#776f80', w: 320, h: 40 },
 ];
 const SHAPE_DEFAULTS = { rect: '#7cc6b8', rounded: '#f2b84b', ellipse: '#e88a7a', triangle: '#9a8cd8', star: '#f2c94c', burst: '#f28e5c', heart: '#e5566f', cloud: '#ffffff', speech: '#ffffff', arrow: '#5aa5d6' };
@@ -42,7 +42,7 @@ const base = (w, h) => ({ id: newId(), x: 0, y: 0, w, h, rotation: 0, opacity: 1
 function textElement(preset) {
   return {
     ...base(preset.w, preset.h), type: 'text', text: preset.text, font: preset.font, fontSize: preset.fontSize,
-    color: preset.color || '#2a2433', align: 'center', bold: !!preset.bold, italic: !!preset.italic,
+    color: preset.color || BOOK_INK, align: 'center', bold: !!preset.bold, italic: !!preset.italic,
     lineHeight: 1.25, letterSpacing: preset.letterSpacing || 0, shadow: !!preset.shadow,
     outline: !!preset.outline, outlineColor: preset.outlineColor || '#ffffff', highlight: preset.highlight || null,
   };
@@ -50,7 +50,7 @@ function textElement(preset) {
 function shapeElement(shape) {
   const outlined = shape === 'cloud' || shape === 'speech';
   const size = shape === 'speech' ? [220, 160] : shape === 'arrow' ? [200, 120] : [160, 160];
-  return { ...base(...size), type: 'shape', shape, fill: SHAPE_DEFAULTS[shape], stroke: '#2a2433', strokeWidth: outlined ? 3 : 0 };
+  return { ...base(...size), type: 'shape', shape, fill: SHAPE_DEFAULTS[shape], stroke: BOOK_INK, strokeWidth: outlined ? 3 : 0 };
 }
 const stickerElement = (char) => ({ ...base(110, 110), type: 'sticker', char });
 function imageElement(name, ratio) {

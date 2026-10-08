@@ -6,6 +6,7 @@ const fsSync = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { createStore, sniffImage, plainFsError, readJsonFile } = require('./storage.cjs');
+const { createLog } = require('./log.cjs');
 const { buildEpub, collectImages } = require('./epub.cjs');
 const modelPicker = require('./ai/model-picker.cjs');
 const { createOpenRouter } = require('./ai/openrouter.cjs');
@@ -23,6 +24,16 @@ if (selfTest) {
   // Encrypt test secrets with a throwaway key instead of the real macOS keychain.
   app.commandLine.appendSwitch('use-mock-keychain');
 }
+// Errors go to a log on this Mac only (~/Library/Logs/Storyloom; the self-test's goes in its temp folder). Never sent anywhere.
+app.setAppLogsPath(selfTest ? path.join(app.getPath('userData'), 'logs') : undefined);
+const log = createLog(app.getPath('logs'));
+process.on('uncaughtException', (error) => {
+  log.error('Unexpected error in Storyloom', error);
+  console.error(error);
+  if (!selfTest) dialog.showErrorBox('Storyloom ran into a problem', `${error?.message || error}\n\nThe details were saved in Storyloom’s log (Account → Open log folder).`);
+});
+process.on('unhandledRejection', (reason) => { log.error('Unhandled promise rejection', reason); console.error(reason); });
+
 // Removes the self-test's temporary data folder (only ever a mkdtemp folder) unless --keep-data is passed.
 function cleanSelfTestData() {
   const dir = app.getPath('userData');
@@ -63,12 +74,24 @@ const SAVED_FILE_NAMES = {
   'shelves.json': 'your shelves', 'characters.json': 'your character library',
 };
 function reportDamaged({ file, backup }) {
+  log.warn(`Damaged saved file set aside: ${file}`, `Kept as ${backup}`);
   const what = SAVED_FILE_NAMES[path.basename(file)] || path.basename(file);
   const options = {
     type: 'warning',
     message: `Storyloom couldn’t read ${what}`,
     detail: `The saved file was damaged, so Storyloom started ${what} fresh. The damaged copy was kept as “${path.basename(backup)}” in ${path.dirname(backup)}.`,
   };
+  (win ? dialog.showMessageBox(win, options) : dialog.showMessageBox(options)).catch((error) => console.error(error));
+}
+// A book folder whose book.json can't be read: left exactly as it is, and the user is told where it is.
+function reportUnreadableBook({ id, folder }) {
+  log.warn(`Book ${id} couldn’t be read, so it isn’t in the library`, folder);
+  const options = {
+    type: 'warning',
+    message: 'One of your books couldn’t be opened',
+    detail: `Its saved file is damaged or can’t be read, so it isn’t shown in your library. Nothing was deleted: the book is still in the folder “${id}” in ${path.dirname(folder)}.`,
+  };
+  if (selfTest) { console.warn(`${options.message}: ${folder}`); return; }
   (win ? dialog.showMessageBox(win, options) : dialog.showMessageBox(options)).catch((error) => console.error(error));
 }
 
@@ -150,7 +173,10 @@ async function saveSettingsNow(input = {}) {
     return value;
   };
   const claudePath = typeof keep('claudePath') === 'string' ? keep('claudePath').trim() : '';
-  if (claudePath && (!path.isAbsolute(claudePath) || claudePath.length > 1000)) throw new Error('The Claude Code location must be a full path, like /usr/local/bin/claude');
+  // Only a program named claude: this path is run, so it must not point Storyloom at any other program.
+  if (claudePath && (!path.isAbsolute(claudePath) || claudePath.length > 1000 || path.basename(claudePath) !== 'claude')) {
+    throw new Error('The Claude Code location must be the full path to the claude program, like /usr/local/bin/claude');
+  }
   const next = {
     baseUrl: checkBaseUrl(typeof input.baseUrl === 'string' ? input.baseUrl.trim() : current.baseUrl),
     model: checkModel(keep('model'), 'Model'),
@@ -769,6 +795,20 @@ function registerHandlers() {
     return path.basename(file);
   });
   handle('books:reveal-export', () => { if (lastExport) shell.showItemInFolder(lastExport); });
+  // Errors from the page (it can't write files itself). Capped, so a loop of errors can't fill the disk.
+  let pageErrors = 0;
+  handle('app:log-error', (_e, entry) => {
+    if (++pageErrors > 200) return false;
+    const message = typeof entry?.message === 'string' ? entry.message.slice(0, 2000) : 'Unknown error';
+    const stack = typeof entry?.stack === 'string' ? entry.stack.slice(0, 6000) : '';
+    log.write('error', `Page: ${message}`, stack);
+    return true;
+  });
+  handle('app:open-logs', () => {
+    if (selfTest) return true;
+    fsSync.mkdirSync(log.dir, { recursive: true });
+    return shell.openPath(log.dir).then((err) => !err);
+  });
   handle('app:open-data-folder', () => (selfTest ? true : shell.openPath(app.getPath('userData')).then((err) => !err)));
   handle('app:info', () => ({ version: app.getVersion(), dataFolder: app.getPath('userData'), platform: process.platform }));
   handle('app:update-state', () => updateState);
@@ -888,7 +928,7 @@ async function serve(request) {
 }
 
 app.whenReady().then(async () => {
-  store = createStore(app.getPath('userData'), { onDamaged: reportDamaged });
+  store = createStore(app.getPath('userData'), { onDamaged: reportDamaged, onUnreadableBook: reportUnreadableBook });
   const ses = session.defaultSession;
   // Only the microphone, only audio, only for the app's own page (Studio narration). Everything else is denied.
   const isOwnPage = (wc, url) => Boolean(win) && wc === win.webContents && typeof url === 'string' && url.startsWith('app://local/');
@@ -924,6 +964,33 @@ app.whenReady().then(async () => {
     setTimeout(() => { allowClose = true; win?.close(); }, 3000); // Never trap the user if saving hangs.
   });
   win.on('closed', () => { win = null; });
+  // If the page crashes or freezes, log it and offer to reload instead of leaving a blank or stuck window.
+  // (Books are saved as you go; a reload reopens the library.)
+  let reloadAfterHang = false;
+  win.webContents.on('render-process-gone', (_event, details) => {
+    log.write('error', `Window stopped working (${details.reason}, exit code ${details.exitCode})`);
+    if (details.reason === 'clean-exit' || !win) return;
+    if (selfTest || reloadAfterHang) { reloadAfterHang = false; win.webContents.reload(); return; }
+    dialog.showMessageBox(win, {
+      type: 'error', buttons: ['Reload', 'Quit'], defaultId: 0, cancelId: 0,
+      message: 'Storyloom’s window stopped working',
+      detail: 'Your books are saved as you work. Reload to carry on; anything changed in the last moment may need redoing. The details were saved in Storyloom’s log.',
+    }).then(({ response }) => {
+      if (response === 1) { allowClose = true; app.quit(); } else win?.webContents.reload();
+    }).catch((error) => log.error('Crash dialog', error));
+  });
+  win.on('unresponsive', () => {
+    log.warn('Window stopped responding');
+    if (selfTest || !win) return;
+    dialog.showMessageBox(win, {
+      type: 'warning', buttons: ['Wait', 'Reload'], defaultId: 0, cancelId: 0,
+      message: 'Storyloom isn’t responding',
+      detail: 'It may be busy with a big picture or book. Wait a little, or reload the window (your books are saved as you work).',
+    }).then(({ response }) => {
+      // A frozen page can't reload itself, so end it; render-process-gone then reloads without asking again.
+      if (response === 1 && win) { reloadAfterHang = true; win.webContents.forcefullyCrashRenderer(); }
+    }).catch((error) => log.error('Not responding dialog', error));
+  });
   await win.loadURL('app://local/index.html');
   if (selfTest) {
     // The self-test drives the app with simulated input (webContents.sendInputEvent). Ignore the real mouse,
@@ -942,7 +1009,7 @@ app.whenReady().then(async () => {
       app.exit(1);
     }
   }
-}).catch((error) => { console.error(error); app.exit(1); });
+}).catch((error) => { log.error('Storyloom could not start', error); console.error(error); app.exit(1); });
 
 app.on('window-all-closed', () => app.quit());
 // A downloaded update that wasn't installed is deleted on quit (the installer cleans up its own).

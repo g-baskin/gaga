@@ -176,6 +176,8 @@
     exportWav: unsupported,
     revealExport: unsupported,
     openDataFolder: unsupported,
+    openLogs: unsupported,
+    logError: () => ok(true),
     appInfo: () => ok({ version: 'preview', dataFolder: 'This browser tab (preview only)' }),
     // The preview never contacts GitHub or installs anything.
     updateState: () => ok({ phase: 'idle', current: 'preview' }),

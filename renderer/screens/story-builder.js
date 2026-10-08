@@ -24,7 +24,7 @@
     { id: 'meadow', name: 'Meadow', palette: { background: '#f3f7ec', ink: '#2f4a2c', accent: '#6aa84f' }, font: 'serif', frame: 'none' },
     { id: 'sunset', name: 'Sunset', palette: { background: '#fff1e4', ink: '#5a2a1c', accent: '#e07a3f' }, font: 'rounded', frame: 'rounded' },
     { id: 'night-sky', name: 'Night sky', palette: { background: '#22284a', ink: '#f6f1dc', accent: '#f2c94c' }, font: 'serif', frame: 'thin' },
-    { id: 'notebook', name: 'Notebook', palette: { background: '#ffffff', ink: '#2a2433', accent: '#2f7f75' }, font: 'hand', frame: 'dashed' },
+    { id: 'notebook', name: 'Notebook', palette: { background: '#ffffff', ink: BOOK_INK, accent: '#2f7f75' }, font: 'hand', frame: 'dashed' },
   ];
   const themes = () => {
     const list = window.STORYLOOM_TEMPLATES?.themes;
@@ -181,8 +181,8 @@
           return h('button', {
             type: 'button', class: `sb-theme${b.templateId === t.id ? ' active' : ''}`, 'data-theme': t.id,
             onclick: () => { b.templateId = b.templateId === t.id ? null : t.id; changed(true); },
-          }, h('span', { class: 'sb-swatch', style: { backgroundColor: p.background || '#fff', color: p.ink || '#2a2433', borderColor: p.accent || '#ccc' } },
-            h('span', { style: { backgroundColor: p.accent || '#ccc' } })), t.name);
+          }, h('span', { class: 'sb-swatch', style: { backgroundColor: p.background || null, color: p.ink || null, borderColor: p.accent || null } },
+            h('span', { style: { backgroundColor: p.accent || null } })), t.name);
         }))),
       h('div', { class: 'field' }, h('span', { class: 'field-label' }, 'Illustration style'),
         h('div', { class: 'sb-chips', id: 'sb-illustration' }, ILLUSTRATION.map((s) => chip(s, b.illustrationStyle === s, () => {
@@ -209,9 +209,9 @@
     const hero = liveCharacters().find((c) => c.image);
     return {
       id: 'sb-preview', layout: 'cover', text: '', image: first?.image || hero?.image || null, crop: first?.image ? first.crop : null,
-      background: p.background || first?.background || '#ffffff', color: p.ink || first?.color || '#2a2433',
+      background: p.background || first?.background || '#ffffff', color: p.ink || first?.color || BOOK_INK,
       font: theme?.font || first?.font || 'serif', titleFont: theme ? theme.titleFont || '' : first?.titleFont || '', fontSize: 44, align: 'center',
-      frame: theme?.frame || first?.frame || 'none', frameColor: p.accent || theme?.frameColor || '#2a2433', elements: [],
+      frame: theme?.frame || first?.frame || 'none', frameColor: p.accent || theme?.frameColor || BOOK_INK, elements: [],
     };
   }
   function updatePreview() {
@@ -359,7 +359,7 @@
     if (!Object.keys(errors).length) return true;
     renderLeft();
     const first = view.left.querySelector('.sb-invalid');
-    first?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    first?.scrollIntoView({ block: 'center', behavior: scrollBehavior() });
     first?.querySelector('input, textarea')?.focus({ preventScroll: true });
     return false;
   }

@@ -29,6 +29,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - When a save fails because the disk is full, read-only, or Storyloom isn't allowed to write there, you now get a plain explanation instead of a technical error with a file path, and no leftover temporary files.
 - If your settings, profile, shelves, or character library file is ever damaged, Storyloom now keeps the damaged copy, tells you where it is, and starts fresh, instead of quietly replacing it on the next save.
 - If your books can't be loaded, screens now say so and offer **Try again**, instead of going blank or claiming you have no books yet. Screens show "Loading…" while they read your library.
+- Making a coloring book from a story no longer freezes the window while each picture turns into line art, and painting a coloring page uses far less memory for Undo.
+- Home, Bookshelf, and the other library screens open faster in big libraries: books you haven't changed aren't re-read each time.
+- On the Bookshelf, in Custom order, a book's ⋯ menu now has **Move earlier** and **Move later**, so you can arrange books without dragging. Keyboard focus is now clearly outlined in that menu and in text fields.
+- Storyloom can no longer be started as a plain script runner or with a debugger attached, which keeps other programs on your Mac from using it to read your saved AI keys. The Claude Code location in Account must now point to the `claude` program itself.
+- If a book's saved file is damaged, Storyloom now tells you which folder it's in instead of quietly leaving it out of your library. Saves are written all the way to disk before replacing the old copy, so a power cut can't leave a book empty.
+- A full character library (500 characters) now says so instead of quietly removing your oldest character to make room.
+- If Storyloom's window crashes or freezes, it now offers to reload instead of staying blank. Unexpected errors are saved in a log on your Mac, which you can open from **Account → Open log folder** to attach to a bug report. The log is never sent anywhere.
 - The Story builder's cover preview no longer gets cut off at the right edge when the window is at its smallest size.
 
 ## [0.6.1] - 2026-10-07

@@ -1,6 +1,23 @@
 'use strict';
 // Shared helpers and page rendering. Used by the editor, thumbnails, bookshelf, and PDF export.
 const api = window.storyloom;
+// The default ink for words, outlines, and frames in a book (storage.cjs falls back to the same colour).
+const BOOK_INK = '#2a2433';
+
+// Unexpected errors go to Storyloom's log on this Mac (Account → Open log folder). Nothing is sent anywhere.
+// shown: the user already sees this error on screen (so the console gets a warning, not an error).
+function logError(error, { shown = false } = {}) {
+  if (shown) console.warn(error); else console.error(error);
+  const message = error instanceof Error ? `${error.name}: ${error.message}` : String(error?.message ?? error);
+  api?.logError?.({ message, stack: error instanceof Error ? String(error.stack || '') : '' }).catch(() => {});
+}
+window.addEventListener('error', (event) => logError(event.error || event.message));
+window.addEventListener('unhandledrejection', (event) => logError(event.reason));
+
+// 'smooth' scrolling, unless the user has turned on Reduce Motion.
+function scrollBehavior() {
+  return matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+}
 
 function h(tag, props, ...children) {
   const el = document.createElement(tag);

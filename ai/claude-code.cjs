@@ -37,7 +37,8 @@ function createClaudeCode({ getPath, home = os.homedir(), timeout = 300000 }) {
   async function locate() {
     const chosen = (await getPath()) || '';
     if (chosen) {
-      if (!path.isAbsolute(chosen) || !(await isExecutable(chosen))) throw new Error('The Claude Code location in Account → AI services isn’t a program on this Mac');
+      // Settings already insist on this; checked again here because this is where the program is run.
+      if (!path.isAbsolute(chosen) || path.basename(chosen) !== 'claude' || !(await isExecutable(chosen))) throw new Error('The Claude Code location in Account → AI services isn’t a program on this Mac');
       return chosen;
     }
     for (const file of await candidates(home)) if (await isExecutable(file)) return file;

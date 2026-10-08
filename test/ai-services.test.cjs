@@ -205,6 +205,14 @@ test('Claude Code: runs the installed program with every tool and setting switch
   await assert.rejects(missing.ask({ system: 'x', user: 'y' }), /isn’t a program/);
   const relative = createClaudeCode({ getPath: async () => 'claude', home: dir });
   await assert.rejects(relative.ask({ system: 'x', user: 'y' }), /isn’t a program/);
+  // A real program that isn't named claude is never run.
+  const other = path.join(dir, 'not-claude');
+  await fs.copyFile(fake.program, other);
+  await fs.chmod(other, 0o755);
+  const before = await fs.readFile(fake.log, 'utf8');
+  const wrongName = createClaudeCode({ getPath: async () => other, home: dir });
+  await assert.rejects(wrongName.ask({ system: 'x', user: 'y' }), /isn’t a program/);
+  assert.equal(await fs.readFile(fake.log, 'utf8'), before, 'the other program was not started');
 });
 
 // ---------------- fal.ai ----------------

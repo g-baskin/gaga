@@ -140,7 +140,7 @@
         h('p', {}, 'Sharing a shelf as a web link needs a Storyloom web service, which doesn’t exist yet. To share a book, open it and export a PDF or an EPUB, then send the file.'),
         h('button', { class: 'btn ghost small', onclick: () => { ui.showShare = false; draw(); } }, 'Got it'))
       : null;
-    const hint = ui.sort === 'custom' && books.length > 1 ? h('p', { class: 'muted bs-hint' }, 'Drag books to arrange them.') : null;
+    const hint = ui.sort === 'custom' && books.length > 1 ? h('p', { class: 'muted bs-hint' }, 'Drag books to arrange them, or use Move earlier and Move later in a book’s ⋯ menu.') : null;
     return h('section', { class: 'bs-main' }, header, share, hint, books.length ? drawGrid(books) : drawEmpty());
   }
 
@@ -224,6 +224,22 @@
     });
   }
 
+  function visibleOrder() {
+    return [...document.querySelectorAll('#bs-grid .bs-card')].map((c) => c.dataset.bookId);
+  }
+
+  // Moves a book one place earlier (-1) or later (+1) in the custom order, then keeps focus on its ⋯ button.
+  async function moveBook(id, delta) {
+    const ids = visibleOrder();
+    const i = ids.indexOf(id);
+    const j = i + delta;
+    if (i < 0 || j < 0 || j >= ids.length) return;
+    [ids[i], ids[j]] = [ids[j], ids[i]];
+    await persistOrder(ids);
+    draw();
+    document.querySelector(`#bs-grid .bs-card[data-book-id="${CSS.escape(id)}"] .bs-more`)?.focus();
+  }
+
   async function persistOrder(visibleIds) {
     // Merge the visible arrangement into the full custom order (filtered-out books keep their slots).
     const full = customOrdered(ui.books).map((b) => b.id);
@@ -247,12 +263,17 @@
     closeMenu();
     const shelf = currentShelf();
     const act = (fn) => () => { closeMenu(); returnFocus?.focus?.(); run(fn); };
+    const shown = visibleOrder();
+    const position = shown.indexOf(summary.id);
     const item = (label, action, onclick, extra = {}) => h('button', { class: 'bs-menu-item', role: 'menuitem', 'data-action': action, onclick, ...extra }, label);
     const main = () => [
       item('Open', 'open', act(() => openBook(summary.id))),
       item('Open in Story builder', 'story-builder', act(() => openBook(summary.id, 'story-builder'))),
       item('Rename…', 'rename', act(() => renameBook(summary))),
       item('Duplicate', 'duplicate', act(() => duplicateBook(summary))),
+      // The keyboard way to arrange books (dragging needs a pointer).
+      ui.sort === 'custom' && position > 0 ? item('Move earlier', 'move-earlier', act(() => moveBook(summary.id, -1))) : null,
+      ui.sort === 'custom' && position >= 0 && position < shown.length - 1 ? item('Move later', 'move-later', act(() => moveBook(summary.id, 1))) : null,
       item(h('span', {}, 'Add to shelf'), 'add-to-shelf', () => fill(shelvesPanel()), { 'aria-haspopup': 'menu', 'data-arrow': '▸' }),
       shelf ? item(`Remove from “${shelf.name}”`, 'remove-from-shelf', act(() => toggleShelf(shelf.id, summary.id, false))) : null,
       item('Convert to coloring book', 'convert', act(() => convert(summary))),

@@ -119,6 +119,26 @@ module.exports = async function storyBuilder(ctx) {
   checks.coverFitsAtMinWidth = await js(`(() => { const c = $must('#sb-cover .page-frame').getBoundingClientRect(); const p = $must('.sb-preview').getBoundingClientRect(); return c.left >= p.left && c.right <= p.right; })()`);
   ctx.win.setSize(winW, winH);
   await pause(200);
+
+  // Reduce Motion: no transitions or looping animations, and scripts scroll instantly.
+  const dbg = ctx.win.webContents.debugger;
+  dbg.attach('1.3');
+  try {
+    const motion = async (value) => {
+      await dbg.sendCommand('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value }] });
+      return js(`(() => {
+        const probe = (cls) => { const el = document.body.appendChild(h('span', { class: cls })); const s = getComputedStyle(el); const r = { anim: s.animationName, dur: s.transitionDuration }; el.remove(); return r; };
+        return { spinner: probe('sb-spinner').anim, dot: probe('studio-rec-dot').anim, btn: probe('btn').dur, scroll: scrollBehavior() };
+      })()`);
+    };
+    const normal = await motion('no-preference');
+    const reduced = await motion('reduce');
+    checks.motionNormal = normal.spinner === 'sb-spin' && normal.dot === 'studio-blink' && normal.btn !== '0s' && normal.scroll === 'smooth';
+    checks.motionReduced = reduced.spinner === 'none' && reduced.dot === 'none' && reduced.btn.split(',').every((d) => d.trim() === '0s') && reduced.scroll === 'auto';
+    await dbg.sendCommand('Emulation.setEmulatedMedia', { features: [] });
+  } finally {
+    dbg.detach();
+  }
   await js(`$must('.sb-left').scrollTop = 0; $settle()`);
   await ctx.screenshot();
 

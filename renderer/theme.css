@@ -44,6 +44,13 @@
   --guide: #e0457b;         /* Designer alignment guides and the safe-area outline */
   --wood: #b07a45;
   --wood-edge: #8a5a2e;
+  /* See-through layers: white glass over pictures and the sidebar, and light lines/hovers on dark fills. */
+  --glass: rgba(255, 255, 255, .9);         /* icon buttons over book covers */
+  --glass-soft: rgba(255, 255, 255, .7);    /* sidebar row hover over the lilac sky */
+  --page-glass: rgba(255, 255, 255, .88);   /* the words box over a full-page picture (the e-book copies this value) */
+  --on-dark-hover: rgba(255, 255, 255, .12);
+  --on-dark-line: rgba(255, 255, 255, .25);
+  --swatch-edge: rgba(0, 0, 0, .1);         /* keeps white and pale colour swatches visible */
 
   /* Type: system font for the interface, Rockwell for display. */
   --display: Rockwell, "Rockwell Nova", "Roboto Slab", Georgia, serif;
@@ -80,7 +87,11 @@
   --radius-lg: 16px;        /* dialogs */
 
   --shadow: 0 1px 0 rgba(38, 48, 74, .06), 0 6px 18px rgba(38, 48, 74, .08);
+  --shadow-sm: 0 1px 2px rgba(70, 46, 130, .1);
+  --shadow-cover: inset 6px 0 0 rgba(0, 0, 0, .12), 0 8px 14px -6px rgba(38, 48, 74, .35); /* a book's spine and lift on the shelf */
+  --shadow-stage: 0 20px 60px rgba(0, 0, 0, .45); /* a page on the dark read-along stage */
   --ease: 120ms ease-out;
+  --ease-slow: 200ms ease-out; /* things that appear and leave, such as the toast */
 }
 
 body { background: var(--paper); }
@@ -110,8 +121,8 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: 0; c
   box-shadow: 0 0 0 2px var(--ink);
 }
 .app-nav-item { border-radius: var(--radius-control); color: var(--muted); transition: background-color var(--ease), color var(--ease); }
-.app-nav-item:hover { background: rgba(255, 255, 255, .7); color: var(--ink); }
-.app-nav-item.active { background: var(--panel); color: var(--teal); box-shadow: inset 3px 0 0 var(--violet-bright), 0 1px 2px rgba(70, 46, 130, .1); font-weight: 600; }
+.app-nav-item:hover { background: var(--glass-soft); color: var(--ink); }
+.app-nav-item.active { background: var(--panel); color: var(--teal); box-shadow: inset 3px 0 0 var(--violet-bright), var(--shadow-sm); font-weight: 600; }
 
 /* ---------- book screens ---------- */
 .book-bar { background: linear-gradient(180deg, var(--panel-soft), var(--panel)); border-bottom-color: var(--line); }
@@ -173,7 +184,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: 0; c
 .bs-shelf.active .bs-shelf-btn, .bs-shelf.active .bs-shelf-count { color: var(--teal); }
 .bs-title-row h1 { font-size: var(--text-3xl); }
 .bs-cover { position: relative; overflow: visible; padding-bottom: var(--space-16); background: transparent; }
-.bs-cover .page-frame { border-radius: 2px 3px 3px 2px; box-shadow: inset 6px 0 0 rgba(0, 0, 0, .12), 0 8px 14px -6px rgba(38, 48, 74, .35); }
+.bs-cover .page-frame { border-radius: 2px 3px 3px 2px; box-shadow: var(--shadow-cover); }
 /* The shelf plank under each book. */
 .bs-cover::after {
   content: ""; position: absolute; left: -6%; right: -6%; bottom: 0; height: 12px; border-radius: var(--radius-xs);
@@ -207,7 +218,9 @@ html[data-preview="1"] .brand::after {
   font: 600 var(--text-xs)/1.6 system-ui, sans-serif; color: var(--muted); border: 1px solid var(--line);
 }
 
+/* Reduce Motion (macOS setting): the one place motion is switched off. Nothing fades, slides, spins, or blinks;
+   the spinner and the recording dot stay as still marks next to their words. Scripts use scrollBehavior() (core.js). */
 @media (prefers-reduced-motion: reduce) {
-  .btn, .app-nav-item, .screen-home .home-chip, .templates-card { transition: none; }
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
   .bs-card:active .bs-cover .page-frame { transform: none; }
 }

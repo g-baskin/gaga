@@ -8,7 +8,7 @@ const fsSync = require('node:fs');
 const path = require('node:path');
 const mockAi = require('./mock-ai.cjs');
 
-const FULL_ORDER = ['designer', 'home', 'bookshelf', 'story-builder', 'manuscript', 'templates', 'studio', 'coloring', 'export-orders-account', 'ai-services', 'updates', 'text-fit', 'illustrate', 'boundaries'];
+const FULL_ORDER = ['designer', 'home', 'bookshelf', 'story-builder', 'manuscript', 'templates', 'studio', 'coloring', 'export-orders-account', 'ai-services', 'updates', 'text-fit', 'illustrate', 'boundaries', 'logging'];
 const EXPECTED_SCREENS = ['home', 'bookshelf', 'templates', 'coloring', 'orders', 'account', 'story-builder', 'manuscript', 'designer', 'studio', 'export'];
 const APP_NAV = ['home', 'bookshelf', 'templates', 'coloring', 'orders', 'account'];
 const BOOK_TABS = ['story-builder', 'manuscript', 'designer', 'studio', 'export'];
@@ -59,7 +59,8 @@ async function run({ app, win, store, argv, root, setOpenFile, useTestServices }
     })`);
   }
 
-  await js(`window.$must = (sel, all) => { const el = all ? document.querySelectorAll(sel)[all] : document.querySelector(sel); if (!el) throw new Error('Self-test could not find ' + sel); return el; };
+  // Page helpers for the checks (installed again by any module that reloads the page).
+  const installHelpers = () => js(`window.$must = (sel, all) => { const el = all ? document.querySelectorAll(sel)[all] : document.querySelector(sel); if (!el) throw new Error('Self-test could not find ' + sel); return el; };
     window.$waitFor = (sel, ms = 10000) => new Promise((resolve, reject) => {
       const t = setTimeout(() => reject(new Error('Timed out waiting for ' + sel)), ms);
       const tick = () => { const el = typeof sel === 'function' ? sel() : document.querySelector(sel); if (el) { clearTimeout(t); resolve(el); } else requestAnimationFrame(tick); };
@@ -67,6 +68,7 @@ async function run({ app, win, store, argv, root, setOpenFile, useTestServices }
     });
     window.$settle = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 50))));
     true`);
+  await installHelpers();
 
   const centerOf = async (selector, index = 0) => {
     const box = await js(`(() => { const el = document.querySelectorAll(${JSON.stringify(selector)})[${index}]; if (!el) return null;
@@ -76,7 +78,7 @@ async function run({ app, win, store, argv, root, setOpenFile, useTestServices }
     return box;
   };
   const ctx = {
-    app, win, wc, store, userData, root, js, pause, centerOf,
+    app, win, wc, store, userData, root, js, pause, centerOf, installHelpers,
     mockAi: mock,
     useTestServices,
     module: null,
@@ -199,7 +201,7 @@ async function run({ app, win, store, argv, root, setOpenFile, useTestServices }
   }
 
   mock.close();
-  const uncaught = pageErrors.filter((m) => !/Autofill|DevTools|Electron Security Warning/.test(m));
+  const uncaught = pageErrors.filter((m) => !/Autofill|DevTools|Electron Security Warning|selftest-log-probe/.test(m));
   if (uncaught.length) throw new Error(`Page logged errors: ${uncaught.slice(0, 5).join(' | ')}`);
   console.log('SELF_TEST_PASSED', JSON.stringify(checks));
 }

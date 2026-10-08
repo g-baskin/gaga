@@ -6,7 +6,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { execFile } = require('node:child_process');
 const { promisify } = require('node:util');
-const { createStore, plainFsError } = require('../storage.cjs');
+const { createStore, plainFsError, MAX_CHARACTERS } = require('../storage.cjs');
 
 const PNG = Buffer.from('89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000d49444154789c6360000002000154a24f5d0000000049454e44ae426082', 'hex');
 
@@ -97,6 +97,73 @@ test('skips a corrupt book without hiding the others', async () => {
   await fs.writeFile(path.join(root, 'books', broken.id, 'book.json'), '{not json');
   const titles = (await store.list()).map((book) => book.title);
   assert.deepEqual(titles, ['Fine']);
+});
+
+test('an unreadable book is reported once and left exactly as it was', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'storyloom-unit-'));
+  const reports = [];
+  const store = createStore(root, { onUnreadableBook: (info) => reports.push(info) });
+  await store.create({ title: 'Fine' });
+  const broken = await store.create({ title: 'Broken' });
+  const file = path.join(root, 'books', broken.id, 'book.json');
+  await fs.writeFile(file, '{not json');
+  await fs.mkdir(path.join(root, 'books', 'half-made'), { recursive: true }); // no book.json: not reported
+  await store.list();
+  await store.list();
+  assert.deepEqual(reports, [{ id: broken.id, folder: path.join(root, 'books', broken.id) }]);
+  assert.equal(await fs.readFile(file, 'utf8'), '{not json', 'the damaged file is not moved or rewritten');
+});
+
+test('a save is flushed to disk before it replaces the old copy', async (t) => {
+  const { root, store } = await setup();
+  const book = await store.create({ title: 'Flushed' });
+  const probe = await fs.open(path.join(root, 'probe'), 'w');
+  const FileHandle = Object.getPrototypeOf(probe);
+  await probe.close();
+  const events = [];
+  const realSync = FileHandle.sync;
+  const realRename = fs.rename;
+  FileHandle.sync = function sync() { events.push('sync'); return realSync.call(this); };
+  fs.rename = (...args) => { events.push('rename'); return realRename(...args); };
+  t.after(() => { FileHandle.sync = realSync; fs.rename = realRename; });
+  await store.save({ ...book, title: 'Flushed again' });
+  assert.deepEqual(events, ['sync', 'rename']);
+});
+
+test('a full character library refuses a new character instead of dropping the oldest', async () => {
+  const { root, store } = await setup();
+  const full = Array.from({ length: MAX_CHARACTERS }, (_v, i) => ({ id: `c-${i}`, name: `Friend ${i}` }));
+  await fs.writeFile(path.join(root, 'characters.json'), JSON.stringify(full));
+  await assert.rejects(store.saveCharacter({ name: 'One too many' }), /library is full/);
+  const kept = await store.listCharacters();
+  assert.equal(kept.length, MAX_CHARACTERS);
+  assert.equal(kept[0].name, 'Friend 0', 'the oldest character is still there');
+  // Editing an existing character still works when the library is full.
+  await store.saveCharacter({ ...kept[0], name: 'Friend zero' });
+  assert.equal((await store.listCharacters())[0].name, 'Friend zero');
+});
+
+test('the library list remembers summaries but always shows saved, edited, and removed books', async () => {
+  const { root, store } = await setup();
+  const a = await store.create({ title: 'Apple' });
+  const b = await store.create({ title: 'Bear' });
+  assert.deepEqual((await store.list()).map((s) => s.title).sort(), ['Apple', 'Bear']);
+  // Changing a returned summary doesn't change what the next list returns.
+  (await store.list())[0].title = 'Changed by a caller';
+  assert.deepEqual((await store.list()).map((s) => s.title).sort(), ['Apple', 'Bear']);
+  a.title = 'Apricot';
+  a.pages.push({ layout: 'image-top', text: 'More.' });
+  await store.save(a);
+  const afterSave = await store.list();
+  assert.equal(afterSave.find((s) => s.id === a.id).title, 'Apricot');
+  assert.equal(afterSave.find((s) => s.id === a.id).pageCount, 2);
+  // Edited outside Storyloom, with the same length: still picked up.
+  const file = path.join(root, 'books', b.id, 'book.json');
+  const text = await fs.readFile(file, 'utf8');
+  await fs.writeFile(file, text.replace('"title": "Bear"', '"title": "Bean"'));
+  assert.equal((await store.list()).find((s) => s.id === b.id).title, 'Bean');
+  await fs.rm(path.join(root, 'books', b.id), { recursive: true });
+  assert.deepEqual((await store.list()).map((s) => s.id), [a.id]);
 });
 
 const WAV = Buffer.concat([Buffer.from('RIFF'), Buffer.from([36, 0, 0, 0]), Buffer.from('WAVEfmt '), Buffer.alloc(32)]);

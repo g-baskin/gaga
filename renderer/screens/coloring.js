@@ -9,42 +9,36 @@
     '#1d70b8', '#7b6cf6', '#f78fb3', '#a0522d', '#f4d1ae', '#8d99ae', '#ffffff', '#222222',
   ];
 
-  // ---------- line art (pure) ----------
-  // Grayscale → 3×3 blur → Sobel edge magnitude → threshold. Lines come out dark on white.
-  function lineArt(imageData, threshold = 48) {
-    const { width: w, height: hgt, data } = imageData;
-    const gray = new Float32Array(w * hgt);
-    for (let i = 0, p = 0; i < gray.length; i++, p += 4) {
-      const a = data[p + 3] / 255; // Transparent counts as white.
-      gray[i] = (0.299 * data[p] + 0.587 * data[p + 1] + 0.114 * data[p + 2]) * a + 255 * (1 - a);
-    }
-    const at = (arr, x, y) => arr[Math.min(hgt - 1, Math.max(0, y)) * w + Math.min(w - 1, Math.max(0, x))];
-    const blur = new Float32Array(w * hgt);
-    for (let y = 0; y < hgt; y++) {
-      for (let x = 0; x < w; x++) {
-        let s = 0;
-        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) s += at(gray, x + dx, y + dy);
-        blur[y * w + x] = s / 9;
-      }
-    }
-    const out = new ImageData(w, hgt);
-    const o = out.data;
-    for (let y = 0; y < hgt; y++) {
-      for (let x = 0; x < w; x++) {
-        const tl = at(blur, x - 1, y - 1), t = at(blur, x, y - 1), tr = at(blur, x + 1, y - 1);
-        const l = at(blur, x - 1, y), r = at(blur, x + 1, y);
-        const bl = at(blur, x - 1, y + 1), b = at(blur, x, y + 1), br = at(blur, x + 1, y + 1);
-        const gx = tr + 2 * r + br - tl - 2 * l - bl;
-        const gy = bl + 2 * b + br - tl - 2 * t - tr;
-        const v = Math.hypot(gx, gy) > threshold ? 0 : 255;
-        const p = (y * w + x) * 4;
-        o[p] = o[p + 1] = o[p + 2] = v;
-        o[p + 3] = 255;
-      }
-    }
-    return out;
+  // ---------- line art ----------
+  // The filter lives in line-art.js. It runs in a Web Worker, so a big picture never freezes the window;
+  // if a worker can't start, it runs here instead.
+  function lineArtWorker() {
+    let worker = null;
+    let seq = 0;
+    const waiting = new Map();
+    const fail = (error) => { for (const { reject } of waiting.values()) reject(error); waiting.clear(); };
+    try {
+      worker = new Worker('line-art.js');
+      worker.onmessage = ({ data }) => {
+        const job = waiting.get(data.id);
+        if (!job) return;
+        waiting.delete(data.id);
+        if (data.error) job.reject(new Error(data.error)); else job.resolve(data.image);
+      };
+      worker.onerror = (event) => { event.preventDefault(); worker.terminate(); worker = null; fail(new Error('Line art worker stopped')); };
+    } catch { worker = null; }
+    return {
+      run(image) {
+        if (!worker) return Promise.resolve(window.storyloomLineArt(image));
+        const id = ++seq;
+        return new Promise((resolve, reject) => {
+          waiting.set(id, { resolve, reject });
+          worker.postMessage({ id, image }, [image.data.buffer]);
+        });
+      },
+      stop() { worker?.terminate(); worker = null; fail(new Error('Stopped')); },
+    };
   }
-  window.storyloomLineArt = lineArt;
 
   // ---------- image helpers ----------
   async function loadBitmap(bookId, name) {
@@ -67,10 +61,12 @@
     const blob = await new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('Could not make the picture'))), 'image/png'));
     return new Uint8Array(await blob.arrayBuffer());
   }
-  async function convertImage(bookId, name) {
-    const canvas = canvasFor(await loadBitmap(bookId, name));
+  async function convertImage(bookId, name, lines) {
+    const bitmap = await loadBitmap(bookId, name);
+    const canvas = canvasFor(bitmap);
+    bitmap.close(); // drawn; free the decoded pixels now
     const c2d = canvas.getContext('2d');
-    c2d.putImageData(lineArt(c2d.getImageData(0, 0, canvas.width, canvas.height)), 0, 0);
+    c2d.putImageData(await lines.run(c2d.getImageData(0, 0, canvas.width, canvas.height)), 0, 0);
     return api.saveImage(bookId, await canvasBytes(canvas));
   }
 
@@ -92,11 +88,12 @@
   async function convertToColoringBook(bookId) {
     const source = await api.readBook(bookId);
     const progress = progressModal('Making a coloring book');
+    const lines = lineArtWorker();
     try {
       const copy = await api.duplicateBook(bookId, { title: `${source.title} (coloring)`.slice(0, 200), kind: 'coloring' });
       const done = new Map();
       const convert = async (name) => {
-        if (!done.has(name)) done.set(name, await convertImage(copy.id, name));
+        if (!done.has(name)) done.set(name, await convertImage(copy.id, name, lines));
         return done.get(name);
       };
       const total = copy.pages.length;
@@ -115,6 +112,7 @@
       await api.saveBook(copy);
       return copy.id;
     } finally {
+      lines.stop();
       progress.close();
     }
   }
@@ -261,7 +259,7 @@
     const book = await api.readBook(bookId);
     // Start on the requested page, or the first page that has a picture to color.
     const firstWithImage = Math.max(0, book.pages.findIndex((p) => pageImageRef(p)));
-    const paint = { tool: 'fill', color: PALETTE[0], size: 18, undo: [], index: Math.min(startIndex || firstWithImage, book.pages.length - 1) };
+    const paint = { tool: 'fill', color: PALETTE[0], size: 18, undo: [], undoing: Promise.resolve(), index: Math.min(startIndex || firstWithImage, book.pages.length - 1) };
     window.__coloringPaint = paint;
     const stage = h('div', { class: 'coloring-stage' });
     const pagePicker = h('div', { class: 'coloring-pages', 'aria-label': 'Pages' });
@@ -285,15 +283,25 @@
     }
     const size = h('input', { type: 'range', id: 'coloring-size', min: '2', max: '80', value: String(paint.size), oninput: (e) => { paint.size = Number(e.target.value); } });
 
+    // Undo steps are PNG snapshots: toBlob copies the picture now and compresses it off the main thread,
+    // so 20 steps of line art take a few MB instead of 16 MB each.
     function pushUndo() {
-      paint.undo.push(c2d.getImageData(0, 0, canvas.width, canvas.height));
+      paint.undo.push(new Promise((resolve) => canvas.toBlob(resolve, 'image/png')));
       if (paint.undo.length > 20) paint.undo.shift();
       undoBtn.disabled = false;
     }
     function undo() {
       const last = paint.undo.pop();
-      if (last && c2d) c2d.putImageData(last, 0, 0);
       undoBtn.disabled = paint.undo.length === 0;
+      if (!last) return;
+      const target = c2d;
+      paint.undoing = paint.undoing.then(async () => {
+        const blob = await last;
+        if (!blob || target !== c2d) return; // the page changed meanwhile
+        const bitmap = await createImageBitmap(blob);
+        target.save(); target.globalCompositeOperation = 'copy'; target.drawImage(bitmap, 0, 0); target.restore();
+        bitmap.close();
+      }).catch((error) => toast(cleanError(error)));
     }
     const toCanvas = (e) => {
       const r = canvas.getBoundingClientRect();
@@ -323,16 +331,16 @@
       canvas.id = 'coloring-canvas';
       c2d = canvas.getContext('2d', { willReadFrequently: true });
       overlay = canvasFor(bitmap);
+      bitmap.close();
       let last = null;
       canvas.addEventListener('pointerdown', (e) => {
         const p = toCanvas(e);
         const x = Math.floor(p.x), y = Math.floor(p.y);
         if (x < 0 || y < 0 || x >= canvas.width || y >= canvas.height) return;
         if (paint.tool === 'fill') {
-          const before = c2d.getImageData(0, 0, canvas.width, canvas.height);
           const img = c2d.getImageData(0, 0, canvas.width, canvas.height);
           if (floodFill(img, x, y, hexRgb(paint.color))) {
-            paint.undo.push(before); if (paint.undo.length > 20) paint.undo.shift(); undoBtn.disabled = false;
+            pushUndo(); // the canvas still shows the picture before this fill
             c2d.putImageData(img, 0, 0);
           }
           return;

@@ -324,7 +324,7 @@
         id: newId(), type: 'sound',
         x: Math.max(0, W - margin - SOUND_SIZE - (n % perRow) * step),
         y: Math.max(0, H - margin - SOUND_SIZE - (Math.floor(n / perRow) % 3) * step),
-        w: SOUND_SIZE, h: SOUND_SIZE, rotation: 0, opacity: 1, locked: false, char, label, sound: null, fill: '#fff4d6', stroke: '#2a2433',
+        w: SOUND_SIZE, h: SOUND_SIZE, rotation: 0, opacity: 1, locked: false, char, label, sound: null, fill: '#fff4d6', stroke: BOOK_INK,
       });
       scheduleSave(); draw();
     };

@@ -41,8 +41,8 @@
   border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper);
 }
 .sb-theme.active { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent) inset; }
-.sb-swatch { width: 64px; height: 44px; border-radius: var(--radius-control); border: 2px solid; display: grid; place-items: end start; padding: var(--space-4); }
-.sb-swatch span { width: 18px; height: 6px; border-radius: var(--radius-cover); }
+.sb-swatch { width: 64px; height: 44px; border-radius: var(--radius-control); border: 2px solid var(--line); background: var(--page); color: var(--ink); display: grid; place-items: end start; padding: var(--space-4); }
+.sb-swatch span { width: 18px; height: 6px; border-radius: var(--radius-cover); background: var(--line-strong); }
 
 .sb-characters { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-8); }
 .sb-character { display: flex; align-items: center; gap: var(--space-12); padding: var(--space-10); border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); }

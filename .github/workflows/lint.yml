@@ -1,7 +1,8 @@
 name: Lint
 
-# Runs ESLint (eslint.config.mjs) on every push to main and every pull request.
-# Same check locally: npm run lint
+# Runs ESLint (eslint.config.mjs), the unit tests, and a build of the app on every push to main and every pull
+# request, so a broken test or a file missing from the packaged app shows up here rather than only when a release
+# tag is pushed. Same checks locally: npm run lint, npm test, npm run package + scripts/check-package.mjs
 
 on:
   push:
@@ -29,3 +30,42 @@ jobs:
       - run: npm ci
 
       - run: npm run lint
+
+  unit-tests:
+    # macOS: the updater tests unpack and inspect a real .app with ditto, PlistBuddy, lipo, and codesign.
+    runs-on: macos-14
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+  build:
+    # Builds Storyloom.app for this runner's chip (Apple Silicon), with the Electron fuses locked, and checks the
+    # app has every module and page file it loads. No signing key or release here.
+    runs-on: macos-14
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run package
+
+      - run: node scripts/check-package.mjs releases/Storyloom-darwin-arm64/Storyloom.app

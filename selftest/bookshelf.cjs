@@ -115,6 +115,28 @@ module.exports = async function bookshelf(ctx) {
   await ctx.navigate('bookshelf');
   checks.orderSurvivesReload = JSON.stringify(await mine()) === JSON.stringify(newOrder);
 
+  // Keyboard alternative to dragging: Move later / Move earlier in the book menu.
+  const beforeMove = await ids();
+  const first = beforeMove[0];
+  await openMenuFor(first);
+  checks.noMoveEarlierForFirst = !(await js(`!!document.querySelector('.bs-menu [data-action="move-earlier"]')`));
+  await ctx.click('.bs-menu [data-action="move-later"]');
+  await pause(300);
+  const movedLater = await ids();
+  checks.movedLater = movedLater[1] === first && movedLater[0] === beforeMove[1];
+  checks.moveFocusKept = await js(`document.activeElement?.closest('.bs-card')?.dataset.bookId === ${JSON.stringify(first)}`);
+  await openMenuFor(first);
+  await ctx.click('.bs-menu [data-action="move-earlier"]');
+  await pause(300);
+  checks.movedBack = JSON.stringify(await ids()) === JSON.stringify(beforeMove);
+  const savedAfterMove = (await store.getProfile()).bookOrder.filter((id) => ours.has(id));
+  checks.moveOrderPersisted = JSON.stringify(savedAfterMove) === JSON.stringify(newOrder);
+  // Focus is visible: menu items and text fields keep the shared ring.
+  checks.focusRingKept = await js(`(() => {
+    const ok = (sel) => !Array.from(document.styleSheets).some((sheet) => { try { return Array.from(sheet.cssRules).some((r) => r.selectorText && r.selectorText.includes(sel) && /:focus/.test(r.selectorText) && r.style.outline === 'none'); } catch { return false; } });
+    return ['.bs-menu-item', '.bs-search', 'textarea', '.home-prompt', '.title-input', '.templates-search', '.ai-key-input', '.ms-book-title'].every(ok);
+  })()`);
+
   await ctx.screenshot();
 
   // Move the copy to the Trash.

@@ -16,7 +16,7 @@
 .ms-chapter-num { grid-row: span 2; font-size: var(--text-sm); color: var(--muted); padding-top: var(--space-2); text-align: right; }
 .ms-chapter-title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ms-chapter-words { font-size: var(--text-sm); }
-.ms-chapter-tools { display: flex; opacity: 0; transition: opacity .15s; }
+.ms-chapter-tools { display: flex; opacity: 0; transition: opacity var(--ease); }
 .ms-chapter:hover .ms-chapter-tools, .ms-chapter.active .ms-chapter-tools, .ms-chapter-tools:focus-within { opacity: 1; }
 .ms-chapter-tools .icon-btn { width: 24px; height: 24px; font-size: var(--text-base); }
 .ms-chapter-tools .icon-btn:disabled { opacity: .3; cursor: default; }
@@ -29,7 +29,7 @@
   border: 1px solid transparent; background: transparent; border-radius: var(--radius-control); text-align: center; color: var(--ink); font-family: Georgia, serif;
 }
 .ms-book-title:hover, .ms-book-author:hover, .ms-chapter-title-input:hover { border-color: var(--line); }
-.ms-book-title:focus, .ms-book-author:focus, .ms-chapter-title-input:focus { outline: none; border-color: var(--accent); background: var(--panel); }
+.ms-book-title:focus, .ms-book-author:focus, .ms-chapter-title-input:focus { border-color: var(--accent); background: var(--panel); }
 .ms-book-title { font-size: var(--text-3xl); font-weight: 700; padding: var(--space-4) var(--space-8); }
 .ms-byline { display: flex; justify-content: center; align-items: center; gap: var(--space-6); font-style: italic; }
 .ms-book-author { font-size: var(--text-lg); padding: var(--space-2) var(--space-6); field-sizing: content; min-width: 120px; max-width: 360px; font-style: italic; }

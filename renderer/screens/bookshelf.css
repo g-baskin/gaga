@@ -17,7 +17,7 @@
 .bs-shelf.active .bs-shelf-btn { color: var(--teal); }
 .bs-shelf-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bs-shelf-count { font-size: var(--text-sm); color: var(--muted); font-weight: 500; }
-.bs-shelf-tools { display: flex; opacity: 0; transition: opacity .15s; }
+.bs-shelf-tools { display: flex; opacity: 0; transition: opacity var(--ease); }
 .bs-shelf:hover .bs-shelf-tools, .bs-shelf.active .bs-shelf-tools, .bs-shelf-tools:focus-within { opacity: 1; }
 .bs-shelf:hover:has(.bs-shelf-tools) .bs-shelf-count, .bs-shelf.active:has(.bs-shelf-tools) .bs-shelf-count { display: none; }
 .bs-shelf.active .bs-shelf-count { color: var(--teal); }
@@ -33,7 +33,7 @@
 .bs-search {
   flex: 1 1 260px; max-width: 420px; border: 1px solid var(--line); border-radius: 999px; padding: var(--space-8) var(--space-16); background: var(--panel);
 }
-.bs-search:focus { border-color: var(--teal); outline: none; }
+.bs-search:focus { border-color: var(--teal); }
 .bs-sort { display: flex; gap: var(--space-8); align-items: center; font-size: var(--text-md); }
 .bs-hint { margin: -8px 0 var(--space-16); font-size: var(--text-sm); }
 .bs-unavailable {
@@ -50,7 +50,7 @@
 .bs-custom .bs-open { cursor: inherit; }
 .bs-cover {
   position: relative; height: 220px; display: grid; place-items: center; border-radius: var(--radius);
-  background: var(--sunk); transition: transform .15s, box-shadow .15s;
+  background: var(--sunk); transition: transform var(--ease), box-shadow var(--ease);
 }
 .bs-cover .page-frame { box-shadow: var(--shadow); border-radius: var(--radius-cover); }
 .bs-cover .page, .bs-cover .el { pointer-events: none; }
@@ -76,7 +76,8 @@
   display: flex; align-items: center; gap: var(--space-8); width: 100%; padding: var(--space-6) var(--space-10); border: 0; border-radius: var(--radius-control);
   background: none; text-align: left; cursor: pointer; white-space: nowrap;
 }
-.bs-menu-item:hover, .bs-menu-item:focus { background: var(--hover); outline: none; }
+.bs-menu-item:hover, .bs-menu-item:focus { background: var(--hover); }
+.bs-menu-item:focus-visible { outline-offset: -2px; } /* the shared ring, kept inside the scrolling menu */
 .bs-menu-item[data-arrow]::after { content: attr(data-arrow); margin-left: auto; color: var(--muted); }
 .bs-menu-item.danger { color: var(--danger); }
 .bs-check { display: inline-block; width: 18px; color: var(--teal); font-weight: 700; }

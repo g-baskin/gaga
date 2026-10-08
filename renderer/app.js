@@ -101,10 +101,10 @@ async function navigate(name, params = {}) {
     await def.render(host, params);
   } catch (error) {
     if (seq === navSeq && host.isConnected) {
-      console.warn(error); // shown in the screen, with Try again
+      logError(error, { shown: true }); // also shown in the screen, with Try again
       host.replaceChildren(loadFailed(`Couldn\u2019t open ${def.label}`, () => navigate(name, params), error));
     } else {
-      console.error(error);
+      logError(error);
       toast(cleanError(error));
     }
   }

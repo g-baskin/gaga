@@ -11,10 +11,10 @@
   const common = { rotation: 0, opacity: 1, locked: false };
   const sticker = (char, x, y, s, extra = {}) => ({ ...common, type: 'sticker', char, x, y, w: s, h: s, ...extra });
   const shape = (kind, x, y, w, h, fill, extra = {}) => ({
-    ...common, type: 'shape', shape: kind, x, y, w, h, fill, stroke: '#2a2433', strokeWidth: 0, ...extra,
+    ...common, type: 'shape', shape: kind, x, y, w, h, fill, stroke: BOOK_INK, strokeWidth: 0, ...extra,
   });
   const words = (text, x, y, w, h, extra = {}) => ({
-    ...common, type: 'text', text, x, y, w, h, font: 'serif', fontSize: 24, color: '#2a2433', align: 'center',
+    ...common, type: 'text', text, x, y, w, h, font: 'serif', fontSize: 24, color: BOOK_INK, align: 'center',
     bold: false, italic: false, lineHeight: 1.2, letterSpacing: 0, shadow: false, outline: false, outlineColor: '#ffffff', highlight: null, ...extra,
   });
 

@@ -1,12 +1,13 @@
 // Builds an unsigned Storyloom.app under releases/ (for this Mac by default).
 // `buildApp` is also used by dist.mjs to build the Intel and Apple Silicon versions.
+import { FuseState, FuseV1Options, FuseVersion, flipFuses, getCurrentFuseWire } from '@electron/fuses';
 import { packager } from '@electron/packager';
 import { access, copyFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export const root = path.dirname(fileURLToPath(import.meta.url));
-const keep = new Set(['', '/package.json', '/main.cjs', '/preload.cjs', '/storage.cjs', '/epub.cjs', '/updater.cjs', '/LICENSE']);
+const keep = new Set(['', '/package.json', '/main.cjs', '/preload.cjs', '/storage.cjs', '/epub.cjs', '/updater.cjs', '/log.cjs', '/LICENSE']);
 
 // Electron's MIT licence and Chromium's third-party notices must travel with every copy of the app. The packager
 // writes them next to Storyloom.app, but only the .app goes into the disk image and the update zip, so copy them in.
@@ -17,6 +18,28 @@ export const RUNTIME_NOTICES = [
 
 export async function checkRuntimeNotices(appPath) {
   for (const [, name] of RUNTIME_NOTICES) await access(path.join(appPath, 'Contents', 'Resources', name));
+}
+
+// Electron switches baked into the app. Off: running the app as plain Node (ELECTRON_RUN_AS_NODE), NODE_OPTIONS,
+// and --inspect, any of which would let another program on this Mac run code as Storyloom and unseal its keys.
+// On: the app only loads from its checked app.asar, and cookies are encrypted.
+export const FUSES = {
+  [FuseV1Options.RunAsNode]: false,
+  [FuseV1Options.EnableCookieEncryption]: true,
+  [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
+  [FuseV1Options.EnableNodeCliInspectArguments]: false,
+  [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
+  [FuseV1Options.OnlyLoadAppFromAsar]: true,
+  [FuseV1Options.GrantFileProtocolExtraPrivileges]: false,
+};
+
+export async function lockFuses(appPath, arch) {
+  // Flipping edits the Electron binary; Apple Silicon needs a fresh ad-hoc signature to run it (dist re-signs later too).
+  await flipFuses(appPath, { version: FuseVersion.V1, resetAdHocDarwinSignature: arch === 'arm64', ...FUSES });
+  const wire = await getCurrentFuseWire(appPath);
+  for (const [option, on] of Object.entries(FUSES)) {
+    if (wire[option] !== (on ? FuseState.ENABLE : FuseState.DISABLE)) throw new Error(`Electron fuse ${FuseV1Options[option]} didn't switch ${on ? 'on' : 'off'}`);
+  }
 }
 
 export async function readManifest() {
@@ -45,6 +68,7 @@ export async function buildApp({ arch = process.arch, out = path.join(root, 'rel
     const resources = path.join(output, 'Storyloom.app', 'Contents', 'Resources');
     for (const [from, to] of RUNTIME_NOTICES) await copyFile(path.join(output, from), path.join(resources, to));
     await checkRuntimeNotices(path.join(output, 'Storyloom.app'));
+    await lockFuses(path.join(output, 'Storyloom.app'), arch);
   }
   return outputs;
 }

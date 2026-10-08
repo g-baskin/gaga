@@ -6,6 +6,8 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const crypto = require('node:crypto');
 
+// The default ink for words, outlines, and frames (renderer/core.js BOOK_INK is the same colour).
+const BOOK_INK = '#2a2433';
 const ID = /^[a-z0-9-]{1,64}$/;
 const IMAGE = /^[a-z0-9-]{1,64}\.(png|jpg|webp|gif)$/;
 const AUDIO = /^[a-z0-9-]{1,64}\.(wav|mp3|m4a|ogg|webm)$/;
@@ -132,7 +134,7 @@ function sanitizeElement(el) {
         text: text(el.text, 5000),
         font: pick(el.font, FONTS, 'serif'),
         fontSize: num(el.fontSize, 6, 300, 28),
-        color: color(el.color, '#2a2433'),
+        color: color(el.color, BOOK_INK),
         align: pick(el.align, ALIGN, 'center'),
         bold: el.bold === true,
         italic: el.italic === true,
@@ -158,7 +160,7 @@ function sanitizeElement(el) {
         ...base, type: 'shape',
         shape: pick(el.shape, SHAPES, 'rect'),
         fill: el.fill == null ? null : color(el.fill, '#f2b84b'),
-        stroke: color(el.stroke, '#2a2433'),
+        stroke: color(el.stroke, BOOK_INK),
         strokeWidth: num(el.strokeWidth, 0, 60, 0),
       };
     case 'sticker': {
@@ -175,7 +177,7 @@ function sanitizeElement(el) {
         label: text(el.label, 80),
         sound: audioName(el.sound),
         fill: color(el.fill, '#fff4d6'),
-        stroke: color(el.stroke, '#2a2433'),
+        stroke: color(el.stroke, BOOK_INK),
       };
     default:
       return null;
@@ -198,7 +200,7 @@ function sanitizePage(page = {}) {
     imagePrompt: text(page.imagePrompt, 2000),
     crop: sanitizeCrop(page.crop),
     background: color(page.background, '#ffffff'),
-    color: color(page.color, '#2a2433'),
+    color: color(page.color, BOOK_INK),
     font: pick(page.font, FONTS, 'serif'),
     // Font for a cover's title line; '' means "same as the page font".
     titleFont: FONTS.has(page.titleFont) ? page.titleFont : '',
@@ -207,7 +209,7 @@ function sanitizePage(page = {}) {
       : layout === 'cover' ? 48 : 24,
     align: pick(page.align, ALIGN, 'center'),
     frame: pick(page.frame, FRAMES, 'none'),
-    frameColor: color(page.frameColor, '#2a2433'),
+    frameColor: color(page.frameColor, BOOK_INK),
     elements: (Array.isArray(page.elements) ? page.elements.slice(0, MAX_ELEMENTS) : [])
       .map(sanitizeElement).filter(Boolean),
   };
@@ -379,15 +381,28 @@ async function readHead(file, size) {
   }
 }
 
-function createStore(root, { onDamaged } = {}) {
+// onDamaged({ file, backup }): a settings-style file was set aside. onUnreadableBook({ id, folder }): a book's
+// book.json exists but can't be read, so it is left untouched and missing from the library (told once per book).
+function createStore(root, { onDamaged, onUnreadableBook } = {}) {
   const booksDir = path.join(root, 'books');
   const bookDir = (id) => path.join(booksDir, assertId(id));
   const bookFile = (id) => path.join(bookDir(id), 'book.json');
+  // Library summaries, reused while a book.json is unchanged (same file, modified time and size), so listing
+  // the library only re-reads books that changed. One entry per book on disk; removed books are dropped.
+  const summaries = new Map(); // id -> { mtimeMs, size, summary }
+  const LIST_READS = 16; // book files read at once
+  const reportedUnreadable = new Set(); // book ids already reported this session
 
   async function writeJson(file, data) {
     const temp = `${file}.${crypto.randomBytes(6).toString('hex')}.tmp`;
     try {
-      await fs.writeFile(temp, JSON.stringify(data, null, 2), { mode: 0o600 });
+      const handle = await fs.open(temp, 'wx', 0o600);
+      try {
+        await handle.writeFile(JSON.stringify(data, null, 2));
+        await handle.sync(); // On disk before it replaces the old copy, so a power cut can't leave an empty file.
+      } finally {
+        await handle.close();
+      }
       await fs.rename(temp, file); // Atomic replace: a crash never leaves a half-written book.
     } catch (error) {
       await fs.rm(temp, { force: true }); // A failed save (disk full, no permission) leaves nothing behind.
@@ -419,18 +434,41 @@ function createStore(root, { onDamaged } = {}) {
   return {
     async list() {
       await fs.mkdir(booksDir, { recursive: true });
-      const books = [];
-      for (const entry of await fs.readdir(booksDir, { withFileTypes: true })) {
-        if (!entry.isDirectory() || !ID.test(entry.name)) continue;
+      const ids = (await fs.readdir(booksDir, { withFileTypes: true }))
+        .filter((entry) => entry.isDirectory() && ID.test(entry.name)).map((entry) => entry.name);
+      const summarize = async (id) => {
         try {
-          const book = await read(entry.name);
-          books.push({
+          const stat = await fs.stat(bookFile(id));
+          const hit = summaries.get(id);
+          if (hit && hit.mtimeMs === stat.mtimeMs && hit.size === stat.size && hit.ino === stat.ino) return hit.summary;
+          // If the file changes between stat and read, the next list sees a newer time and reads it again.
+          const book = await read(id);
+          const summary = {
             id: book.id, kind: book.kind, title: book.title, author: book.author, size: book.size, createdAt: book.createdAt,
             updatedAt: book.updatedAt, pageCount: book.pages.length, cover: book.pages[0],
-          });
-        } catch { /* Skip unreadable folders instead of breaking the whole library. */ }
-      }
-      return books.sort((a, b) => b.updatedAt - a.updatedAt);
+          };
+          summaries.set(id, { mtimeMs: stat.mtimeMs, size: stat.size, ino: stat.ino, summary });
+          return summary;
+        } catch (error) {
+          summaries.delete(id);
+          // Skip unreadable folders instead of breaking the whole library, but say so: a book that exists and
+          // can't be read must not just quietly vanish. (A folder with no book.json is an unfinished create.)
+          if (error.code !== 'ENOENT' && !reportedUnreadable.has(id)) {
+            reportedUnreadable.add(id);
+            onUnreadableBook?.({ id, folder: bookDir(id) });
+          }
+          return null;
+        }
+      };
+      const found = new Array(ids.length);
+      let next = 0;
+      await Promise.all(Array.from({ length: Math.min(LIST_READS, ids.length) }, async () => {
+        while (next < ids.length) { const i = next++; found[i] = await summarize(ids[i]); }
+      }));
+      const present = new Set(ids);
+      for (const id of summaries.keys()) if (!present.has(id)) summaries.delete(id);
+      // Copies, so a caller changing a result can't change the remembered summary.
+      return found.filter(Boolean).map((s) => structuredClone(s)).sort((a, b) => b.updatedAt - a.updatedAt);
     },
 
     async create(input = {}) {
@@ -547,6 +585,10 @@ function createStore(root, { onDamaged } = {}) {
       if (!character) throw new Error('Give the character a name');
       const all = await loadCharacters();
       const existing = all.find((c) => c.id === character.id);
+      // Never make room by dropping someone's oldest character: refuse instead.
+      if (!existing && all.length >= MAX_CHARACTERS) {
+        throw new Error(`Your character library is full (${MAX_CHARACTERS} characters). Delete one you no longer need, then try again.`);
+      }
       if (character.image && character.image !== existing?.image) {
         // The picture comes from a book; copy it into the library so it outlives the book.
         if (!fromBookId) throw new Error('Missing the book the picture belongs to');
@@ -555,7 +597,7 @@ function createStore(root, { onDamaged } = {}) {
         await fs.copyFile(assetPath(fromBookId, character.image), path.join(libraryDir, name), fs.constants.COPYFILE_EXCL);
         character.image = name;
       }
-      const next = existing ? all.map((c) => (c.id === character.id ? character : c)) : [...all, character].slice(-MAX_CHARACTERS);
+      const next = existing ? all.map((c) => (c.id === character.id ? character : c)) : [...all, character];
       await writeJson(charactersFile, next);
       return character;
     },
@@ -620,4 +662,4 @@ function createStore(root, { onDamaged } = {}) {
   };
 }
 
-module.exports = { createStore, sanitizePage, sniffImage, plainFsError, readJsonFile, LENGTHS };
+module.exports = { createStore, sanitizePage, sniffImage, plainFsError, readJsonFile, LENGTHS, BOOK_INK, MAX_CHARACTERS };

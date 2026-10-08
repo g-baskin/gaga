@@ -16,11 +16,14 @@ const manifest = JSON.parse(fs.readFileSync(path.join(fontsDir, 'fonts.json'), '
 const MAC_FONTS = ['serif', 'sans', 'rounded', 'hand'];
 const fontKeys = new Set([...MAC_FONTS, ...manifest.fonts.map((f) => f.key)]);
 
+// The default book ink, as renderer/core.js declares it (core.js loads before data/templates.js).
+const CORE_BOOK_INK = fs.readFileSync(path.join(root, 'renderer', 'core.js'), 'utf8').match(/^const BOOK_INK = '(#[0-9a-f]{6})';$/m)?.[1];
+
 // Loads renderer/data/templates.js the way the app does, with the few globals it reads.
 function loadTemplates() {
   const window = {};
   let n = 0;
-  const context = vm.createContext({ window, crypto: { randomUUID: () => `id-${++n}-abcdefgh` }, PAGE_PT: { square: [612, 612], portrait: [612, 792], landscape: [792, 612] } });
+  const context = vm.createContext({ window, crypto: { randomUUID: () => `id-${++n}-abcdefgh` }, PAGE_PT: { square: [612, 612], portrait: [612, 792], landscape: [792, 612] }, BOOK_INK: CORE_BOOK_INK });
   vm.runInContext(fs.readFileSync(path.join(root, 'renderer', 'data', 'templates.js'), 'utf8'), context);
   return window.STORYLOOM_TEMPLATES;
 }
@@ -103,4 +106,10 @@ test('an e-book embeds the font files it uses, with matching @font-face rules', 
     fonts: [{ family: 'X"; } body { display:none', weight: 400, style: 'normal', file: '../evil.woff2', data: Buffer.from('x') }] });
   const unsafeFiles = [...unzip(unsafe).keys()];
   assert.ok(!unsafeFiles.some((n) => n.includes('evil')), 'unsafe file names are dropped');
+});
+
+test('the default book ink is the same colour in the app and in storage', () => {
+  const { BOOK_INK } = require('../storage.cjs');
+  assert.match(BOOK_INK, /^#[0-9a-f]{6}$/);
+  assert.equal(CORE_BOOK_INK, BOOK_INK);
 });

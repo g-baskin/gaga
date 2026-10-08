@@ -37,7 +37,7 @@
   function copyrightPage(book) {
     return {
       id: newId(), layout: 'text-only', text: copyrightText(book), image: null, crop: null,
-      background: '#ffffff', color: '#2a2433', font: 'serif', fontSize: 12, align: 'center', frame: 'none', frameColor: '#2a2433', elements: [],
+      background: '#ffffff', color: BOOK_INK, font: 'serif', fontSize: 12, align: 'center', frame: 'none', frameColor: BOOK_INK, elements: [],
     };
   }
 

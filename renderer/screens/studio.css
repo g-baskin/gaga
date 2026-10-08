@@ -45,7 +45,7 @@
 @keyframes studio-blink { 50% { opacity: .25; } }
 .studio-rec-time { font-variant-numeric: tabular-nums; font-weight: 700; }
 .studio-meter { flex: 1; height: 8px; border-radius: var(--radius-sm); background: var(--panel); overflow: hidden; }
-.studio-meter-fill { display: block; height: 100%; width: 0; background: var(--teal); transition: width .1s; }
+.studio-meter-fill { display: block; height: 100%; width: 0; background: var(--teal); transition: width var(--ease); }
 .studio-rule { border: 0; border-top: 1px solid var(--line); margin: var(--space-6) 0; width: 100%; }
 .studio-progress:empty { display: none; }
 .studio-unavailable { padding: var(--space-12); border: 1px dashed var(--line); border-radius: var(--radius); display: grid; gap: var(--space-4); justify-items: start; }
@@ -70,13 +70,13 @@
 .studio-ra-bar { display: flex; align-items: center; gap: var(--space-16); padding: var(--space-16) var(--space-20) var(--space-16) 88px; }
 .studio-ra-count { color: var(--on-dark-muted); font-size: var(--text-md); }
 .studio-ra-close { margin-left: auto; color: var(--on-dark); }
-.studio-ra-close:hover { background: rgba(255, 255, 255, .12); }
+.studio-ra-close:hover { background: var(--on-dark-hover); }
 .studio-ra-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 72px 1fr 72px; align-items: center; }
 .studio-ra-stage { display: grid; place-items: center; min-height: 0; }
-.studio-ra-stage .page-frame { box-shadow: 0 20px 60px rgba(0, 0, 0, .45); border-radius: var(--radius-sm); }
+.studio-ra-stage .page-frame { box-shadow: var(--shadow-stage); border-radius: var(--radius-sm); }
 .studio-ra-stage .page { pointer-events: none; }
 .studio-ra-stage .el-sound { pointer-events: auto; cursor: pointer; }
-.studio-ra-nav { justify-self: center; width: 48px; height: 48px; padding: 0; font-size: var(--text-3xl); color: var(--on-dark); border-color: rgba(255, 255, 255, .25); }
-.studio-ra-nav:hover:not(:disabled) { background: rgba(255, 255, 255, .12) !important; }
+.studio-ra-nav { justify-self: center; width: 48px; height: 48px; padding: 0; font-size: var(--text-3xl); color: var(--on-dark); border-color: var(--on-dark-line); }
+.studio-ra-nav:hover:not(:disabled) { background: var(--on-dark-hover) !important; }
 .studio-ra-foot { display: flex; align-items: center; justify-content: center; gap: var(--space-16); padding: var(--space-16) var(--space-20) var(--space-20); }
 .studio-ra-foot .muted { color: var(--on-dark-muted); margin: 0; }
