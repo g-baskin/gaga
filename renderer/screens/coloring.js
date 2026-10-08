@@ -149,7 +149,7 @@
 
   // ---------- home view ----------
   async function renderHome(host) {
-    const books = (await run(() => api.listBooks())) || [];
+    const books = await api.listBooks(); // a failure shows navigate()'s error panel, not "no books"
     const coloring = books.filter((b) => b.kind === 'coloring');
     const stories = books.filter((b) => b.kind !== 'coloring');
     const thumb = (s) => scaledPage(s.cover, { id: s.id, title: s.title, author: s.author, size: s.size }, 200, 200);

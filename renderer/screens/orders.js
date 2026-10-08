@@ -3,7 +3,7 @@
   // Print orders: not available yet (needs a print partner and payments); guides the user to a print-ready PDF instead.
 
   async function pickBook() {
-    const books = (await run(() => api.listBooks())) || [];
+    const books = await api.listBooks(); // called through run(): a failure shows a toast, not "no books"
     modal('Choose a book to export', (close) => h('div', { class: 'form' },
       books.length === 0
         ? h('p', { class: 'muted' }, 'You don’t have any books yet. Make one first, then come back here.')

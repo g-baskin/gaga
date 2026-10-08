@@ -134,5 +134,23 @@ module.exports = async function bookshelf(ctx) {
   checks.backToAll = await js(`!!document.querySelector('.bs-shelf[data-shelf="all"].active')`);
 
   await select('recent');
+
+  // A library that can't be read shows an error with Try again, not a blank screen or "no books".
+  const booksDir = require('node:path').join(ctx.userData, 'books');
+  const fsp = require('node:fs/promises');
+  await fsp.chmod(booksDir, 0o000);
+  try {
+    await ctx.navigate('bookshelf');
+    checks.loadErrorShown = await js(`!!document.querySelector('#screen [data-load-error] [data-retry]') && !document.querySelector('.screen-loading')`);
+    await ctx.navigate('home');
+    checks.homeLoadErrorShown = await js(`!!document.querySelector('#home-recent-error') && !document.querySelector('#home-recent-empty')`);
+    await ctx.navigate('bookshelf');
+  } finally {
+    await fsp.chmod(booksDir, 0o755);
+  }
+  // Once the library is readable again, Try again brings the books back.
+  await ctx.click('#screen [data-retry]');
+  await ctx.waitFor('.bs-card');
+  checks.retryRecovers = await js(`!document.querySelector('[data-load-error]') && document.querySelectorAll('.bs-card').length > 0`);
   return checks;
 };

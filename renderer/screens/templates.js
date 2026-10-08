@@ -139,7 +139,7 @@
       stage,
       h('div', { class: 'templates-flipper' }, prev, counter, next),
       h('div', { class: 'form-actions' },
-        h('button', { class: 'btn ghost', 'data-action': 'apply', onclick: () => { close(); chooseBook(themeId); } }, 'Apply to a book…'),
+        h('button', { class: 'btn ghost', 'data-action': 'apply', onclick: () => { close(); run(() => chooseBook(themeId)); } }, 'Apply to a book…'),
         h('button', {
           class: 'btn primary', 'data-action': 'use',
           onclick: () => run(async () => {
@@ -161,7 +161,8 @@
 
   async function chooseBook(themeId) {
     const theme = T().themes.find((t) => t.id === themeId);
-    const books = ((await run(() => api.listBooks())) || []).filter((b) => b.kind !== 'coloring');
+    // Called through run(): a failure shows a toast instead of a "no books" list.
+    const books = (await api.listBooks()).filter((b) => b.kind !== 'coloring');
     const dialog = modal(`Apply “${theme.name}”`, (close) => h('div', { class: 'form' },
       h('p', { class: 'muted' }, 'Changes the colours, lettering, frame and decorations of every page. Your words, pictures and your own stickers stay as they are.'),
       books.length ? h('div', { class: 'templates-book-list' }, books.map((b) => h('button', {

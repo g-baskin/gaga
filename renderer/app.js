@@ -95,12 +95,28 @@ async function navigate(name, params = {}) {
     host.replaceChildren(h('section', { class: 'screen-missing', 'data-missing-screen': name }, NOT_BUILT));
     return;
   }
+  // Shown until the screen draws itself; screens that load data (books, audio) take a moment.
+  host.replaceChildren(h('p', { class: 'muted screen-loading', role: 'status' }, 'Loading\u2026'));
   try {
     await def.render(host, params);
   } catch (error) {
-    console.error(error);
-    toast(cleanError(error));
+    if (seq === navSeq && host.isConnected) {
+      console.warn(error); // shown in the screen, with Try again
+      host.replaceChildren(loadFailed(`Couldn\u2019t open ${def.label}`, () => navigate(name, params), error));
+    } else {
+      console.error(error);
+      toast(cleanError(error));
+    }
   }
+}
+
+// A screen (or part of one) whose data couldn't be loaded, with a way to try again.
+function loadFailed(title, retry, error) {
+  return h('section', { class: 'empty load-failed', 'data-load-error': '', role: 'alert' },
+    h('h1', {}, title),
+    h('p', {}, error ? cleanError(error) : 'Something went wrong.'),
+    h('div', { class: 'empty-actions' },
+      h('button', { type: 'button', class: 'btn primary', 'data-retry': '', onclick: () => run(retry) }, 'Try again')));
 }
 
 function renderShell(scope, name) {

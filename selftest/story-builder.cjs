@@ -111,6 +111,14 @@ module.exports = async function storyBuilder(ctx) {
   const preview = await js(`(() => { const c = document.querySelector('#sb-cover'); return { text: c?.textContent || '', landscape: !!c?.querySelector('.page.size-landscape') }; })()`);
   checks.previewTitle = preview.text.includes('The Lantern Otter') && preview.text.includes('Robin Vale');
   checks.previewSize = preview.landscape;
+  // At the smallest window size the cover preview still fits inside its column.
+  const [winW, winH] = ctx.win.getSize();
+  ctx.win.setSize(1100, 700);
+  await pause(200);
+  await js('$settle()');
+  checks.coverFitsAtMinWidth = await js(`(() => { const c = $must('#sb-cover .page-frame').getBoundingClientRect(); const p = $must('.sb-preview').getBoundingClientRect(); return c.left >= p.left && c.right <= p.right; })()`);
+  ctx.win.setSize(winW, winH);
+  await pause(200);
   await js(`$must('.sb-left').scrollTop = 0; $settle()`);
   await ctx.screenshot();
 

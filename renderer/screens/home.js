@@ -89,6 +89,12 @@
 
   // ---------- recent ----------
   function recent(books) {
+    if (!books) {
+      return h('section', { class: 'home-section' }, h('div', { class: 'home-section-head' }, h('h2', {}, 'Recent books')),
+        h('div', { class: 'home-empty', id: 'home-recent-error', 'data-load-error': '', role: 'alert' },
+          'Your books couldn\u2019t be loaded. ',
+          h('button', { type: 'button', class: 'link-btn', 'data-retry': '', onclick: () => run(() => navigate('home')) }, 'Try again')));
+    }
     const sorted = [...books].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 6);
     const head = h('div', { class: 'home-section-head' }, h('h2', {}, 'Recent books'),
       books.length ? h('button', { class: 'btn ghost small', id: 'home-see-all', onclick: () => run(() => navigate('bookshelf')) }, 'See all') : null);
@@ -145,7 +151,8 @@
   }
 
   async function render(host) {
-    const books = (await run(() => api.listBooks())) || [];
+    // null (not []) when loading failed, so a failure never looks like an empty library.
+    const books = await api.listBooks().catch((error) => { console.warn(error); return null; });
     host.replaceChildren(h('div', { class: 'home-main' },
       h('div', { class: 'home-inner' }, hero(), recent(books), templates(), unavailable())));
   }

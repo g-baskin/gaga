@@ -117,6 +117,7 @@ select {
 .empty { max-width: 520px; margin: 12vh auto 0; text-align: center; }
 .empty h1 { font-size: var(--text-3xl); margin-bottom: var(--space-12); }
 .empty p { color: var(--muted); font-size: var(--text-lg); margin: 0 0 var(--space-24); }
+.screen-loading { margin: 12vh auto 0; text-align: center; }
 .empty-actions { display: flex; gap: var(--space-12); justify-content: center; }
 
 /* ---------- editor ---------- */

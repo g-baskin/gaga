@@ -28,6 +28,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Chapters written with AI and stories you import now read text the same way: `###` subheadings no longer show up as literal hash marks, and lines that wrap inside a paragraph stay one paragraph.
 - When a save fails because the disk is full, read-only, or Storyloom isn't allowed to write there, you now get a plain explanation instead of a technical error with a file path, and no leftover temporary files.
 - If your settings, profile, shelves, or character library file is ever damaged, Storyloom now keeps the damaged copy, tells you where it is, and starts fresh, instead of quietly replacing it on the next save.
+- If your books can't be loaded, screens now say so and offer **Try again**, instead of going blank or claiming you have no books yet. Screens show "Loading…" while they read your library.
+- The Story builder's cover preview no longer gets cut off at the right edge when the window is at its smallest size.
 
 ## [0.6.1] - 2026-10-07
 
