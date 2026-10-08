@@ -21,12 +21,12 @@ tags:
 related:
   - "[[concepts/secret-storage]]"
 sources:
-  - main.cjs:59
+  - main.cjs
 ---
 
 # settings.json (AI service settings file)
 
-Stored at `<userData>/settings.json` (main.cjs:59), written 0600 via temp+rename. Keys:
+Stored at `<userData>/settings.json` (main.cjs), written 0600 via temp+rename. Keys:
 
 - [[entities/settings-baseUrl]]
 - [[entities/settings-model]]
@@ -46,11 +46,11 @@ Stored at `<userData>/settings.json` (main.cjs:59), written 0600 via temp+rename
 - [[entities/settings-claudeModel]]
 - [[entities/settings-claudePath]]
 
-Related file: `<userData>/chatgpt.json` — the whole ChatGPT sign-in record encrypted with safeStorage (main.cjs:174).
+Related file: `<userData>/chatgpt.json` — the whole ChatGPT sign-in record encrypted with safeStorage (main.cjs).
 
 ## Changes since 2add52d
 
-New fields: [[entities/settings-falKeyEnc]], `falImageModel`, [[entities/settings-checkUpdates]] (main.cjs:80-82). `pictures` may now be `fal` ([[entities/settings-pictures]]).
+New fields: [[entities/settings-falKeyEnc]], `falImageModel`, [[entities/settings-checkUpdates]] (main.cjs). `pictures` may now be `fal` ([[entities/settings-pictures]]).
 
 ## Connections
 
@@ -64,4 +64,4 @@ New fields: [[entities/settings-falKeyEnc]], `falImageModel`, [[entities/setting
 
 ## Sources
 
-- `main.cjs:59`
+- `main.cjs`

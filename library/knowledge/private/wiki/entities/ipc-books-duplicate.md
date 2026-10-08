@@ -24,17 +24,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:477
-  - preload.cjs:19
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:duplicate
 
-IPC channel `books:duplicate`, registered with [[entities/handle]] at `main.cjs:477` (trusted-caller check applies). Copy a book folder; only `title` and `kind` overrides are passed through.
+IPC channel `books:duplicate`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Copy a book folder; only `title` and `kind` overrides are passed through.
 
 ## Renderer side
 
-`window.storyloom.duplicateBook` at `preload.cjs:19`
+`window.storyloom.duplicateBook` at `preload.cjs`
 
 ## Connections
 
@@ -48,5 +48,5 @@ IPC channel `books:duplicate`, registered with [[entities/handle]] at `main.cjs:
 
 ## Sources
 
-- `main.cjs:477`
-- `preload.cjs:19`
+- `main.cjs`
+- `preload.cjs`

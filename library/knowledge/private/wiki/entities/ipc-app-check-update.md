@@ -24,21 +24,21 @@ related:
   - "[[entities/ipc-channels]]"
   - "[[concepts/signed-update-channel]]"
 sources:
-  - main.cjs:679
-  - preload.cjs:48
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC app:check-update
 
 **IPC channel app:check-update (in-app updates).**
 
-IPC channel `app:check-update`, registered with [[entities/handle]] at `main.cjs:679` (trusted-caller check applies). Runs `checkForUpdate({ manual })` (main.cjs:228). Background checks honour [[entities/settings-checkUpdates]] and fail silently; manual checks report failures. No-op while checking/downloading/installing/ready.
+IPC channel `app:check-update`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Runs `checkForUpdate({ manual })` (main.cjs). Background checks honour [[entities/settings-checkUpdates]] and fail silently; manual checks report failures. No-op while checking/downloading/installing/ready.
 
-States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (main.cjs:195-196), always with `current` = app version.
+States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (main.cjs), always with `current` = app version.
 
 ## Renderer side
 
-`window.storyloom.checkForUpdate` at `preload.cjs:48`; used by update views in [[entities/app-js]] and [[entities/account-screen]].
+`window.storyloom.checkForUpdate` at `preload.cjs`; used by update views in [[entities/app-js]] and [[entities/account-screen]].
 
 ## Connections
 
@@ -52,5 +52,5 @@ States shared with the page: `idle | checking | up-to-date | available | downloa
 
 ## Sources
 
-- `main.cjs:679`
-- `preload.cjs:48`
+- `main.cjs`
+- `preload.cjs`

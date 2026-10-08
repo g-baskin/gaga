@@ -22,14 +22,14 @@ tags:
 related:
   - "[[concepts/ai-provider-routing]]"
 sources:
-  - main.cjs:378
+  - main.cjs
 ---
 
 # aiRecommendations
 
 ## Overview
 
-Defined at `main.cjs:378`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -43,7 +43,7 @@ Rows `{job, model, fallbacks, reason}` describing which model each job will use 
 
 ## Changes since 2add52d
 
-Now at main.cjs:509 (line numbers in older text are from `2add52d`). Adds rows for fal.ai pictures (main.cjs:535).
+In main.cjs. Adds rows for fal.ai pictures (main.cjs).
 
 ## Connections
 
@@ -57,4 +57,4 @@ Now at main.cjs:509 (line numbers in older text are from `2add52d`). Adds rows f
 
 ## Sources
 
-- `main.cjs:378`
+- `main.cjs`

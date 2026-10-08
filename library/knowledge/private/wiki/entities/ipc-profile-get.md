@@ -27,17 +27,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:522
-  - preload.cjs:36
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC profile:get
 
-IPC channel `profile:get`, registered with [[entities/handle]] at `main.cjs:522` (trusted-caller check applies). Read profile.json.
+IPC channel `profile:get`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Read profile.json.
 
 ## Renderer side
 
-`window.storyloom.getProfile` at `preload.cjs:36`
+`window.storyloom.getProfile` at `preload.cjs`
 
 ## Connections
 
@@ -51,5 +51,5 @@ IPC channel `profile:get`, registered with [[entities/handle]] at `main.cjs:522`
 
 ## Sources
 
-- `main.cjs:522`
-- `preload.cjs:36`
+- `main.cjs`
+- `preload.cjs`

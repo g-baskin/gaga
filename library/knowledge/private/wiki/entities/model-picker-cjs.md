@@ -30,11 +30,11 @@ sources:
 
 ## Overview
 
-No network; designed for unit testing (ai/model-picker.cjs:2). Defines `TIERS = ['best','balanced','thrifty']` (ai/model-picker.cjs:11), `TASKS` (story/chapter/captions with `minContext` and `tierShift`; ai/model-picker.cjs:14) and `PRICE_CAP` per tier in USD per million output tokens (ai/model-picker.cjs:21). Functions: [[entities/pickTextModels]], `pickImageModel` (ai/model-picker.cjs:127), `pickSpeechModel` (ai/model-picker.cjs:160), `pickVoice` (ai/model-picker.cjs:150), [[entities/pickClaudeModel]], [[entities/pickChatGptModel]].
+No network; designed for unit testing (ai/model-picker.cjs). Defines `TIERS = ['best','balanced','thrifty']` (ai/model-picker.cjs), `TASKS` (story/chapter/captions with `minContext` and `tierShift`; ai/model-picker.cjs) and `PRICE_CAP` per tier in USD per million output tokens (ai/model-picker.cjs). Functions: [[entities/pickTextModels]], `pickImageModel` (ai/model-picker.cjs), `pickSpeechModel` (ai/model-picker.cjs), `pickVoice` (ai/model-picker.cjs), [[entities/pickClaudeModel]], [[entities/pickChatGptModel]].
 
 ## Changes since 2add52d
 
-Adds `pickFalModel({ models, tier, lineArt })` (ai/model-picker.cjs:205) with `FAL_PREFERENCE` (:195), `FAL_LINE_ART` (Recraft text-to-image for colouring pages, :201) and `FAL_SKIP` (:203); exported at :225. Called by [[entities/fal-cjs]] (ai/fal.cjs:146).
+Adds `pickFalModel({ models, tier, lineArt })` (ai/model-picker.cjs) with `FAL_PREFERENCE`, `FAL_LINE_ART` (Recraft text-to-image for colouring pages) and `FAL_SKIP`; exported at :225. Called by [[entities/fal-cjs]] (ai/fal.cjs).
 
 ## Connections
 

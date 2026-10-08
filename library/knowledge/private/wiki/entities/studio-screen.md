@@ -30,7 +30,7 @@ sources:
 
 ## Overview
 
-Registered via `registerScreen('studio', …)` at renderer/screens/studio.js:365. Header comment: renderer/screens/studio.js:3.
+Registered via `registerScreen('studio', …)` at renderer/screens/studio.js. Header comment: renderer/screens/studio.js.
 
 ## IPC used
 

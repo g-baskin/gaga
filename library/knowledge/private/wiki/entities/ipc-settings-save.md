@@ -22,12 +22,12 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:550
+  - main.cjs
 ---
 
 # IPC settings:save
 
-IPC channel `settings:save`, registered with [[entities/handle]] at `main.cjs:550` (trusted-caller check applies). Validate via [[entities/saveSettings]]; returns `{ settings } | { error }` instead of throwing.
+IPC channel `settings:save`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Validate via [[entities/saveSettings]]; returns `{ settings } | { error }` instead of throwing.
 
 ## Renderer side
 
@@ -45,4 +45,4 @@ IPC channel `settings:save`, registered with [[entities/handle]] at `main.cjs:55
 
 ## Sources
 
-- `main.cjs:550`
+- `main.cjs`

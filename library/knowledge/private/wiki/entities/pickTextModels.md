@@ -19,14 +19,14 @@ tags:
 related:
   - "[[entities/settings-tier]]"
 sources:
-  - ai/model-picker.cjs:58
+  - ai/model-picker.cjs
 ---
 
 # pickTextModels
 
 ## Overview
 
-Defined at `ai/model-picker.cjs:58`.
+Defined in `ai/model-picker.cjs`.
 
 ## Signature
 
@@ -54,4 +54,4 @@ Ranks OpenRouter text models for a task/tier/language using catalogue, creative/
 
 ## Sources
 
-- `ai/model-picker.cjs:58`
+- `ai/model-picker.cjs`

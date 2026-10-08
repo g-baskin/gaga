@@ -28,7 +28,7 @@ sources:
 
 ## Overview
 
-Header documents the flow: dynamic client registration, PKCE+state+nonce, loopback callback on 127.0.0.1, ID-token verification, `chatgpt.tokens.use.direct` scope, Responses API with `store:false` (ai/chatgpt.cjs:2–ai/chatgpt.cjs:8). Factory: [[entities/createChatGpt]].
+Header documents the flow: dynamic client registration, PKCE+state+nonce, loopback callback on 127.0.0.1, ID-token verification, `chatgpt.tokens.use.direct` scope, Responses API with `store:false` (ai/chatgpt.cjs). Factory: [[entities/createChatGpt]].
 
 ## Connections
 

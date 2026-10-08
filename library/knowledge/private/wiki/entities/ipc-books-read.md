@@ -25,17 +25,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:474
-  - preload.cjs:16
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:read
 
-IPC channel `books:read`, registered with [[entities/handle]] at `main.cjs:474` (trusted-caller check applies). Read and sanitize one book.
+IPC channel `books:read`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Read and sanitize one book.
 
 ## Renderer side
 
-`window.storyloom.readBook` at `preload.cjs:16`
+`window.storyloom.readBook` at `preload.cjs`
 
 ## Connections
 
@@ -49,5 +49,5 @@ IPC channel `books:read`, registered with [[entities/handle]] at `main.cjs:474` 
 
 ## Sources
 
-- `main.cjs:474`
-- `preload.cjs:16`
+- `main.cjs`
+- `preload.cjs`

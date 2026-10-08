@@ -21,7 +21,7 @@ sources: []
 > Earlier text said: the concept was titled "Offline renderer"; it read as if Storyloom were offline-only.
 > Current code: only the renderer page is blocked from the network. See [[meta/2026-10-07-contradiction-report]].
 
-The page never reaches the network: `onBeforeRequest` cancels everything except `app:`, `data:`, `blob:`, `devtools:` (main.cjs:804). Only the main process talks to AI services. Permissions: only audio-only microphone for the app page (main.cjs:797). Content is served by [[entities/serve]].
+The page never reaches the network: `onBeforeRequest` cancels everything except `app:`, `data:`, `blob:`, `devtools:` (main.cjs). Only the main process talks to AI services. Permissions: only audio-only microphone for the app page (main.cjs). Content is served by [[entities/serve]].
 
 ## Entities
 
@@ -32,4 +32,4 @@ The page never reaches the network: `onBeforeRequest` cancels everything except 
 
 > [!contradiction] Contract changed; see [[meta/2026-10-07-contradiction-report]].
 
-The lockdown still applies to the page (main.cjs:804-807). The app as a whole is not offline-only: the main process talks to the chosen AI services and checks GitHub for signed updates ([[concepts/signed-update-channel]]).
+The lockdown still applies to the page (main.cjs). The app as a whole is not offline-only: the main process talks to the chosen AI services and checks GitHub for signed updates ([[concepts/signed-update-channel]]).

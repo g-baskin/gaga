@@ -20,14 +20,14 @@ tags:
 related:
   - "[[entities/book]]"
 sources:
-  - storage.cjs:230
+  - storage.cjs
 ---
 
 # sanitizeBook
 
 ## Overview
 
-Defined at `storage.cjs:230`.
+Defined in `storage.cjs`.
 
 ## Signature
 
@@ -55,4 +55,4 @@ Normalises a whole [[entities/book]]; ensures ≥1 page (a cover), sets `updated
 
 ## Sources
 
-- `storage.cjs:230`
+- `storage.cjs`

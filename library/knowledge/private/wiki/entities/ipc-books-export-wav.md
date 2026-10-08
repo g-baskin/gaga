@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:535
-  - preload.cjs:41
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:export-wav
 
-IPC channel `books:export-wav`, registered with [[entities/handle]] at `main.cjs:535` (trusted-caller check applies). Write renderer-mixed WAV bytes (≤1 GiB) to a chosen file.
+IPC channel `books:export-wav`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Write renderer-mixed WAV bytes (≤1 GiB) to a chosen file.
 
 ## Renderer side
 
-`window.storyloom.exportWav` at `preload.cjs:41`
+`window.storyloom.exportWav` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `books:export-wav`, registered with [[entities/handle]] at `main.cjs
 
 ## Sources
 
-- `main.cjs:535`
-- `preload.cjs:41`
+- `main.cjs`
+- `preload.cjs`

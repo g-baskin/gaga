@@ -24,21 +24,21 @@ related:
   - "[[entities/ipc-channels]]"
   - "[[concepts/signed-update-channel]]"
 sources:
-  - main.cjs:681
-  - preload.cjs:50
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC app:install-update
 
 **IPC channel app:install-update (in-app updates).**
 
-IPC channel `app:install-update`, registered with [[entities/handle]] at `main.cjs:681` (trusted-caller check applies). Runs `installUpdate()` (main.cjs:261): requires phase `ready`; [[entities/installTarget]] then [[entities/startInstall]], then quits. Self-test stops before the swap.
+IPC channel `app:install-update`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Runs `installUpdate()` (main.cjs): requires phase `ready`; [[entities/installTarget]] then [[entities/startInstall]], then quits. Self-test stops before the swap.
 
-States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (main.cjs:195-196), always with `current` = app version.
+States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (main.cjs), always with `current` = app version.
 
 ## Renderer side
 
-`window.storyloom.installUpdate` at `preload.cjs:50`; used by update views in [[entities/app-js]] and [[entities/account-screen]].
+`window.storyloom.installUpdate` at `preload.cjs`; used by update views in [[entities/app-js]] and [[entities/account-screen]].
 
 ## Connections
 
@@ -52,5 +52,5 @@ States shared with the page: `idle | checking | up-to-date | available | downloa
 
 ## Sources
 
-- `main.cjs:681`
-- `preload.cjs:50`
+- `main.cjs`
+- `preload.cjs`

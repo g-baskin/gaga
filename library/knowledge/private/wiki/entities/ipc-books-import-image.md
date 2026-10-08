@@ -24,17 +24,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:498
-  - preload.cjs:22
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:import-image
 
-IPC channel `books:import-image`, registered with [[entities/handle]] at `main.cjs:498` (trusted-caller check applies). Open-file dialog, sniff and copy an image into the book.
+IPC channel `books:import-image`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Open-file dialog, sniff and copy an image into the book.
 
 ## Renderer side
 
-`window.storyloom.importImage` at `preload.cjs:22`
+`window.storyloom.importImage` at `preload.cjs`
 
 ## Connections
 
@@ -48,5 +48,5 @@ IPC channel `books:import-image`, registered with [[entities/handle]] at `main.c
 
 ## Sources
 
-- `main.cjs:498`
-- `preload.cjs:22`
+- `main.cjs`
+- `preload.cjs`

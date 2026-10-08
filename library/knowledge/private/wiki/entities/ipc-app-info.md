@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:546
-  - preload.cjs:45
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC app:info
 
-IPC channel `app:info`, registered with [[entities/handle]] at `main.cjs:546` (trusted-caller check applies). Return `{ version, dataFolder, platform }`.
+IPC channel `app:info`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Return `{ version, dataFolder, platform }`.
 
 ## Renderer side
 
-`window.storyloom.appInfo` at `preload.cjs:45`
+`window.storyloom.appInfo` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `app:info`, registered with [[entities/handle]] at `main.cjs:546` (t
 
 ## Sources
 
-- `main.cjs:546`
-- `preload.cjs:45`
+- `main.cjs`
+- `preload.cjs`

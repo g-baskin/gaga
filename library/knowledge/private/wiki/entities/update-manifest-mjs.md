@@ -32,9 +32,9 @@ sources:
 
 ## Overview
 
-Usage: `node scripts/update-manifest.mjs <version>` with the signing key supplied in the `STORYLOOM_UPDATE_SIGNING_KEY` environment variable (scripts/update-manifest.mjs:3, :33). The key is read from the environment only, never written or printed (:33-34).
+Usage: `node scripts/update-manifest.mjs <version>` with the signing key supplied in the `STORYLOOM_UPDATE_SIGNING_KEY` environment variable (scripts/update-manifest.mjs). The key is read from the environment only, never written or printed.
 
-Steps (scripts/update-manifest.mjs:31-55; sign :42, self-verify :43): require `x.y.z` matching package.json; for each [[entities/updater-PLATFORMS]] entry hash and size the zip, sign [[entities/signedMessage]] with Ed25519, and **verify against [[entities/TRUSTED_KEYS]]** so a wrong key fails the release instead of publishing unverifiable updates; write `{ version, pub_date, notes_url, platforms }`.
+Steps (scripts/update-manifest.mjs; sign :42, self-verify :43): require `x.y.z` matching package.json; for each [[entities/updater-PLATFORMS]] entry hash and size the zip, sign [[entities/signedMessage]] with Ed25519, and **verify against [[entities/TRUSTED_KEYS]]** so a wrong key fails the release instead of publishing unverifiable updates; write `{ version, pub_date, notes_url, platforms }`.
 
 Run by the `Sign the in-app updates` step of `.github/workflows/release.yml` after `npm run dist`.
 

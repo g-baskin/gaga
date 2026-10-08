@@ -21,8 +21,7 @@ tags:
 related:
   - "[[entities/settings-json]]"
 sources:
-  - main.cjs:64
-  - main.cjs:108
+  - main.cjs
 ---
 
 # settings.apiKeyEnc
@@ -34,7 +33,7 @@ Field of [[entities/settings-json]].
 
 Encrypted own-service API key; never sent to the page (exposed as `hasKey`). Set by `apiKey`, cleared by `clearKey`.
 
-Read/coerced in [[entities/readSettings]] (`main.cjs:64`), validated in [[entities/saveSettings]] (`main.cjs:108`).
+Read/coerced in [[entities/readSettings]] (`main.cjs`), validated in [[entities/saveSettings]] (`main.cjs`).
 
 ## Connections
 
@@ -48,5 +47,4 @@ Read/coerced in [[entities/readSettings]] (`main.cjs:64`), validated in [[entiti
 
 ## Sources
 
-- `main.cjs:64`
-- `main.cjs:108`
+- `main.cjs`

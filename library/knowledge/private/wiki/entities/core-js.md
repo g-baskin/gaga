@@ -29,7 +29,7 @@ sources:
 
 ## Overview
 
-Binds `const api = window.storyloom` (renderer/core.js:3). Helpers: `h` DOM builder (renderer/core.js:5), `svg`, `toast`, `run` (busy wrapper, renderer/core.js:44), element renderers and [[entities/renderPage]] / `scaledPage` (renderer/core.js:199).
+Binds `const api = window.storyloom` (renderer/core.js). Helpers: `h` DOM builder (renderer/core.js), `svg`, `toast`, `run` (busy wrapper, renderer/core.js), element renderers and [[entities/renderPage]] / `scaledPage` (renderer/core.js).
 
 ## Connections
 

@@ -19,14 +19,14 @@ tags:
 related:
   - "[[entities/manuscript]]"
 sources:
-  - main.cjs:316
+  - main.cjs
 ---
 
 # generateChapter
 
 ## Overview
 
-Defined at `main.cjs:316`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -50,4 +50,4 @@ Writes/rewrites one manuscript chapter; word limit clamped 5–2000 (default 120
 
 ## Sources
 
-- `main.cjs:316`
+- `main.cjs`

@@ -80,13 +80,13 @@ All 44 `handle(...)` channels in `main.cjs` and their `window.storyloom` wrapper
 
 Preload methods with no caller found in `renderer/`: none (selftest may still use them).
 
-Push events main→page: `app:before-close` (main.cjs:683), `menu:action` (main.cjs:588).
+Push events main→page: `app:before-close` (main.cjs), `menu:action` (main.cjs).
 
 ## Changes since 2add52d
 
 > [!contradiction] Contract changed; see [[meta/2026-10-07-contradiction-report]].
 
-Added channels (main.cjs:678-683): [[entities/ipc-app-update-state]], [[entities/ipc-app-check-update]], [[entities/ipc-app-download-update]], [[entities/ipc-app-install-update]], [[entities/ipc-app-open-update-notes]]. Line numbers in the table above are from `2add52d`. New push event: `app:update-state`.
+Added channels (main.cjs): [[entities/ipc-app-update-state]], [[entities/ipc-app-check-update]], [[entities/ipc-app-download-update]], [[entities/ipc-app-install-update]], [[entities/ipc-app-open-update-notes]]. Line numbers in the table above are from `2add52d`. New push event: `app:update-state`.
 
 ## Connections
 

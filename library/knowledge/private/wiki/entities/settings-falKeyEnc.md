@@ -36,7 +36,7 @@ Encrypted fal.ai key; exposed as `hasFalKey`. Set by `falKey`, cleared by `clear
 
 ## Changes since 2add52d
 
-Read at main.cjs:80, written at main.cjs:165-166, exposed as `hasFalKey` at main.cjs:175.
+Read at main.cjs, written at main.cjs, exposed as `hasFalKey` at main.cjs.
 
 ## Connections
 

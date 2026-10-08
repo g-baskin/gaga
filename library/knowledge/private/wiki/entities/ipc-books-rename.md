@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:476
-  - preload.cjs:18
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:rename
 
-IPC channel `books:rename`, registered with [[entities/handle]] at `main.cjs:476` (trusted-caller check applies). Rename a book.
+IPC channel `books:rename`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Rename a book.
 
 ## Renderer side
 
-`window.storyloom.renameBook` at `preload.cjs:18`
+`window.storyloom.renameBook` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `books:rename`, registered with [[entities/handle]] at `main.cjs:476
 
 ## Sources
 
-- `main.cjs:476`
-- `preload.cjs:18`
+- `main.cjs`
+- `preload.cjs`

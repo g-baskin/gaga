@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:517
-  - preload.cjs:31
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC shelves:save
 
-IPC channel `shelves:save`, registered with [[entities/handle]] at `main.cjs:517` (trusted-caller check applies). Sanitize and write shelves.json.
+IPC channel `shelves:save`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Sanitize and write shelves.json.
 
 ## Renderer side
 
-`window.storyloom.saveShelves` at `preload.cjs:31`
+`window.storyloom.saveShelves` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `shelves:save`, registered with [[entities/handle]] at `main.cjs:517
 
 ## Sources
 
-- `main.cjs:517`
-- `preload.cjs:31`
+- `main.cjs`
+- `preload.cjs`

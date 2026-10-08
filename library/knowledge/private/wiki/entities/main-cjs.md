@@ -39,19 +39,19 @@ sources:
 
 ## Overview
 
-Entry point of the Electron app. Requires the store, EPUB builder and the four AI modules, registers the privileged `app` scheme (main.cjs:30), wraps every IPC channel with [[entities/handle]] (main.cjs:46), and on `whenReady` creates the store, locks down permissions and network, registers handlers and opens a sandboxed `BrowserWindow` (main.cjs:650).
+Entry point of the Electron app. Requires the store, EPUB builder and the four AI modules, registers the privileged `app` scheme (main.cjs), wraps every IPC channel with [[entities/handle]] (main.cjs), and on `whenReady` creates the store, locks down permissions and network, registers handlers and opens a sandboxed `BrowserWindow` (main.cjs).
 
 Key members: [[entities/readSettings]], [[entities/saveSettings]], [[entities/aiRequest]], [[entities/writeText]], [[entities/chatJson]], [[entities/generateStory]], [[entities/generateChapter]], [[entities/generateImage]], [[entities/generateSpeech]], [[entities/aiRecommendations]], [[entities/exportEpub]], [[entities/serve]]. All 44 IPC channels are listed under [[entities/ipc-channels]].
 
-Close handling: the window's `close` is intercepted, `app:before-close` is sent to the page, and a 3 s timer forces close if saving hangs (main.cjs:680). Menu undo/redo are forwarded as `menu:action` (main.cjs:587).
+Close handling: the window's `close` is intercepted, `app:before-close` is sent to the page, and a 3 s timer forces close if saving hangs (main.cjs). Menu undo/redo are forwarded as `menu:action` (main.cjs).
 
 ## Changes since 2add52d
 
-- Requires [[entities/updater-cjs]] and `ai/fal.cjs` ([[entities/fal-cjs]]). Update state machine (main.cjs:195-280): `setUpdateState` pushes `app:update-state`; `getUpdater`, `checkForUpdate`, `downloadUpdate`, `installUpdate`, `discardReadyUpdate`. See [[concepts/signed-update-channel]].
-- New handlers (main.cjs:678-683): [[entities/ipc-app-update-state]], [[entities/ipc-app-check-update]], [[entities/ipc-app-download-update]], [[entities/ipc-app-install-update]], [[entities/ipc-app-open-update-notes]]. `ai:open-link` gains `fal-keys` and `source` (main.cjs:717-718).
-- `PICTURES = ['custom','openrouter','fal']` (main.cjs:67); `getFal()` (main.cjs:291); [[entities/generateImage]] branches to fal at main.cjs:480. Settings gain `falKeyEnc`, `falImageModel`, [[entities/settings-checkUpdates]] (main.cjs:80-82).
-- Test hooks: [[entities/test-url-STORYLOOM_TEST_UPDATES]], [[entities/test-url-STORYLOOM_TEST_UPDATE_KEY]], [[entities/test-url-STORYLOOM_TEST_FAL_RUN]], [[entities/test-url-STORYLOOM_TEST_FAL_API]] via [[entities/useTestServices]] (main.cjs:183).
-- The renderer network block is unchanged (main.cjs:804); the main process now also contacts GitHub for updates, so the app is not offline-only.
+- Requires [[entities/updater-cjs]] and `ai/fal.cjs` ([[entities/fal-cjs]]). Update state machine (main.cjs): `setUpdateState` pushes `app:update-state`; `getUpdater`, `checkForUpdate`, `downloadUpdate`, `installUpdate`, `discardReadyUpdate`. See [[concepts/signed-update-channel]].
+- New handlers (main.cjs): [[entities/ipc-app-update-state]], [[entities/ipc-app-check-update]], [[entities/ipc-app-download-update]], [[entities/ipc-app-install-update]], [[entities/ipc-app-open-update-notes]]. `ai:open-link` gains `fal-keys` and `source` (main.cjs).
+- `PICTURES = ['custom','openrouter','fal']` (main.cjs); `getFal()` (main.cjs); [[entities/generateImage]] branches to fal at main.cjs. Settings gain `falKeyEnc`, `falImageModel`, [[entities/settings-checkUpdates]] (main.cjs).
+- Test hooks: [[entities/test-url-STORYLOOM_TEST_UPDATES]], [[entities/test-url-STORYLOOM_TEST_UPDATE_KEY]], [[entities/test-url-STORYLOOM_TEST_FAL_RUN]], [[entities/test-url-STORYLOOM_TEST_FAL_API]] via [[entities/useTestServices]] (main.cjs).
+- The renderer network block is unchanged (main.cjs); the main process now also contacts GitHub for updates, so the app is not offline-only.
 
 ## Connections
 

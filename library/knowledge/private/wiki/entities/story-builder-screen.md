@@ -30,7 +30,7 @@ sources:
 
 ## Overview
 
-Registered via `registerScreen('story-builder', …)` at renderer/screens/story-builder.js:410. Header comment: renderer/screens/story-builder.js:3.
+Registered via `registerScreen('story-builder', …)` at renderer/screens/story-builder.js. Header comment: renderer/screens/story-builder.js.
 
 ## IPC used
 
@@ -44,7 +44,7 @@ Registered via `registerScreen('story-builder', …)` at renderer/screens/story-
 
 ## Changes since 2add52d
 
-Live cover preview: `schedulePreview` (renderer/screens/story-builder.js:48) batches redraws per microtask; `liveCharacters` (:54) includes unsaved edits from an open character dialog. Uses `aiPictureNote` (:242) and `aiWriterNote` (:442). Registered at :450.
+Live cover preview: `schedulePreview` (renderer/screens/story-builder.js) batches redraws per microtask; `liveCharacters` includes unsaved edits from an open character dialog. Uses `aiPictureNote` and `aiWriterNote`. Registered at :450.
 
 ## Connections
 

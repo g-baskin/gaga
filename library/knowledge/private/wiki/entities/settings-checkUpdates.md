@@ -22,9 +22,7 @@ tags:
 related:
   - "[[concepts/signed-update-channel]]"
 sources:
-  - main.cjs:82
-  - main.cjs:159
-  - main.cjs:231
+  - main.cjs
 ---
 
 # settings.checkUpdates
@@ -34,10 +32,10 @@ sources:
 Field of [[entities/settings-json]].
 
 - **Type:** boolean
-- **Default:** `true` — `raw.checkUpdates !== false` (main.cjs:82)
-- **Save:** only changed when the input has the key; must be exactly `true` to turn on (main.cjs:159). Exposed unchanged by [[entities/publicSettings]] (main.cjs:177).
+- **Default:** `true` — `raw.checkUpdates !== false` (main.cjs)
+- **Save:** only changed when the input has the key; must be exactly `true` to turn on (main.cjs). Exposed unchanged by [[entities/publicSettings]] (main.cjs).
 
-When false, a background check returns `{ phase: 'idle', disabled: true }` without contacting GitHub (main.cjs:231). Manual checks ignore it. Toggled by the "Check for updates when Storyloom opens" checkbox in [[entities/account-screen]] (renderer/screens/account.js:242+).
+When false, a background check returns `{ phase: 'idle', disabled: true }` without contacting GitHub (main.cjs). Manual checks ignore it. Toggled by the "Check for updates when Storyloom opens" checkbox in [[entities/account-screen]] (renderer/screens/account.js+).
 
 ## Connections
 
@@ -51,6 +49,4 @@ When false, a background check returns `{ phase: 'idle', disabled: true }` witho
 
 ## Sources
 
-- `main.cjs:82`
-- `main.cjs:159`
-- `main.cjs:231`
+- `main.cjs`

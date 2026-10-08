@@ -19,12 +19,12 @@ tags:
 related:
   - "[[concepts/sanitize-on-every-boundary]]"
 sources:
-  - storage.cjs:205
+  - storage.cjs
 ---
 
 # book-audio (data model)
 
-Shape enforced by `sanitizeAudio` (storage.cjs:205).
+Shape enforced by `sanitizeAudio` (storage.cjs).
 
 `{ narration: { [pageId]: { file, duration, source: recording|import|ai } }, music: { file, volume, loop } | null, voice }`; narration for deleted pages is dropped. `voice` accepts the same names as the settings voice (letters, digits, `. : - _`, up to 80), so OpenRouter voices like `en-US-Nova:MAI` are kept.
 
@@ -46,4 +46,4 @@ Invalid fields are replaced by defaults rather than rejected.
 
 ## Sources
 
-- `storage.cjs:205`
+- `storage.cjs`

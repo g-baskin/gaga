@@ -87,8 +87,8 @@ npm start            # run the app
 | Command | What it does |
 | --- | --- |
 | `npm test` | Unit tests |
-| `npm run test:live` | Optional checks against the real OpenRouter. Needs `OPENROUTER_TEST_API` in `scrively/.env.local`; costs a fraction of a cent |
-| `npm run self-test` | Drives every screen of the real app with mouse and keyboard events, against local stand-in services, and saves screenshots to `verification/` |
+| `npm run test:live` | Optional checks against the real OpenRouter. Needs `OPENROUTER_TEST_API` in your environment or in a `.env.local` file in this folder (gitignored); costs a fraction of a cent |
+| `npm run self-test` | Drives every screen of the real app with mouse and keyboard events, against local stand-in services, and saves screenshots to `verification/` (not committed; look at them locally) |
 | `npm run preview` | Opens the screens in a browser at http://127.0.0.1:4173 with sample books |
 | `npm run package` | Builds `Storyloom.app` for this Mac in `releases/`. Then `node scripts/check-package.mjs releases/Storyloom-darwin-<arm64 or x64>/Storyloom.app` checks it has every file it loads (CI runs both on every push and pull request) |
 | `npm run dist` | Builds the Intel and Apple Silicon `.dmg` files and update archives |

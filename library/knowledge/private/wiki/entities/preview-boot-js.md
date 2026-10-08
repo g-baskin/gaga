@@ -27,7 +27,7 @@ sources:
 
 ## Overview
 
-Sets `data-preview="1"` on `<html>` and defines an in-memory `window.storyloom` (books live in the tab only; renderer/preview-boot.js:1-10). AI, export and file actions return a preview note instead of working. Since `eb83d47` it also stubs the update API (`updateState: () => ok({ phase: 'idle', current: 'preview' })`, renderer/preview-boot.js:183) so the sidebar version box renders. Electron never loads this file; it uses [[entities/preload-cjs]].
+Sets `data-preview="1"` on `<html>` and defines an in-memory `window.storyloom` (books live in the tab only; renderer/preview-boot.js). AI, export and file actions return a preview note instead of working. Since `eb83d47` it also stubs the update API (`updateState: () => ok({ phase: 'idle', current: 'preview' })`, renderer/preview-boot.js) so the sidebar version box renders. Electron never loads this file; it uses [[entities/preload-cjs]].
 
 ## Connections
 

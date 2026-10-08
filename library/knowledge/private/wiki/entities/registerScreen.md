@@ -18,14 +18,14 @@ tags:
 related:
   - "[[concepts/screen-registry]]"
 sources:
-  - renderer/app.js:60
+  - renderer/app.js
 ---
 
 # registerScreen
 
 ## Overview
 
-Defined at `renderer/app.js:60`.
+Defined in `renderer/app.js`.
 
 ## Signature
 
@@ -49,4 +49,4 @@ Registers `{label, scope, render, leave}` by name; re-renders immediately if tha
 
 ## Sources
 
-- `renderer/app.js:60`
+- `renderer/app.js`

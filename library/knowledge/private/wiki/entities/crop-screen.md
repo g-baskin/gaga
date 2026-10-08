@@ -30,7 +30,7 @@ sources:
 
 ## Overview
 
-Does not call `registerScreen`; it installs dialog helpers used by other screens. Header comment: renderer/screens/crop.js:1.
+Does not call `registerScreen`; it installs dialog helpers used by other screens. Header comment: renderer/screens/crop.js.
 
 ## IPC used
 
@@ -38,7 +38,7 @@ Does not call `registerScreen`; it installs dialog helpers used by other screens
 
 ## Changes since 2add52d
 
-The Generate dialog shows `aiPictureNote` and disables Generate until pictures are set up (renderer/screens/crop.js:182); comment names OpenRouter, fal.ai, or own service (:154).
+The Generate dialog shows `aiPictureNote` and disables Generate until pictures are set up (renderer/screens/crop.js); comment names OpenRouter, fal.ai, or own service.
 
 ## Connections
 

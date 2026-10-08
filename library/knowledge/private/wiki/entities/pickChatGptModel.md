@@ -20,14 +20,14 @@ tags:
 related:
   - "[[entities/settings-tier]]"
 sources:
-  - ai/model-picker.cjs:183
+  - ai/model-picker.cjs
 ---
 
 # pickChatGptModel
 
 ## Overview
 
-Defined at `ai/model-picker.cjs:183`.
+Defined in `ai/model-picker.cjs`.
 
 ## Signature
 
@@ -55,4 +55,4 @@ First model in OpenAI's order; at thrifty budget prefers a `mini|lite|nano` mode
 
 ## Sources
 
-- `ai/model-picker.cjs:183`
+- `ai/model-picker.cjs`

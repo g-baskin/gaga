@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:497
-  - preload.cjs:23
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:list-images
 
-IPC channel `books:list-images`, registered with [[entities/handle]] at `main.cjs:497` (trusted-caller check applies). List image assets of a book.
+IPC channel `books:list-images`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). List image assets of a book.
 
 ## Renderer side
 
-`window.storyloom.listImages` at `preload.cjs:23`
+`window.storyloom.listImages` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `books:list-images`, registered with [[entities/handle]] at `main.cj
 
 ## Sources
 
-- `main.cjs:497`
-- `preload.cjs:23`
+- `main.cjs`
+- `preload.cjs`

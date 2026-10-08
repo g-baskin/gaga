@@ -27,7 +27,7 @@ sources:
 
 ## Overview
 
-Implements CRC-32 (epub.cjs:14), a stored (uncompressed) `zip` with a fixed 1980-01-01 DOS timestamp (epub.cjs:22, epub.cjs:25), an `unzip` for tests (epub.cjs:74) [[entities/buildEpub]] (epub.cjs:100), and `collectImages`, which loads the pictures pages refer to and drops references to pictures that no longer exist. Exports `{ zip, unzip, crc32, buildEpub, collectImages }`.
+Implements CRC-32 (epub.cjs), a stored (uncompressed) `zip` with a fixed 1980-01-01 DOS timestamp (epub.cjs, epub.cjs), an `unzip` for tests (epub.cjs) [[entities/buildEpub]] (epub.cjs), and `collectImages`, which loads the pictures pages refer to and drops references to pictures that no longer exist. Exports `{ zip, unzip, crc32, buildEpub, collectImages }`.
 
 ## Connections
 

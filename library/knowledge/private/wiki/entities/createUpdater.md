@@ -24,8 +24,8 @@ tags:
 related:
   - "[[concepts/signed-update-channel]]"
 sources:
-  - updater.cjs:72
-  - main.cjs:216
+  - updater.cjs
+  - main.cjs
 ---
 
 # createUpdater
@@ -39,13 +39,13 @@ function createUpdater({ currentVersion, arch = process.arch, feedUrl = FEED_URL
   trustedKeys = TRUSTED_KEYS, allowHost = (host) => GITHUB_HOSTS.has(host), tmpDir = os.tmpdir() })
 ```
 
-Defined at updater.cjs:72. Internal `open()` (updater.cjs:84-106) fetches with `redirect: 'manual'`, max 5 hops, each hop must be https (or http on loopback) and pass `allowHost`.
+Defined in updater.cjs. Internal `open()` (updater.cjs) fetches with `redirect: 'manual'`, max 5 hops, each hop must be https (or http on loopback) and pass `allowHost`.
 
-- **check()** (updater.cjs:109-142): reads `latest.json` (≤64 KB). 404 → `{ status: 'no-feed' }`; not newer → `up-to-date`; otherwise rebuilds the download URL from the version (never from the manifest, :130), requires `raw.file` to match the expected name, a 64-hex SHA-256 and a size ≤600 MB, then [[entities/verifySignature]]. Returns `{ status: 'available', version, entry, url, notesUrl }`.
-- **download(update, { onProgress })** (updater.cjs:145-179): streams into a `storyloom-update-*` temp dir (mode 0600), aborts if bytes exceed the signed size, checks size and SHA-256, unpacks with `/usr/bin/ditto`, then `verifyApp`. Removes the temp dir on any failure. Returns `{ appPath, workdir, version }`.
-- **verifyApp** (updater.cjs:181-203): exactly one `Storyloom.app`, not a symlink, real path inside workdir; Info.plist `CFBundleIdentifier`, `CFBundleShortVersionString`, `CFBundleExecutable`; `lipo -archs` matches the chip; `codesign --verify --deep --strict`.
+- **check()** (updater.cjs): reads `latest.json` (≤64 KB). 404 → `{ status: 'no-feed' }`; not newer → `up-to-date`; otherwise rebuilds the download URL from the version (never from the manifest), requires `raw.file` to match the expected name, a 64-hex SHA-256 and a size ≤600 MB, then [[entities/verifySignature]]. Returns `{ status: 'available', version, entry, url, notesUrl }`.
+- **download(update, { onProgress })** (updater.cjs): streams into a `storyloom-update-*` temp dir (mode 0600), aborts if bytes exceed the signed size, checks size and SHA-256, unpacks with `/usr/bin/ditto`, then `verifyApp`. Removes the temp dir on any failure. Returns `{ appPath, workdir, version }`.
+- **verifyApp** (updater.cjs): exactly one `Storyloom.app`, not a symlink, real path inside workdir; Info.plist `CFBundleIdentifier`, `CFBundleShortVersionString`, `CFBundleExecutable`; `lipo -archs` matches the chip; `codesign --verify --deep --strict`.
 
-The self-test swaps `feedUrl`, `downloadBase`, `allowHost` and `trustedKeys` through `getUpdater()` (main.cjs:216-227) using [[entities/test-url-STORYLOOM_TEST_UPDATES]] and [[entities/test-url-STORYLOOM_TEST_UPDATE_KEY]].
+The self-test swaps `feedUrl`, `downloadBase`, `allowHost` and `trustedKeys` through `getUpdater()` (main.cjs) using [[entities/test-url-STORYLOOM_TEST_UPDATES]] and [[entities/test-url-STORYLOOM_TEST_UPDATE_KEY]].
 
 ## Connections
 
@@ -59,5 +59,5 @@ The self-test swaps `feedUrl`, `downloadBase`, `allowHost` and `trustedKeys` thr
 
 ## Sources
 
-- `updater.cjs:72`
-- `main.cjs:216`
+- `updater.cjs`
+- `main.cjs`

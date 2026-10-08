@@ -23,14 +23,14 @@ tags:
 related:
   - "[[concepts/ai-provider-routing]]"
 sources:
-  - ai/openrouter.cjs:8
+  - ai/openrouter.cjs
 ---
 
 # createOpenRouter
 
 ## Overview
 
-Defined at `ai/openrouter.cjs:8`.
+Defined in `ai/openrouter.cjs`.
 
 ## Signature
 
@@ -54,4 +54,4 @@ Returns `{ chat, image, speech, recommendations, clearCache }`. Bounded `request
 
 ## Sources
 
-- `ai/openrouter.cjs:8`
+- `ai/openrouter.cjs`

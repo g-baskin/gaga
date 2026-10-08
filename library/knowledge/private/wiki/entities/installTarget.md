@@ -21,8 +21,8 @@ related:
   - "[[concepts/signed-update-channel]]"
   - "[[entities/startInstall]]"
 sources:
-  - updater.cjs:208
-  - main.cjs:269
+  - updater.cjs
+  - main.cjs
 ---
 
 # installTarget
@@ -35,7 +35,7 @@ sources:
 async function installTarget(execPath) // → { ok: true, target } | { ok: false, target?, reason }
 ```
 
-Defined at updater.cjs:208. Target is three levels above `execPath`; refuses non-`.app` paths ("only work in the installed app"), App Translocation paths (asks the user to move it to Applications), and folders without write access. Called by `installUpdate` (main.cjs:269); a refusal becomes update phase `failed` with the reason.
+Defined in updater.cjs. Target is three levels above `execPath`; refuses non-`.app` paths ("only work in the installed app"), App Translocation paths (asks the user to move it to Applications), and folders without write access. Called by `installUpdate` (main.cjs); a refusal becomes update phase `failed` with the reason.
 
 ## Connections
 
@@ -49,5 +49,5 @@ Defined at updater.cjs:208. Target is three levels above `execPath`; refuses non
 
 ## Sources
 
-- `updater.cjs:208`
-- `main.cjs:269`
+- `updater.cjs`
+- `main.cjs`

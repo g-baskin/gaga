@@ -20,14 +20,14 @@ related:
   - "[[entities/settings-claudePath]]"
   - "[[entities/env-CLAUDE_CONFIG_DIR]]"
 sources:
-  - ai/claude-code.cjs:36
+  - ai/claude-code.cjs
 ---
 
 # createClaudeCode
 
 ## Overview
 
-Defined at `ai/claude-code.cjs:36`.
+Defined in `ai/claude-code.cjs`.
 
 ## Signature
 
@@ -51,4 +51,4 @@ Returns `{ status, ask, locate }`. `locate` uses the configured path or searches
 
 ## Sources
 
-- `ai/claude-code.cjs:36`
+- `ai/claude-code.cjs`

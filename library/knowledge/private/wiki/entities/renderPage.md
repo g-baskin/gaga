@@ -19,14 +19,14 @@ tags:
 related:
   - "[[entities/page]]"
 sources:
-  - renderer/core.js:168
+  - renderer/core.js
 ---
 
 # renderPage
 
 ## Overview
 
-Defined at `renderer/core.js:168`.
+Defined in `renderer/core.js`.
 
 ## Signature
 
@@ -50,4 +50,4 @@ Renders a [[entities/page]] and its elements to DOM (also used for thumbnails an
 
 ## Sources
 
-- `renderer/core.js:168`
+- `renderer/core.js`

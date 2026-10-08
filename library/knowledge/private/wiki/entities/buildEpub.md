@@ -19,14 +19,14 @@ tags:
   - function
 related: []
 sources:
-  - epub.cjs:100
+  - epub.cjs
 ---
 
 # buildEpub
 
 ## Overview
 
-Defined at `epub.cjs:100`.
+Defined in `epub.cjs`.
 
 ## Signature
 
@@ -54,4 +54,4 @@ Builds a fixed-layout EPUB 3 zip: one XHTML per page (`page-0001.xhtml`…), ide
 
 ## Sources
 
-- `epub.cjs:100`
+- `epub.cjs`

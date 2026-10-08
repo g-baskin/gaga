@@ -18,12 +18,12 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - main.cjs:169
+  - main.cjs
 ---
 
 # STORYLOOM_TEST_OPENROUTER
 
-Not a process env var: a key in the in-memory `testUrls` map set by [[entities/useTestServices]]; overrides the OpenRouter base URL only in self-test (main.cjs:169).
+Not a process env var: a key in the in-memory `testUrls` map set by [[entities/useTestServices]]; overrides the OpenRouter base URL only in self-test (main.cjs).
 
 ## Connections
 
@@ -37,4 +37,4 @@ Not a process env var: a key in the in-memory `testUrls` map set by [[entities/u
 
 ## Sources
 
-- `main.cjs:169`
+- `main.cjs`

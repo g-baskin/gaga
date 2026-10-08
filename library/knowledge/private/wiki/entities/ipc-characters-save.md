@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:519
-  - preload.cjs:33
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC characters:save
 
-IPC channel `characters:save`, registered with [[entities/handle]] at `main.cjs:519` (trusted-caller check applies). Save a character (optionally copying its picture from a book).
+IPC channel `characters:save`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Save a character (optionally copying its picture from a book).
 
 ## Renderer side
 
-`window.storyloom.saveCharacter` at `preload.cjs:33`
+`window.storyloom.saveCharacter` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `characters:save`, registered with [[entities/handle]] at `main.cjs:
 
 ## Sources
 
-- `main.cjs:519`
-- `preload.cjs:33`
+- `main.cjs`
+- `preload.cjs`

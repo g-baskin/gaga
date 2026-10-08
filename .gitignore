@@ -1,7 +1,7 @@
 node_modules/
 releases/
-# Per-run screenshot folders from `npm run self-test -- --only=...`
-verification/*/
+# Self-test screenshots (npm run self-test). Local evidence only: they change on every run, so they aren't committed.
+verification/
 .DS_Store
 
 # Never commit secrets: env files and private keys (the update signing key lives outside the repo)

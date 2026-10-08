@@ -24,7 +24,7 @@ sources:
 
 **Picture-book theme stylesheet (stub page; CSS is outside ts-morph scope).**
 
-Stub page per the non-JS rule. Header (renderer/theme.css:1-3): Storyloom picture-book theme, lavender palette, loaded last so it restyles every screen; refers to `DESIGN.md`. Defines CSS custom properties on `:root` (`--paper`, `--ink`, `--accent`, `--violet`, `--pink`, `--sun`, `--wood`, …, renderer/theme.css:5-20). Linked from `renderer/index.html:19`. 156 lines.
+Stub page per the non-JS rule. Header (renderer/theme.css): Storyloom picture-book theme, lavender palette, loaded last so it restyles every screen; refers to `DESIGN.md`. Defines CSS custom properties on `:root` (`--paper`, `--ink`, `--accent`, `--violet`, `--pink`, `--sun`, `--wood`, …, renderer/theme.css). Linked from `renderer/index.html`. 156 lines.
 
 ## Connections
 

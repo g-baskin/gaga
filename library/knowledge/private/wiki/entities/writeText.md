@@ -26,14 +26,14 @@ related:
   - "[[concepts/ai-provider-routing]]"
   - "[[entities/settings-writer]]"
 sources:
-  - main.cjs:256
+  - main.cjs
 ---
 
 # writeText
 
 ## Overview
 
-Defined at `main.cjs:256`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -57,4 +57,4 @@ Dispatches one writing job on `settings.writer`: openrouter → `chat`, chatgpt 
 
 ## Sources
 
-- `main.cjs:256`
+- `main.cjs`

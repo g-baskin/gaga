@@ -23,12 +23,12 @@ tags:
 related:
   - "[[concepts/sanitize-on-every-boundary]]"
 sources:
-  - storage.cjs:230
+  - storage.cjs
 ---
 
 # book (data model)
 
-Shape enforced by `sanitizeBook` (storage.cjs:230).
+Shape enforced by `sanitizeBook` (storage.cjs).
 
 `{ id, kind: story|coloring, title, author, size: square|portrait|landscape, isbn, language, builder, manuscript, audio, createdAt, updatedAt, pages[] }` stored at `books/<id>/book.json`. ≤500 pages; title defaults "Untitled story"; ISBN-10/13 validated.
 
@@ -50,4 +50,4 @@ Invalid fields are replaced by defaults rather than rejected.
 
 ## Sources
 
-- `storage.cjs:230`
+- `storage.cjs`

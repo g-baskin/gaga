@@ -20,12 +20,12 @@ tags:
 related:
   - "[[concepts/sanitize-on-every-boundary]]"
 sources:
-  - storage.cjs:61
+  - storage.cjs
 ---
 
 # element (data model)
 
-Shape enforced by `sanitizeElement` (storage.cjs:61).
+Shape enforced by `sanitizeElement` (storage.cjs).
 
 Base `{ id, x, y, w, h, rotation, opacity, locked }` in points (1/72 in). Variants by `type`: **text** (text, font, fontSize, color, align, bold, italic, lineHeight, letterSpacing, shadow, outline, outlineColor, highlight); **image** (image, fit cover|contain, radius, borderWidth, borderColor, crop); **shape** (shape rect|rounded|ellipse|triangle|star|burst|heart|cloud|speech|arrow, fill, stroke, strokeWidth); **sticker** (char, emoji ≤16 chars); **sound** (char, label, sound asset, fill, stroke).
 
@@ -47,4 +47,4 @@ Invalid fields are replaced by defaults rather than rejected.
 
 ## Sources
 
-- `storage.cjs:61`
+- `storage.cjs`

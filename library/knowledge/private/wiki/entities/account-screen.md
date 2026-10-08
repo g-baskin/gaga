@@ -32,7 +32,7 @@ sources:
 
 ## Overview
 
-Registered via `registerScreen('account', …)` at renderer/screens/account.js:255. Header comment: renderer/screens/account.js:3.
+Registered via `registerScreen('account', …)` at renderer/screens/account.js. Header comment: renderer/screens/account.js.
 
 ## IPC used
 
@@ -53,9 +53,9 @@ Registered via `registerScreen('account', …)` at renderer/screens/account.js:2
 
 ## Changes since 2add52d
 
-- `falPanel` (renderer/screens/account.js:178): fal.ai key and model fields.
-- `updatesSection(info, settings)` (:242): version, status from `updateControls`, "Check for updates", and the [[entities/settings-checkUpdates]] checkbox.
-- Links to the source code via `openLink('source')` (AGPL notice). Registered at renderer/screens/account.js:327.
+- `falPanel` (renderer/screens/account.js): fal.ai key and model fields.
+- `updatesSection(info, settings)`: version, status from `updateControls`, "Check for updates", and the [[entities/settings-checkUpdates]] checkbox.
+- Links to the source code via `openLink('source')` (AGPL notice). Registered at renderer/screens/account.js.
 
 ## Connections
 

@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:520
-  - preload.cjs:34
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC characters:delete
 
-IPC channel `characters:delete`, registered with [[entities/handle]] at `main.cjs:520` (trusted-caller check applies). Delete a library character.
+IPC channel `characters:delete`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Delete a library character.
 
 ## Renderer side
 
-`window.storyloom.deleteCharacter` at `preload.cjs:34`
+`window.storyloom.deleteCharacter` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `characters:delete`, registered with [[entities/handle]] at `main.cj
 
 ## Sources
 
-- `main.cjs:520`
-- `preload.cjs:34`
+- `main.cjs`
+- `preload.cjs`

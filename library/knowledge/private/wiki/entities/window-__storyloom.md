@@ -20,12 +20,12 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - renderer/app.js:168
+  - renderer/app.js
 ---
 
 # window.__storyloom
 
-Renderer test hook `{ screens(), current() }` (renderer/app.js:168); used by `selftest/index.cjs:177`.
+Renderer test hook `{ screens(), current() }` (renderer/app.js); used by `selftest/index.cjs`.
 
 ## Connections
 
@@ -39,4 +39,4 @@ Renderer test hook `{ screens(), current() }` (renderer/app.js:168); used by `se
 
 ## Sources
 
-- `renderer/app.js:168`
+- `renderer/app.js`

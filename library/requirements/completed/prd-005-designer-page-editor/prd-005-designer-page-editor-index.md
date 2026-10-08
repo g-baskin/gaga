@@ -20,10 +20,10 @@ The Designer is the book-scoped page editor in `renderer/editor.js`; page render
   - `window.picturesDrawerExtras` — array of `(book) => HTMLElement`; receives `addImageToPage(name)`.
   - `window.openExportDialog()` — Export button (PRD-009).
   - If a hook is missing, a "isn't built yet" toast shows instead of a broken button.
-- PDF printing: `exportPdf({mode})` (editor.js:943) builds `#print-root` (adds `print-bleed` sheets in print mode) and calls `books:export-pdf`.
-- Saves on change and on window close (`app:before-close` → `app:close-ready`, 3 s safety timeout, main.cjs:680-685).
+- PDF printing: `exportPdf({mode})` (editor.js) builds `#print-root` (adds `print-bleed` sheets in print mode) and calls `books:export-pdf`.
+- Saves on change and on window close (`app:before-close` → `app:close-ready`, 3 s safety timeout, main.cjs).
 
-**Not available:** image upscale (labelled in the Pictures drawer, crop.js:192).
+**Not available:** image upscale (labelled in the Pictures drawer, crop.js).
 
 ## Acceptance criteria (as verified)
 - [x] `selftest/designer.cjs`: editing checks, crop renders clipped, a test `picturesDrawerExtras` button appears, no `[data-missing-screen]` marker.

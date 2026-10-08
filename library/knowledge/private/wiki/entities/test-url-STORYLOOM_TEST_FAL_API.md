@@ -20,16 +20,16 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - main.cjs:184
+  - main.cjs
 ---
 
 # STORYLOOM_TEST_FAL_API
 
 **Self-test-only service address (not a real environment variable).**
 
-Key in `testUrls`, set only through [[entities/useTestServices]], which throws outside `--self-test` (main.cjs:184-186); read through `testUrl()`/`testUrls`. Fake fal.ai Platform API base (`apiBase`) for the model list (main.cjs:294). Set by selftest/ai-services.cjs:32.
+Key in `testUrls`, set only through [[entities/useTestServices]], which throws outside `--self-test` (main.cjs); read through `testUrl()`/`testUrls`. Fake fal.ai Platform API base (`apiBase`) for the model list (main.cjs). Set by selftest/ai-services.cjs.
 
-Setting test services also resets the update client, pending/ready update, and update state (main.cjs:187-190).
+Setting test services also resets the update client, pending/ready update, and update state (main.cjs).
 
 ## Connections
 
@@ -43,4 +43,4 @@ Setting test services also resets the update client, pending/ready update, and u
 
 ## Sources
 
-- `main.cjs:184`
+- `main.cjs`

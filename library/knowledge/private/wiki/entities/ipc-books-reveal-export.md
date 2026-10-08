@@ -24,17 +24,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:544
-  - preload.cjs:42
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:reveal-export
 
-IPC channel `books:reveal-export`, registered with [[entities/handle]] at `main.cjs:544` (trusted-caller check applies). Show the last exported file in Finder.
+IPC channel `books:reveal-export`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Show the last exported file in Finder.
 
 ## Renderer side
 
-`window.storyloom.revealExport` at `preload.cjs:42`
+`window.storyloom.revealExport` at `preload.cjs`
 
 ## Connections
 
@@ -48,5 +48,5 @@ IPC channel `books:reveal-export`, registered with [[entities/handle]] at `main.
 
 ## Sources
 
-- `main.cjs:544`
-- `preload.cjs:42`
+- `main.cjs`
+- `preload.cjs`

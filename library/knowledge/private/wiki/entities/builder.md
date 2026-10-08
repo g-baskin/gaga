@@ -20,12 +20,12 @@ tags:
 related:
   - "[[concepts/sanitize-on-every-boundary]]"
 sources:
-  - storage.cjs:164
+  - storage.cjs
 ---
 
 # builder (data model)
 
-Shape enforced by `sanitizeBuilder` (storage.cjs:164).
+Shape enforced by `sanitizeBuilder` (storage.cjs).
 
 Story-builder plan: `{ idea, genre, writingStyle[≤8], location, era, extras, readingLevel, length, templateId, illustrationStyle, characters[≤30] }`.
 
@@ -47,4 +47,4 @@ Invalid fields are replaced by defaults rather than rejected.
 
 ## Sources
 
-- `storage.cjs:164`
+- `storage.cjs`

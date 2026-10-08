@@ -19,12 +19,12 @@ tags:
 related:
   - "[[concepts/sanitize-on-every-boundary]]"
 sources:
-  - storage.cjs:260
+  - storage.cjs
 ---
 
 # profile (data model)
 
-Shape enforced by `sanitizeProfile` (storage.cjs:260).
+Shape enforced by `sanitizeProfile` (storage.cjs).
 
 `{ authorName, bookOrder[] }` in `profile.json`.
 
@@ -46,4 +46,4 @@ Invalid fields are replaced by defaults rather than rejected.
 
 ## Sources
 
-- `storage.cjs:260`
+- `storage.cjs`

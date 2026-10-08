@@ -27,17 +27,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:472
-  - preload.cjs:14
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:list
 
-IPC channel `books:list`, registered with [[entities/handle]] at `main.cjs:472` (trusted-caller check applies). List book summaries (id, kind, title, cover page, pageCount) newest-first via store.list.
+IPC channel `books:list`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). List book summaries (id, kind, title, cover page, pageCount) newest-first via store.list.
 
 ## Renderer side
 
-`window.storyloom.listBooks` at `preload.cjs:14`
+`window.storyloom.listBooks` at `preload.cjs`
 
 ## Connections
 
@@ -51,5 +51,5 @@ IPC channel `books:list`, registered with [[entities/handle]] at `main.cjs:472` 
 
 ## Sources
 
-- `main.cjs:472`
-- `preload.cjs:14`
+- `main.cjs`
+- `preload.cjs`

@@ -19,14 +19,14 @@ tags:
   - function
 related: []
 sources:
-  - main.cjs:278
+  - main.cjs
 ---
 
 # chatJson
 
 ## Overview
 
-Defined at `main.cjs:278`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -50,4 +50,4 @@ Calls [[entities/writeText]] and parses the substring between the first `{` and 
 
 ## Sources
 
-- `main.cjs:278`
+- `main.cjs`

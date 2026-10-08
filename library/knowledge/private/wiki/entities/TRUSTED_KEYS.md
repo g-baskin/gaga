@@ -20,16 +20,16 @@ tags:
 related:
   - "[[concepts/signed-update-channel]]"
 sources:
-  - updater.cjs:30
+  - updater.cjs
 ---
 
 # TRUSTED_KEYS
 
 **Built-in Ed25519 public keys allowed to sign updates.**
 
-Defined at updater.cjs:30 as an array with one base64url public key. Default `trustedKeys` for [[entities/createUpdater]]; also imported by [[entities/update-manifest-mjs]], which refuses to write `latest.json` if its signing key doesn't match. Per the header comment, the matching private key lives only in the release workflow's secrets (updater.cjs:6-7); this wiki deliberately records nothing else about it.
+Defined in updater.cjs as an array with one base64url public key. Default `trustedKeys` for [[entities/createUpdater]]; also imported by [[entities/update-manifest-mjs]], which refuses to write `latest.json` if its signing key doesn't match. Per the header comment, the matching private key lives only in the release workflow's secrets (updater.cjs); this wiki deliberately records nothing else about it.
 
-Rotating the key means shipping a release with both keys in this array before switching the secret, since installed copies only trust the keys they were built with (inferred from `keys.some(...)` at updater.cjs:66; not stated in code).
+Rotating the key means shipping a release with both keys in this array before switching the secret, since installed copies only trust the keys they were built with (inferred from `keys.some(...)` at updater.cjs; not stated in code).
 
 ## Connections
 
@@ -43,4 +43,4 @@ Rotating the key means shipping a release with both keys in this array before sw
 
 ## Sources
 
-- `updater.cjs:30`
+- `updater.cjs`

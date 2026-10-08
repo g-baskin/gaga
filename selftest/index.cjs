@@ -2,6 +2,7 @@
 // Self-test runner. Drives the real interface with real mouse/keyboard events, one module per screen.
 //   npm run self-test                      → every module in FULL_ORDER (missing modules fail)
 //   npm run self-test -- --only=home       → just those modules (screenshots in verification/<run-id>/)
+// Screenshots are local evidence only: verification/ is gitignored.
 //   ... --load=screens/home.js             → inject a screen script (and matching .css) that index.html doesn't list yet
 const fs = require('node:fs/promises');
 const fsSync = require('node:fs');

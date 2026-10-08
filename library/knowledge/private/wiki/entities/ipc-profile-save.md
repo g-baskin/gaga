@@ -24,17 +24,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:523
-  - preload.cjs:37
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC profile:save
 
-IPC channel `profile:save`, registered with [[entities/handle]] at `main.cjs:523` (trusted-caller check applies). Write profile.json.
+IPC channel `profile:save`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Write profile.json.
 
 ## Renderer side
 
-`window.storyloom.saveProfile` at `preload.cjs:37`
+`window.storyloom.saveProfile` at `preload.cjs`
 
 ## Connections
 
@@ -48,5 +48,5 @@ IPC channel `profile:save`, registered with [[entities/handle]] at `main.cjs:523
 
 ## Sources
 
-- `main.cjs:523`
-- `preload.cjs:37`
+- `main.cjs`
+- `preload.cjs`

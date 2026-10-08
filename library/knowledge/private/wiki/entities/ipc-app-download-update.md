@@ -24,21 +24,21 @@ related:
   - "[[entities/ipc-channels]]"
   - "[[concepts/signed-update-channel]]"
 sources:
-  - main.cjs:680
-  - preload.cjs:49
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC app:download-update
 
 **IPC channel app:download-update (in-app updates).**
 
-IPC channel `app:download-update`, registered with [[entities/handle]] at `main.cjs:680` (trusted-caller check applies). Runs `downloadUpdate()` (main.cjs:248): requires phase `available`; reports `downloading` with percent, then `ready` or `failed`.
+IPC channel `app:download-update`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Runs `downloadUpdate()` (main.cjs): requires phase `available`; reports `downloading` with percent, then `ready` or `failed`.
 
-States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (main.cjs:195-196), always with `current` = app version.
+States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (main.cjs), always with `current` = app version.
 
 ## Renderer side
 
-`window.storyloom.downloadUpdate` at `preload.cjs:49`; used by update views in [[entities/app-js]] and [[entities/account-screen]].
+`window.storyloom.downloadUpdate` at `preload.cjs`; used by update views in [[entities/app-js]] and [[entities/account-screen]].
 
 ## Connections
 
@@ -52,5 +52,5 @@ States shared with the page: `idle | checking | up-to-date | available | downloa
 
 ## Sources
 
-- `main.cjs:680`
-- `preload.cjs:49`
+- `main.cjs`
+- `preload.cjs`

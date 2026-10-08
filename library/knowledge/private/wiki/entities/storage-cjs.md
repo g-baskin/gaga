@@ -28,9 +28,9 @@ sources:
 
 ## Overview
 
-Pure sanitizers (storage.cjs:50–storage.cjs:260) plus [[entities/createStore]] (storage.cjs:310). Exports `createStore, sanitizeBook, sanitizePage, sanitizeElement, sanitizeCrop, sniffAudio, sniffImage, decodeStoryText, LIBRARY, READING_LEVELS, LENGTHS` (storage.cjs:548).
+Pure sanitizers (storage.cjs) plus [[entities/createStore]] (storage.cjs). Exports `createStore, sanitizeBook, sanitizePage, sanitizeElement, sanitizeCrop, sniffAudio, sniffImage, decodeStoryText, LIBRARY, READING_LEVELS, LENGTHS` (storage.cjs).
 
-Data models: [[entities/book]], [[entities/page]], [[entities/element]], [[entities/crop]], [[entities/builder]], [[entities/character]], [[entities/manuscript]], [[entities/book-audio]], [[entities/shelf]], [[entities/profile]]. Limits are module constants (`MAX_PAGES=500`, `MAX_ELEMENTS=200`, `MAX_IMAGE_BYTES=25 MiB`, `MAX_AUDIO_BYTES=100 MiB`; storage.cjs:17, storage.cjs:23).
+Data models: [[entities/book]], [[entities/page]], [[entities/element]], [[entities/crop]], [[entities/builder]], [[entities/character]], [[entities/manuscript]], [[entities/book-audio]], [[entities/shelf]], [[entities/profile]]. Limits are module constants (`MAX_PAGES=500`, `MAX_ELEMENTS=200`, `MAX_IMAGE_BYTES=25 MiB`, `MAX_AUDIO_BYTES=100 MiB`; storage.cjs, storage.cjs).
 
 ## Connections
 

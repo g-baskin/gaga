@@ -25,17 +25,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:559
-  - preload.cjs:54
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC ai:image
 
-IPC channel `ai:image`, registered with [[entities/handle]] at `main.cjs:559` (trusted-caller check applies). [[entities/generateImage]].
+IPC channel `ai:image`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). [[entities/generateImage]].
 
 ## Renderer side
 
-`window.storyloom.generateImage` at `preload.cjs:54`
+`window.storyloom.generateImage` at `preload.cjs`
 
 ## Connections
 
@@ -49,5 +49,5 @@ IPC channel `ai:image`, registered with [[entities/handle]] at `main.cjs:559` (t
 
 ## Sources
 
-- `main.cjs:559`
-- `preload.cjs:54`
+- `main.cjs`
+- `preload.cjs`

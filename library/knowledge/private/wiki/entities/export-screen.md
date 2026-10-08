@@ -30,7 +30,7 @@ sources:
 
 ## Overview
 
-Registered via `registerScreen('export', …)` at renderer/screens/export.js:307. Header comment: renderer/screens/export.js:3.
+Registered via `registerScreen('export', …)` at renderer/screens/export.js. Header comment: renderer/screens/export.js.
 
 ## IPC used
 

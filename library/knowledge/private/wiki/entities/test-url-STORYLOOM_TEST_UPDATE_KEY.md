@@ -20,16 +20,16 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - main.cjs:184
+  - main.cjs
 ---
 
 # STORYLOOM_TEST_UPDATE_KEY
 
 **Self-test-only service address (not a real environment variable).**
 
-Key in `testUrls`, set only through [[entities/useTestServices]], which throws outside `--self-test` (main.cjs:184-186); read through `testUrl()`/`testUrls`. Test-only public key replacing [[entities/TRUSTED_KEYS]] when the fake update server is in use (main.cjs:223). Set alongside `STORYLOOM_TEST_UPDATES` by selftest/updates.cjs:32.
+Key in `testUrls`, set only through [[entities/useTestServices]], which throws outside `--self-test` (main.cjs); read through `testUrl()`/`testUrls`. Test-only public key replacing [[entities/TRUSTED_KEYS]] when the fake update server is in use (main.cjs). Set alongside `STORYLOOM_TEST_UPDATES` by selftest/updates.cjs.
 
-Setting test services also resets the update client, pending/ready update, and update state (main.cjs:187-190).
+Setting test services also resets the update client, pending/ready update, and update state (main.cjs).
 
 ## Connections
 
@@ -43,4 +43,4 @@ Setting test services also resets the update client, pending/ready update, and u
 
 ## Sources
 
-- `main.cjs:184`
+- `main.cjs`

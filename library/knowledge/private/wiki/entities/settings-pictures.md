@@ -22,8 +22,7 @@ related:
   - "[[concepts/picture-service-routing]]"
   - "[[entities/settings-json]]"
 sources:
-  - main.cjs:64
-  - main.cjs:108
+  - main.cjs
 ---
 
 # settings.pictures
@@ -37,11 +36,11 @@ Field of [[entities/settings-json]].
 
 Which service makes pictures.
 
-Read/coerced in [[entities/readSettings]] (`main.cjs:64`), validated in [[entities/saveSettings]] (`main.cjs:108`).
+Read/coerced in [[entities/readSettings]] (`main.cjs`), validated in [[entities/saveSettings]] (`main.cjs`).
 
 ## Changes since 2add52d
 
-Allowed values are now `custom`, `openrouter`, `fal` (main.cjs:67). See [[concepts/picture-service-routing]].
+Allowed values are now `custom`, `openrouter`, `fal` (main.cjs). See [[concepts/picture-service-routing]].
 
 ## Connections
 
@@ -55,5 +54,4 @@ Allowed values are now `custom`, `openrouter`, `fal` (main.cjs:67). See [[concep
 
 ## Sources
 
-- `main.cjs:64`
-- `main.cjs:108`
+- `main.cjs`

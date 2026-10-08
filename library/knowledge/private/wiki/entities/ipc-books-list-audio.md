@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:504
-  - preload.cjs:26
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:list-audio
 
-IPC channel `books:list-audio`, registered with [[entities/handle]] at `main.cjs:504` (trusted-caller check applies). List audio assets.
+IPC channel `books:list-audio`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). List audio assets.
 
 ## Renderer side
 
-`window.storyloom.listAudio` at `preload.cjs:26`
+`window.storyloom.listAudio` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `books:list-audio`, registered with [[entities/handle]] at `main.cjs
 
 ## Sources
 
-- `main.cjs:504`
-- `preload.cjs:26`
+- `main.cjs`
+- `preload.cjs`

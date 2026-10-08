@@ -20,14 +20,14 @@ tags:
 related:
   - "[[concepts/secret-storage]]"
 sources:
-  - main.cjs:147
+  - main.cjs
 ---
 
 # publicSettings
 
 ## Overview
 
-Defined at `main.cjs:147`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -41,7 +41,7 @@ Projection of settings sent to the page: replaces `apiKeyEnc`/`openrouterKeyEnc`
 
 ## Changes since 2add52d
 
-Now at main.cjs:171 (line numbers in older text are from `2add52d`). Exposes `hasFalKey`, `falImageModel`, `checkUpdates`.
+In main.cjs. Exposes `hasFalKey`, `falImageModel`, `checkUpdates`.
 
 ## Connections
 
@@ -55,4 +55,4 @@ Now at main.cjs:171 (line numbers in older text are from `2add52d`). Exposes `ha
 
 ## Sources
 
-- `main.cjs:147`
+- `main.cjs`

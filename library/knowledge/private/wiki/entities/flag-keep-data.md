@@ -20,12 +20,12 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - main.cjs:23
+  - main.cjs
 ---
 
 # --keep-data
 
-With `--self-test`, keeps the temp data folder instead of deleting it (main.cjs:23).
+With `--self-test`, keeps the temp data folder instead of deleting it (main.cjs).
 
 ## Connections
 
@@ -39,4 +39,4 @@ With `--self-test`, keeps the temp data folder instead of deleting it (main.cjs:
 
 ## Sources
 
-- `main.cjs:23`
+- `main.cjs`

@@ -5,6 +5,7 @@
 // and every script and stylesheet that renderer/index.html loads.
 import { listPackage, extractFile } from '@electron/asar';
 import path from 'node:path';
+import { DEV_ONLY } from '../package.mjs';
 
 const appPath = process.argv[2];
 if (!appPath) {
@@ -36,8 +37,13 @@ for (const [, ref] of html.matchAll(/<(?:script|link)\b[^>]*\b(?:src|href)="([^"
   if (!files.has(target)) missing.push(target);
 }
 
+const shippedDevFiles = [...DEV_ONLY].filter((file) => files.has(file));
+if (shippedDevFiles.length) {
+  console.error(`The built app contains development-only files:\n  ${shippedDevFiles.join('\n  ')}`);
+  process.exit(1);
+}
 if (missing.length) {
   console.error(`The built app is missing files it loads:\n  ${missing.join('\n  ')}\nAdd them to \`keep\` in package.mjs.`);
   process.exit(1);
 }
-console.log(`The built app has all ${seen.size} main-process modules and every file index.html loads.`);
+console.log(`The built app has all ${seen.size} main-process modules and every file index.html loads, and no development-only files.`);

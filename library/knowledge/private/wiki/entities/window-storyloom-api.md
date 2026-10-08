@@ -21,12 +21,12 @@ related:
   - "[[entities/ipc-channels]]"
   - "[[concepts/soft-error-ipc]]"
 sources:
-  - preload.cjs:12
+  - preload.cjs
 ---
 
 # window.storyloom (preload API)
 
-Object exposed to the page by [[entities/preload-cjs]]; consumed as `api` in [[entities/core-js]] (renderer/core.js:3). 43 invoke methods + `onBeforeClose`, `onMenuAction`. See [[entities/ipc-channels]] for the mapping.
+Object exposed to the page by [[entities/preload-cjs]]; consumed as `api` in [[entities/core-js]] (renderer/core.js). 43 invoke methods + `onBeforeClose`, `onMenuAction`. See [[entities/ipc-channels]] for the mapping.
 
 ## Connections
 
@@ -40,4 +40,4 @@ Object exposed to the page by [[entities/preload-cjs]]; consumed as `api` in [[e
 
 ## Sources
 
-- `preload.cjs:12`
+- `preload.cjs`

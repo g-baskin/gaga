@@ -20,14 +20,14 @@ tags:
 related:
   - "[[concepts/screen-registry]]"
 sources:
-  - renderer/app.js:70
+  - renderer/app.js
 ---
 
 # navigate
 
 ## Overview
 
-Defined at `renderer/app.js:70`.
+Defined in `renderer/app.js`.
 
 ## Signature
 
@@ -51,4 +51,4 @@ Leaves current screen, `saveNow()`, opens `params.bookId` if given, redirects bo
 
 ## Sources
 
-- `renderer/app.js:70`
+- `renderer/app.js`

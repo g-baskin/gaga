@@ -36,7 +36,7 @@ Releases: `scripts/changelog.mjs` moves `CHANGELOG.md`'s Unreleased notes into a
 
 ## Changes since 2add52d
 
-`keep` now also includes `/updater.cjs` and `/LICENSE` (package.mjs:9). Packaging steps for both chips live in [[entities/dist-mjs]].
+`keep` now also includes `/updater.cjs` and `/LICENSE` (package.mjs). Packaging steps for both chips live in [[entities/dist-mjs]].
 
 ## Connections
 

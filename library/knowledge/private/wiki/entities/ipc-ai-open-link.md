@@ -24,8 +24,8 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:573
-  - preload.cjs:64
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC ai:open-link
@@ -34,17 +34,17 @@ sources:
 > Earlier text said: three allow-listed URLs.
 > Current code: five names including `fal-keys` and `source`. See [[meta/2026-10-07-contradiction-report]].
 
-IPC channel `ai:open-link`, registered with [[entities/handle]] at `main.cjs:573` (trusted-caller check applies). Open one of three allow-listed URLs (chatgpt-usage, openrouter-keys, claude-code).
+IPC channel `ai:open-link`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Open one of three allow-listed URLs (chatgpt-usage, openrouter-keys, claude-code).
 
 ## Renderer side
 
-`window.storyloom.openLink` at `preload.cjs:64`
+`window.storyloom.openLink` at `preload.cjs`
 
 ## Changes since 2add52d
 
 > [!contradiction] Contract changed; see [[meta/2026-10-07-contradiction-report]].
 
-Allow-list now: `chatgpt-usage`, `openrouter-keys`, `fal-keys`, `claude-code`, `source` (main.cjs:713-718; preload.cjs:71). `source` opens the GitHub repository for the AGPL source offer.
+Allow-list now: `chatgpt-usage`, `openrouter-keys`, `fal-keys`, `claude-code`, `source` (main.cjs; preload.cjs). `source` opens the GitHub repository for the AGPL source offer.
 
 ## Connections
 
@@ -58,5 +58,5 @@ Allow-list now: `chatgpt-usage`, `openrouter-keys`, `fal-keys`, `claude-code`, `
 
 ## Sources
 
-- `main.cjs:573`
-- `preload.cjs:64`
+- `main.cjs`
+- `preload.cjs`

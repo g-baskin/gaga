@@ -19,10 +19,10 @@
 - Validation lists missing fields.
 
 Actions:
-- **Write the story** (needs AI writing service) → `ai:generate` → `generateStory` (main.cjs:286) returns JSON chapters which become Manuscript chapters.
+- **Write the story** (needs AI writing service) → `ai:generate` → `generateStory` (main.cjs) returns JSON chapters which become Manuscript chapters.
 - **Start with an outline** — needs no AI service; creates empty chapters with prompts.
 
-Word limits per reading level are shared with the Manuscript via `window.STORYLOOM_WORD_LIMITS` (40/80/150/300), with a fallback copy in story-builder.js:5.
+Word limits per reading level are shared with the Manuscript via `window.STORYLOOM_WORD_LIMITS` (40/80/150/300), with a fallback copy in story-builder.js.
 
 ## Acceptance criteria (as verified)
 - [x] `selftest/story-builder.cjs`; AI path exercised only against the local mock service.

@@ -30,7 +30,7 @@ sources:
 
 ## Overview
 
-Registered via `registerScreen('bookshelf', …)` at renderer/screens/bookshelf.js:423. Header comment: renderer/screens/bookshelf.js:3.
+Registered via `registerScreen('bookshelf', …)` at renderer/screens/bookshelf.js. Header comment: renderer/screens/bookshelf.js.
 
 ## IPC used
 
@@ -43,11 +43,11 @@ Registered via `registerScreen('bookshelf', …)` at renderer/screens/bookshelf.
 - `api.saveProfile` → [[entities/ipc-profile-save]]
 - `api.saveShelves` → [[entities/ipc-shelves-save]]
 
-Persists sort choice in [[entities/localStorage-bookshelf-sort]] (renderer/screens/bookshelf.js:5).
+Persists sort choice in [[entities/localStorage-bookshelf-sort]] (renderer/screens/bookshelf.js).
 
 ## Changes since 2add52d
 
-Restyled; shows `profile.authorName` (renderer/screens/bookshelf.js:116); registered at :424.
+Restyled; shows `profile.authorName` (renderer/screens/bookshelf.js); registered at :424.
 
 ## Connections
 

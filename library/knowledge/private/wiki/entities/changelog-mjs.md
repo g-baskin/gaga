@@ -28,7 +28,7 @@ sources:
 
 ## Overview
 
-CLI subcommands used by the release workflow: `check <version>` and `notes <version>` (see `.github/workflows/release.yml`). `notes()` (scripts/changelog.mjs:~40-71) appends a Download section naming `Storyloom_<v>_Intel_x64.dmg` and `Storyloom_<v>_Apple-Silicon_arm64.dmg` (scripts/changelog.mjs:60-61) and, since `eb83d47`, a paragraph pointing existing users to **Account → Updates** and explaining the `.app.zip` / `latest.json` files are for the in-app updater (scripts/changelog.mjs:68-69).
+CLI subcommands used by the release workflow: `check <version>` and `notes <version>` (see `.github/workflows/release.yml`). `notes()` (scripts/changelog.mjs:~40-71) appends a Download section naming `Storyloom_<v>_Intel_x64.dmg` and `Storyloom_<v>_Apple-Silicon_arm64.dmg` (scripts/changelog.mjs) and, since `eb83d47`, a paragraph pointing existing users to **Account → Updates** and explaining the `.app.zip` / `latest.json` files are for the in-app updater (scripts/changelog.mjs).
 
 ## Connections
 

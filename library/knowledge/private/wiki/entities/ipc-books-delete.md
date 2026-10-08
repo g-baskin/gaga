@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:485
-  - preload.cjs:20
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:delete
 
-IPC channel `books:delete`, registered with [[entities/handle]] at `main.cjs:485` (trusted-caller check applies). Confirm, then move the book folder to the Trash (rm -r in self-test) and drop it from shelves.
+IPC channel `books:delete`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Confirm, then move the book folder to the Trash (rm -r in self-test) and drop it from shelves.
 
 ## Renderer side
 
-`window.storyloom.deleteBook` at `preload.cjs:20`
+`window.storyloom.deleteBook` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `books:delete`, registered with [[entities/handle]] at `main.cjs:485
 
 ## Sources
 
-- `main.cjs:485`
-- `preload.cjs:20`
+- `main.cjs`
+- `preload.cjs`

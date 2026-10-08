@@ -21,21 +21,21 @@ related:
   - "[[concepts/signed-update-channel]]"
   - "[[entities/dist-mjs]]"
 sources:
-  - updater.cjs:38
+  - updater.cjs
 ---
 
 # PLATFORMS (updater)
 
 **Mac chips known to the updater: manifest key, archive name, lipo arch.**
 
-Defined at updater.cjs:38-41:
+Defined in updater.cjs:
 
 | `process.arch` | manifest key | archive | `lipo` |
 |---|---|---|---|
 | `x64` | `darwin-x64` | `Storyloom_<v>_Intel_x64.app.zip` | `x86_64` |
 | `arm64` | `darwin-arm64` | `Storyloom_<v>_Apple-Silicon_arm64.app.zip` | `arm64` |
 
-Must agree with `ARCHES` in [[entities/dist-mjs]] (dist.mjs:21), which names the zips. Other arches get "Automatic updates aren't available for this kind of Mac" (updater.cjs:110).
+Must agree with `ARCHES` in [[entities/dist-mjs]] (dist.mjs), which names the zips. Other arches get "Automatic updates aren't available for this kind of Mac" (updater.cjs).
 
 ## Connections
 
@@ -49,4 +49,4 @@ Must agree with `ARCHES` in [[entities/dist-mjs]] (dist.mjs:21), which names the
 
 ## Sources
 
-- `updater.cjs:38`
+- `updater.cjs`

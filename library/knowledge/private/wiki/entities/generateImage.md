@@ -22,14 +22,14 @@ tags:
 related:
   - "[[entities/settings-pictures]]"
 sources:
-  - main.cjs:339
+  - main.cjs
 ---
 
 # generateImage
 
 ## Overview
 
-Defined at `main.cjs:339`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -43,7 +43,7 @@ Picture or line-art prompt; OpenRouter `image` or `/images/generations` (b64) on
 
 ## Changes since 2add52d
 
-Now at main.cjs:466 (line numbers in older text are from `2add52d`). When `pictures === "fal"` it draws through [[entities/fal-cjs]] (main.cjs:480).
+In main.cjs. When `pictures === "fal"` it draws through [[entities/fal-cjs]] (main.cjs).
 
 ## Connections
 
@@ -57,4 +57,4 @@ Now at main.cjs:466 (line numbers in older text are from `2add52d`). When `pictu
 
 ## Sources
 
-- `main.cjs:339`
+- `main.cjs`

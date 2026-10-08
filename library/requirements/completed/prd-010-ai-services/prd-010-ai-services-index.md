@@ -11,7 +11,7 @@
 
 ## What was built
 
-AI is optional. Without a service, each AI feature explains what it needs and everything else works. All network calls and secrets live in the **main process**; the page only sees what is connected (`publicSettings`, main.cjs:147).
+AI is optional. Without a service, each AI feature explains what it needs and everything else works. All network calls and secrets live in the **main process**; the page only sees what is connected (`publicSettings`, main.cjs).
 
 ### Services
 
@@ -23,7 +23,7 @@ AI is optional. Without a service, each AI feature explains what it needs and ev
 | fal.ai | — | ✅ | — | `ai/fal.cjs` |
 | Your own OpenAI-compatible service | ✅ | ✅ | ✅ | `aiRequest` in `main.cjs` |
 
-Settings (`settings.json`, main.cjs:60-145): `writer` ∈ custom/openrouter/chatgpt/claude; `pictures` ∈ custom/openrouter/fal; `voices` ∈ custom/openrouter; `falKeyEnc`, `falImageModel`; `tier` ∈ best/balanced/thrifty; optional pinned model per job; keys encrypted with `safeStorage`.
+Settings (`settings.json`, main.cjs): `writer` ∈ custom/openrouter/chatgpt/claude; `pictures` ∈ custom/openrouter/fal; `voices` ∈ custom/openrouter; `falKeyEnc`, `falImageModel`; `tier` ∈ best/balanced/thrifty; optional pinned model per job; keys encrypted with `safeStorage`.
 
 - **Claude Code:** finds the user's installed, signed-in `claude` (PATH, common install dirs, nvm, or a set absolute path). Runs `claude -p --output-format json --no-session-persistence --tools "" --setting-sources "" --strict-mcp-config --disable-slash-commands --system-prompt …` in an empty folder with a minimal environment (no API keys from the shell). Storyloom never reads Claude's login. Status cached 60 s.
 - **ChatGPT plan:** OpenAI's "Sign in with ChatGPT" self-serve flow for open-source local apps (preview): dynamic client registration, PKCE + state + nonce, loopback callback on 127.0.0.1:1455, ID token verified against OpenAI's JWKS, `chatgpt.tokens.use.direct` scope, Responses API with `store:false`, refresh rotation, revoke on sign-out. Sign-in record encrypted with the keychain in `chatgpt.json`. Model list cached 6 h; friendly text for plan errors.
@@ -38,7 +38,7 @@ Settings (`settings.json`, main.cjs:60-145): `writer` ∈ custom/openrouter/chat
 - Claude: Opus/Sonnet/Haiku by job and budget. ChatGPT: account's own list in OpenAI's order.
 - Account screen shows the per-job choice and reason (`ai:recommendations`).
 
-- fal.ai picks (`pickFalModel`, model-picker.cjs:205): a family per budget from fal.ai's live text-to-image list (GPT Image / Nano Banana / FLUX schnell today), the newest Recraft for coloring pages; vector, LoRA and inactive models skipped. Shown in the Account → fal.ai panel, which also has its own budget choice when OpenRouter isn't used.
+- fal.ai picks (`pickFalModel`, model-picker.cjs): a family per budget from fal.ai's live text-to-image list (GPT Image / Nano Banana / FLUX schnell today), the newest Recraft for coloring pages; vector, LoRA and inactive models skipped. Shown in the Account → fal.ai panel, which also has its own budget choice when OpenRouter isn't used.
 
 ### Picture-service note (`aiPictureNote`, renderer/app.js)
 Shown in the Story builder character dialog and the Designer's **Generate a picture** dialog. Says which service draws (OpenRouter, fal.ai, or the author's own model) and that each picture is charged to that account, explains that Claude/ChatGPT plans don't draw in Storyloom, and disables drawing until a picture service is ready (`picturesReady`).

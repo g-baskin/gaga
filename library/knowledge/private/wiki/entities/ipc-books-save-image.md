@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:503
-  - preload.cjs:24
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:save-image
 
-IPC channel `books:save-image`, registered with [[entities/handle]] at `main.cjs:503` (trusted-caller check applies). Store raw image bytes (Uint8Array) as a new asset.
+IPC channel `books:save-image`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Store raw image bytes (Uint8Array) as a new asset.
 
 ## Renderer side
 
-`window.storyloom.saveImage` at `preload.cjs:24`
+`window.storyloom.saveImage` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `books:save-image`, registered with [[entities/handle]] at `main.cjs
 
 ## Sources
 
-- `main.cjs:503`
-- `preload.cjs:24`
+- `main.cjs`
+- `preload.cjs`

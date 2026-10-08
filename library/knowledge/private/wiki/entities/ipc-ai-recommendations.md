@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:565
-  - preload.cjs:56
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC ai:recommendations
 
-IPC channel `ai:recommendations`, registered with [[entities/handle]] at `main.cjs:565` (trusted-caller check applies). [[entities/aiRecommendations]] (soft envelope).
+IPC channel `ai:recommendations`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). [[entities/aiRecommendations]] (soft envelope).
 
 ## Renderer side
 
-`window.storyloom.aiRecommendations` at `preload.cjs:56` (via `soft`: `{ ok }`/`{ error }` envelope)
+`window.storyloom.aiRecommendations` at `preload.cjs` (via `soft`: `{ ok }`/`{ error }` envelope)
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `ai:recommendations`, registered with [[entities/handle]] at `main.c
 
 ## Sources
 
-- `main.cjs:565`
-- `preload.cjs:56`
+- `main.cjs`
+- `preload.cjs`

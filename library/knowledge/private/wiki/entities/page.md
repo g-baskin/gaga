@@ -21,12 +21,12 @@ tags:
 related:
   - "[[concepts/sanitize-on-every-boundary]]"
 sources:
-  - storage.cjs:135
+  - storage.cjs
 ---
 
 # page (data model)
 
-Shape enforced by `sanitizePage` (storage.cjs:135).
+Shape enforced by `sanitizePage` (storage.cjs).
 
 `{ id, layout: cover|image-top|image-left|image-full|text-only|blank, text, image, crop, background, color, font, fontSize 10–96, align, frame, frameColor, elements[] }` (≤200 elements).
 
@@ -48,4 +48,4 @@ Invalid fields are replaced by defaults rather than rejected.
 
 ## Sources
 
-- `storage.cjs:135`
+- `storage.cjs`

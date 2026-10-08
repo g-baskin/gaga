@@ -30,7 +30,7 @@ sources:
 
 ## Overview
 
-Exposes `{ themes, starters, categories, applyTheme, bookFromTemplate }` on `window.STORYLOOM_TEMPLATES` (renderer/data/templates.js:2). Decoration positions are authored for a 612×612 pt page and scaled on apply (renderer/data/templates.js:3).
+Exposes `{ themes, starters, categories, applyTheme, bookFromTemplate }` on `window.STORYLOOM_TEMPLATES` (renderer/data/templates.js). Decoration positions are authored for a 612×612 pt page and scaled on apply (renderer/data/templates.js).
 
 ## Connections
 

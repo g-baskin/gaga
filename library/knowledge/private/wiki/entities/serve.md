@@ -19,14 +19,14 @@ tags:
 related:
   - "[[concepts/offline-network-lockdown]]"
 sources:
-  - main.cjs:612
+  - main.cjs
 ---
 
 # serve
 
 ## Overview
 
-Defined at `main.cjs:612`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -50,4 +50,4 @@ async function serve(request)
 
 ## Sources
 
-- `main.cjs:612`
+- `main.cjs`

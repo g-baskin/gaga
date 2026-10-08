@@ -28,7 +28,7 @@ sources:
 
 ## Overview
 
-Element factories (`textElement`, `shapeElement`, `imageElement`; renderer/editor.js:42), snapshot-based undo (`snapshot`/`checkpoint`/`undo`/`redo`; renderer/editor.js:75–renderer/editor.js:108), `renderEditor` (renderer/editor.js:122), pointer interactions (`startMove`, `snapPosition`, `startResize`, `startRotate`; renderer/editor.js:263) and drawers (pages/text/shapes/stickers/uploads; renderer/editor.js:532).
+Element factories (`textElement`, `shapeElement`, `imageElement`; renderer/editor.js), snapshot-based undo (`snapshot`/`checkpoint`/`undo`/`redo`; renderer/editor.js), `renderEditor` (renderer/editor.js), pointer interactions (`startMove`, `snapPosition`, `startResize`, `startRotate`; renderer/editor.js) and drawers (pages/text/shapes/stickers/uploads; renderer/editor.js).
 
 ## Connections
 

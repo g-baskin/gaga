@@ -26,17 +26,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:473
-  - preload.cjs:15
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:create
 
-IPC channel `books:create`, registered with [[entities/handle]] at `main.cjs:473` (trusted-caller check applies). Create a sanitized new book with a fresh UUID.
+IPC channel `books:create`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Create a sanitized new book with a fresh UUID.
 
 ## Renderer side
 
-`window.storyloom.createBook` at `preload.cjs:15`
+`window.storyloom.createBook` at `preload.cjs`
 
 ## Connections
 
@@ -50,5 +50,5 @@ IPC channel `books:create`, registered with [[entities/handle]] at `main.cjs:473
 
 ## Sources
 
-- `main.cjs:473`
-- `preload.cjs:15`
+- `main.cjs`
+- `preload.cjs`

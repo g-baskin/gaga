@@ -27,7 +27,7 @@ Storyloom checks GitHub releases for a newer version, downloads the update for t
 
 ### Release side
 
-- Each release publishes `latest.json` plus `Storyloom_<v>_Intel_x64.app.zip` and `Storyloom_<v>_Apple-Silicon_arm64.app.zip` (`PLATFORMS`, updater.cjs:38-41).
+- Each release publishes `latest.json` plus `Storyloom_<v>_Intel_x64.app.zip` and `Storyloom_<v>_Apple-Silicon_arm64.app.zip` (`PLATFORMS`, updater.cjs).
 - `latest.json`: `{ version, pub_date, notes_url, platforms: { "darwin-x64" | "darwin-arm64": { file, sha256, size, signature } } }`.
 - Signature: Ed25519 over `storyloom-update-v1\n<version>\n<platform>\n<file>\n<sha256>\n<size>` (`signedMessage`, updater.cjs). Binding version and chip blocks rollback and cross-chip swaps.
 - `scripts/update-manifest.mjs` refuses to run if `package.json` doesn't match the version, and checks every signature against the built-in `TRUSTED_KEYS` before writing `latest.json`, so a wrong key fails the release.
@@ -45,10 +45,10 @@ Storyloom checks GitHub releases for a newer version, downloads the update for t
 
 `phase`: `idle → checking → up-to-date | available → downloading (percent) → ready → installing`, or `failed` with a friendly message. Every change is pushed to the page as `app:update-state`.
 
-- `checkForUpdate({ manual })`: background check once per launch unless `checkUpdates` is off (setting defaults on, main.cjs:82); background failures stay quiet, manual ones show the message.
+- `checkForUpdate({ manual })`: background check once per launch unless `checkUpdates` is off (setting defaults on, main.cjs); background failures stay quiet, manual ones show the message.
 - `installUpdate` quits through the normal close path, so open books save first.
 - `discardReadyUpdate` deletes a downloaded but uninstalled update on quit (`will-quit`) and when settings are reset.
-- IPC: `app:update-state`, `app:check-update`, `app:download-update`, `app:install-update`, `app:open-update-notes` (main.cjs:678-685).
+- IPC: `app:update-state`, `app:check-update`, `app:download-update`, `app:install-update`, `app:open-update-notes` (main.cjs).
 
 ### UI
 

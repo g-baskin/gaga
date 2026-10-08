@@ -29,7 +29,7 @@ sources:
 
 ## Overview
 
-Uses only macOS tools (dist.mjs:7). `ARCHES = { x64: 'Intel_x64', arm64: 'Apple-Silicon_arm64' }` (dist.mjs:21) names the files. For each arch: [[entities/package-mjs]] `buildApp`, `makeDmg` (checks `lipo` arch and that Info.plist `CFBundleShortVersionString` equals package.json version, dist.mjs:44-47), `makeUpdateZip` (`ditto -c -k --sequesterRsrc --keepParent`, dist.mjs:71-76), then both files go into `SHA256SUMS.txt`.
+Uses only macOS tools (dist.mjs). `ARCHES = { x64: 'Intel_x64', arm64: 'Apple-Silicon_arm64' }` (dist.mjs) names the files. For each arch: [[entities/package-mjs]] `buildApp`, `makeDmg` (checks `lipo` arch and that Info.plist `CFBundleShortVersionString` equals package.json version, dist.mjs), `makeUpdateZip` (`ditto -c -k --sequesterRsrc --keepParent`, dist.mjs), then both files go into `SHA256SUMS.txt`.
 
 Outputs in `releases/dist/`: `Storyloom_<v>_Intel_x64.dmg`, `Storyloom_<v>_Apple-Silicon_arm64.dmg`, matching `.app.zip`s, `SHA256SUMS.txt`.
 

@@ -21,14 +21,14 @@ tags:
 related:
   - "[[concepts/ai-provider-routing]]"
 sources:
-  - main.cjs:220
+  - main.cjs
 ---
 
 # aiRequest
 
 ## Overview
 
-Defined at `main.cjs:220`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -52,4 +52,4 @@ POSTs to the user's own OpenAI-compatible service (`baseUrl`+endpoint) with bear
 
 ## Sources
 
-- `main.cjs:220`
+- `main.cjs`

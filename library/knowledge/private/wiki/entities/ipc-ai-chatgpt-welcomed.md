@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:569
-  - preload.cjs:60
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC ai:chatgpt-welcomed
 
-IPC channel `ai:chatgpt-welcomed`, registered with [[entities/handle]] at `main.cjs:569` (trusted-caller check applies). Mark first-run welcome as seen (soft).
+IPC channel `ai:chatgpt-welcomed`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Mark first-run welcome as seen (soft).
 
 ## Renderer side
 
-`window.storyloom.chatGptWelcomed` at `preload.cjs:60` (via `soft`: `{ ok }`/`{ error }` envelope)
+`window.storyloom.chatGptWelcomed` at `preload.cjs` (via `soft`: `{ ok }`/`{ error }` envelope)
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `ai:chatgpt-welcomed`, registered with [[entities/handle]] at `main.
 
 ## Sources
 
-- `main.cjs:569`
-- `preload.cjs:60`
+- `main.cjs`
+- `preload.cjs`

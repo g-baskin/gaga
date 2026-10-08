@@ -24,17 +24,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:547
-  - preload.cjs:46
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC settings:get
 
-IPC channel `settings:get`, registered with [[entities/handle]] at `main.cjs:547` (trusted-caller check applies). Return [[entities/publicSettings]] (no secrets).
+IPC channel `settings:get`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Return [[entities/publicSettings]] (no secrets).
 
 ## Renderer side
 
-`window.storyloom.getSettings` at `preload.cjs:46`
+`window.storyloom.getSettings` at `preload.cjs`
 
 ## Connections
 
@@ -48,5 +48,5 @@ IPC channel `settings:get`, registered with [[entities/handle]] at `main.cjs:547
 
 ## Sources
 
-- `main.cjs:547`
-- `preload.cjs:46`
+- `main.cjs`
+- `preload.cjs`

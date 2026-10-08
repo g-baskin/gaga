@@ -17,7 +17,7 @@ sources: []
 
 # Self-test harness
 
-`electron . --self-test` drives the real UI end-to-end with mock services and temp data; unit tests run with `node --test test/*.test.cjs` (`package.json:10-11`). Hooks: [[entities/flag-self-test]], [[entities/flag-keep-data]], [[entities/useTestServices]], [[entities/window-__storyloom]].
+`electron . --self-test` drives the real UI end-to-end with mock services and temp data; unit tests run with `node --test test/*.test.cjs` (`package.json`). Hooks: [[entities/flag-self-test]], [[entities/flag-keep-data]], [[entities/useTestServices]], [[entities/window-__storyloom]].
 
 ## Entities
 

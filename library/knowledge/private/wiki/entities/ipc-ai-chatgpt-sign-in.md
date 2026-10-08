@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:567
-  - preload.cjs:58
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC ai:chatgpt-sign-in
 
-IPC channel `ai:chatgpt-sign-in`, registered with [[entities/handle]] at `main.cjs:567` (trusted-caller check applies). Start ChatGPT OAuth; clears model cache (soft).
+IPC channel `ai:chatgpt-sign-in`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Start ChatGPT OAuth; clears model cache (soft).
 
 ## Renderer side
 
-`window.storyloom.chatGptSignIn` at `preload.cjs:58` (via `soft`: `{ ok }`/`{ error }` envelope)
+`window.storyloom.chatGptSignIn` at `preload.cjs` (via `soft`: `{ ok }`/`{ error }` envelope)
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `ai:chatgpt-sign-in`, registered with [[entities/handle]] at `main.c
 
 ## Sources
 
-- `main.cjs:567`
-- `preload.cjs:58`
+- `main.cjs`
+- `preload.cjs`

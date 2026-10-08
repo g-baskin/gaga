@@ -26,17 +26,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:475
-  - preload.cjs:17
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:save
 
-IPC channel `books:save`, registered with [[entities/handle]] at `main.cjs:475` (trusted-caller check applies). Save a book that must already exist (createdAt preserved).
+IPC channel `books:save`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Save a book that must already exist (createdAt preserved).
 
 ## Renderer side
 
-`window.storyloom.saveBook` at `preload.cjs:17`
+`window.storyloom.saveBook` at `preload.cjs`
 
 ## Connections
 
@@ -50,5 +50,5 @@ IPC channel `books:save`, registered with [[entities/handle]] at `main.cjs:475` 
 
 ## Sources
 
-- `main.cjs:475`
-- `preload.cjs:17`
+- `main.cjs`
+- `preload.cjs`

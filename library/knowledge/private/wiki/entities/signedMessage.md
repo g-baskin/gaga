@@ -21,8 +21,8 @@ tags:
 related:
   - "[[concepts/signed-update-channel]]"
 sources:
-  - updater.cjs:54
-  - scripts/update-manifest.mjs:42
+  - updater.cjs
+  - scripts/update-manifest.mjs
 ---
 
 # signedMessage
@@ -35,7 +35,7 @@ sources:
 function signedMessage({ version, platform, file, sha256, size }) // → Buffer
 ```
 
-Defined at updater.cjs:54. UTF-8 join with `\n` of `storyloom-update-v1`, version, platform key, file name, SHA-256 hex, and size. Binding version and platform into the message is what blocks rollback and cross-chip swaps (updater.cjs:5-6). Used by [[entities/verifySignature]] and by [[entities/update-manifest-mjs]] when signing.
+Defined in updater.cjs. UTF-8 join with `\n` of `storyloom-update-v1`, version, platform key, file name, SHA-256 hex, and size. Binding version and platform into the message is what blocks rollback and cross-chip swaps (updater.cjs). Used by [[entities/verifySignature]] and by [[entities/update-manifest-mjs]] when signing.
 
 ## Connections
 
@@ -49,5 +49,5 @@ Defined at updater.cjs:54. UTF-8 join with `\n` of `storyloom-update-v1`, versio
 
 ## Sources
 
-- `updater.cjs:54`
-- `scripts/update-manifest.mjs:42`
+- `updater.cjs`
+- `scripts/update-manifest.mjs`

@@ -19,12 +19,12 @@ tags:
 related:
   - "[[concepts/sanitize-on-every-boundary]]"
 sources:
-  - storage.cjs:50
+  - storage.cjs
 ---
 
 # crop (data model)
 
-Shape enforced by `sanitizeCrop` (storage.cjs:50).
+Shape enforced by `sanitizeCrop` (storage.cjs).
 
 Normalised `{ x, y, w, h }` in 0–1 image fractions, 4-decimal rounding, min 0.01; a full-image crop is stored as `null`.
 
@@ -46,4 +46,4 @@ Invalid fields are replaced by defaults rather than rejected.
 
 ## Sources
 
-- `storage.cjs:50`
+- `storage.cjs`

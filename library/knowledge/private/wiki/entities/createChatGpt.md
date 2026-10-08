@@ -20,14 +20,14 @@ related:
   - "[[concepts/secret-storage]]"
   - "[[concepts/ai-provider-routing]]"
 sources:
-  - ai/chatgpt.cjs:34
+  - ai/chatgpt.cjs
 ---
 
 # createChatGpt
 
 ## Overview
 
-Defined at `ai/chatgpt.cjs:34`.
+Defined in `ai/chatgpt.cjs`.
 
 ## Signature
 
@@ -51,4 +51,4 @@ Returns `{ signIn, cancelSignIn, signOut, status, models, respond, markWelcomed 
 
 ## Sources
 
-- `ai/chatgpt.cjs:34`
+- `ai/chatgpt.cjs`

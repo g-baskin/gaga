@@ -18,7 +18,7 @@ human_description: |
 
 ## Building (`npm run dist`, dist.mjs)
 - Builds Intel and Apple Silicon apps (`--arch=x64|arm64` for one), ad-hoc signed, not notarized.
-- Checks each built app's chip and that its `CFBundleShortVersionString` matches `package.json` (dist.mjs:42-47).
+- Checks each built app's chip and that its `CFBundleShortVersionString` matches `package.json` (dist.mjs).
 - Outputs in `releases/dist/`: `Storyloom_<v>_Intel_x64.dmg`, `Storyloom_<v>_Apple-Silicon_arm64.dmg`, a matching `.app.zip` per chip for the in-app updater, and `SHA256SUMS.txt`.
 
 ## Publishing (`.github/workflows/release.yml`)

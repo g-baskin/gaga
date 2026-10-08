@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:510
-  - preload.cjs:27
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:save-recording
 
-IPC channel `books:save-recording`, registered with [[entities/handle]] at `main.cjs:510` (trusted-caller check applies). Store microphone recording bytes.
+IPC channel `books:save-recording`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Store microphone recording bytes.
 
 ## Renderer side
 
-`window.storyloom.saveRecording` at `preload.cjs:27`
+`window.storyloom.saveRecording` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `books:save-recording`, registered with [[entities/handle]] at `main
 
 ## Sources
 
-- `main.cjs:510`
-- `preload.cjs:27`
+- `main.cjs`
+- `preload.cjs`

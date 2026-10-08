@@ -22,8 +22,7 @@ tags:
 related:
   - "[[concepts/signed-update-channel]]"
 sources:
-  - updater.cjs:58
-  - updater.cjs:62
+  - updater.cjs
 ---
 
 # verifySignature
@@ -36,7 +35,7 @@ sources:
 function verifySignature(entry, keys) // → boolean
 ```
 
-Defined at updater.cjs:62. Base64-decodes `entry.signature`, requires 64 bytes, builds the [[entities/signedMessage]], and returns true if any key in `keys` verifies it. Keys are raw base64url `x` values turned into JWK OKP/Ed25519 public keys by `publicKey()` (updater.cjs:58). Never throws. Used by `check()` in [[entities/createUpdater]] (updater.cjs:134) and as a self-check in [[entities/update-manifest-mjs]] (scripts/update-manifest.mjs:43).
+Defined in updater.cjs. Base64-decodes `entry.signature`, requires 64 bytes, builds the [[entities/signedMessage]], and returns true if any key in `keys` verifies it. Keys are raw base64url `x` values turned into JWK OKP/Ed25519 public keys by `publicKey()` (updater.cjs). Never throws. Used by `check()` in [[entities/createUpdater]] (updater.cjs) and as a self-check in [[entities/update-manifest-mjs]] (scripts/update-manifest.mjs).
 
 ## Connections
 
@@ -50,5 +49,4 @@ Defined at updater.cjs:62. Base64-decodes `entry.signature`, requires 64 bytes, 
 
 ## Sources
 
-- `updater.cjs:58`
-- `updater.cjs:62`
+- `updater.cjs`

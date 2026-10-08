@@ -19,14 +19,14 @@ tags:
 related:
   - "[[entities/builder]]"
 sources:
-  - main.cjs:286
+  - main.cjs
 ---
 
 # generateStory
 
 ## Overview
 
-Defined at `main.cjs:286`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -50,4 +50,4 @@ Builds a prompt from idea, reader level, length (3–30 pages), language, charac
 
 ## Sources
 
-- `main.cjs:286`
+- `main.cjs`

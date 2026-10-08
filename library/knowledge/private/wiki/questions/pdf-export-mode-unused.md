@@ -19,7 +19,7 @@ sources: []
 
 ## Answer
 
-Unanswered. `books:export-pdf` computes `mode` but only uses it to rename the self-test output file (main.cjs:525); print vs digital differences must come entirely from renderer CSS. Confirm this is intended.
+Unanswered. `books:export-pdf` computes `mode` but only uses it to rename the self-test output file (main.cjs); print vs digital differences must come entirely from renderer CSS. Confirm this is intended.
 
 ## Confidence
 

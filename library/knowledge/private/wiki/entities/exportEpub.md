@@ -19,7 +19,7 @@ tags:
   - function
 related: []
 sources:
-  - main.cjs:437
+  - main.cjs
 ---
 
 # exportEpub
@@ -50,4 +50,4 @@ Validates renderer-built page bodies (≤500 pages, ≤2 MB each, rejects `<scri
 
 ## Sources
 
-- `main.cjs:437`
+- `main.cjs`

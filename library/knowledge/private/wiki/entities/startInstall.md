@@ -21,10 +21,8 @@ tags:
 related:
   - "[[concepts/signed-update-channel]]"
 sources:
-  - updater.cjs:228
-  - updater.cjs:252
-  - updater.cjs:262
-  - main.cjs:261
+  - updater.cjs
+  - main.cjs
 ---
 
 # startInstall / installArgs
@@ -38,7 +36,7 @@ function installArgs({ pid, target, staged, relaunch = true }) // → argv for /
 function startInstall(options) // spawn('/bin/bash', installArgs(options), { detached: true, stdio: 'ignore' }).unref()
 ```
 
-`installArgs` validates pid (safe integer > 1), absolute newline-free paths, `.app` suffixes, and the wait (`waitTenths`, integer 1-6000, default `INSTALL_WAIT_TENTHS` = 1200), then passes every value as a positional argument (`$1..$6`) to the fixed `INSTALL_SCRIPT` (updater.cjs:228-250); nothing is pasted into script text.
+`installArgs` validates pid (safe integer > 1), absolute newline-free paths, `.app` suffixes, and the wait (`waitTenths`, integer 1-6000, default `INSTALL_WAIT_TENTHS` = 1200), then passes every value as a positional argument (`$1..$6`) to the fixed `INSTALL_SCRIPT` (updater.cjs); nothing is pasted into script text.
 
 **INSTALL_SCRIPT:** waits up to `$6` × 0.1 s (120 s by default) for the pid to exit; if it is still running, deletes the workdir and exits 1 without touching the installed app; otherwise moves the current app to `<name>.update-backup.app`; `ditto`s the staged app into place; on success deletes the backup, on failure deletes the partial copy and moves the backup back; removes the workdir; relaunches with `open` when `relaunch=1`.
 
@@ -56,7 +54,5 @@ function startInstall(options) // spawn('/bin/bash', installArgs(options), { det
 
 ## Sources
 
-- `updater.cjs:228`
-- `updater.cjs:252`
-- `updater.cjs:262`
-- `main.cjs:261`
+- `updater.cjs`
+- `main.cjs`

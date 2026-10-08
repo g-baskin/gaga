@@ -30,7 +30,7 @@ sources:
 
 ## Overview
 
-Registered via `registerScreen('manuscript', …)` at renderer/screens/manuscript.js:605. Header comment: renderer/screens/manuscript.js:3.
+Registered via `registerScreen('manuscript', …)` at renderer/screens/manuscript.js. Header comment: renderer/screens/manuscript.js.
 
 ## IPC used
 

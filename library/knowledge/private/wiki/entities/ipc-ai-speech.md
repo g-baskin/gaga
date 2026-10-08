@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:560
-  - preload.cjs:55
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC ai:speech
 
-IPC channel `ai:speech`, registered with [[entities/handle]] at `main.cjs:560` (trusted-caller check applies). [[entities/generateSpeech]].
+IPC channel `ai:speech`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). [[entities/generateSpeech]].
 
 ## Renderer side
 
-`window.storyloom.generateSpeech` at `preload.cjs:55`
+`window.storyloom.generateSpeech` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `ai:speech`, registered with [[entities/handle]] at `main.cjs:560` (
 
 ## Sources
 
-- `main.cjs:560`
-- `preload.cjs:55`
+- `main.cjs`
+- `preload.cjs`

@@ -17,7 +17,7 @@ sources: []
 
 # Soft-error IPC envelopes
 
-Expected failures (bad settings, not signed in, offline) return `{ error }` instead of throwing so Electron doesn't log them as crashes (main.cjs:561); preload `soft` rethrows them in the page.
+Expected failures (bad settings, not signed in, offline) return `{ error }` instead of throwing so Electron doesn't log them as crashes (main.cjs); preload `soft` rethrows them in the page.
 
 ## Entities
 

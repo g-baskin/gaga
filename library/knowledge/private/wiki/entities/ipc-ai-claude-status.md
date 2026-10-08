@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:572
-  - preload.cjs:63
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC ai:claude-status
 
-IPC channel `ai:claude-status`, registered with [[entities/handle]] at `main.cjs:572` (trusted-caller check applies). Claude Code install/sign-in status, cached 60 s unless forced (soft).
+IPC channel `ai:claude-status`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Claude Code install/sign-in status, cached 60 s unless forced (soft).
 
 ## Renderer side
 
-`window.storyloom.claudeStatus` at `preload.cjs:63` (via `soft`: `{ ok }`/`{ error }` envelope)
+`window.storyloom.claudeStatus` at `preload.cjs` (via `soft`: `{ ok }`/`{ error }` envelope)
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `ai:claude-status`, registered with [[entities/handle]] at `main.cjs
 
 ## Sources
 
-- `main.cjs:572`
-- `preload.cjs:63`
+- `main.cjs`
+- `preload.cjs`

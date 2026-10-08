@@ -36,7 +36,7 @@ Storyloom is an original desktop app for making children's picture books on a Ma
 | AI | `ai/claude-code.cjs`, `ai/chatgpt.cjs`, `ai/openrouter.cjs`, `ai/fal.cjs`, `ai/model-picker.cjs` | Optional AI services |
 | Updates | `updater.cjs` | Signed update check, download, verification, detached installer |
 | Bridge | `preload.cjs` | Exposes `window.storyloom` — one method per IPC channel; `soft()` unwraps `{ok}/{error}` replies |
-| Renderer | `renderer/index.html` | Loads scripts with `defer` in order (index.html:19-33); strict CSP (index.html:5) |
+| Renderer | `renderer/index.html` | Loads scripts with `defer` in order (index.html); strict CSP (index.html) |
 | | `renderer/core.js` | Shared helpers (`h()` DOM builder, ids, page rendering) |
 | | `renderer/editor.js` | Designer page editor and `exportPdf` |
 | | `renderer/app.js` | State, autosave, navigation, `registerScreen`, dialogs, sidebar version + update notice, `aiPictureNote` |
@@ -45,15 +45,15 @@ Storyloom is an original desktop app for making children's picture books on a Ma
 
 ## Screens (renderer/app.js)
 
-`registerScreen(name, { label, scope, render, leave })` (app.js:60). Scope is `app` (sidebar) or `book` (tabs of the open book).
+`registerScreen(name, { label, scope, render, leave })` (app.js). Scope is `app` (sidebar) or `book` (tabs of the open book).
 
 - **App sidebar** (`APP_NAV`): home, bookshelf, templates, coloring, orders (Print orders), account.
 - **Book tabs** (`BOOK_TABS`): story-builder, manuscript, designer, studio, export.
 - An unregistered name shows the "isn't built yet" placeholder; the self-test checks none does.
 
-**Autosave:** `scheduleSave()` debounces 500 ms; `saveNow()` saves a `structuredClone` snapshot in a promise chain. On window close, main sends `app:before-close`; the page flushes and calls `app:close-ready`. Main force-closes after 3 s so a hung save never traps the user (main.cjs:680-685).
+**Autosave:** `scheduleSave()` debounces 500 ms; `saveNow()` saves a `structuredClone` snapshot in a promise chain. On window close, main sends `app:before-close`; the page flushes and calls `app:close-ready`. Main force-closes after 3 s so a hung save never traps the user (main.cjs).
 
-## IPC channels (main.cjs:471-583)
+## IPC channels (main.cjs)
 
 | Group | Channels |
 |---|---|
@@ -69,7 +69,7 @@ Main → page events: `menu:action` (undo/redo), `app:before-close`, `app:update
 
 `ai:open-link` names: `chatgpt-usage`, `openrouter-keys`, `fal-keys`, `claude-code`, `source` (the GitHub source, from Account → About).
 
-## app:// protocol (`serve`, main.cjs:612)
+## app:// protocol (`serve`, main.cjs)
 
 - `app://local/<path>` → files in `renderer/`, path-contained, GET only, `nosniff`.
 - `app://media/<bookId>/<name>` → book assets via `store.mediaPath` (or `_characters` for the character library); supports HTTP Range (206/416) for audio seeking; CORS only for `app://local`.

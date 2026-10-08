@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:545
-  - preload.cjs:44
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC app:open-data-folder
 
-IPC channel `app:open-data-folder`, registered with [[entities/handle]] at `main.cjs:545` (trusted-caller check applies). Open the userData folder.
+IPC channel `app:open-data-folder`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Open the userData folder.
 
 ## Renderer side
 
-`window.storyloom.openDataFolder` at `preload.cjs:44`
+`window.storyloom.openDataFolder` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `app:open-data-folder`, registered with [[entities/handle]] at `main
 
 ## Sources
 
-- `main.cjs:545`
-- `preload.cjs:44`
+- `main.cjs`
+- `preload.cjs`

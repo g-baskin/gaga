@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:583
-  - preload.cjs:69
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC app:close-ready
 
-IPC channel `app:close-ready`, registered with [[entities/handle]] at `main.cjs:583` (trusted-caller check applies). Renderer finished saving; allow the window to close.
+IPC channel `app:close-ready`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Renderer finished saving; allow the window to close.
 
 ## Renderer side
 
-`window.storyloom.closeReady` at `preload.cjs:69`
+`window.storyloom.closeReady` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `app:close-ready`, registered with [[entities/handle]] at `main.cjs:
 
 ## Sources
 
-- `main.cjs:583`
-- `preload.cjs:69`
+- `main.cjs`
+- `preload.cjs`

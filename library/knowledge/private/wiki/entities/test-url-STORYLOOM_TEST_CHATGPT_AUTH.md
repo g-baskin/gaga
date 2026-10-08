@@ -18,12 +18,12 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - main.cjs:177
+  - main.cjs
 ---
 
 # STORYLOOM_TEST_CHATGPT_AUTH
 
-testUrls key overriding the ChatGPT auth base and the allowed sign-in URL prefix (main.cjs:177).
+testUrls key overriding the ChatGPT auth base and the allowed sign-in URL prefix (main.cjs).
 
 ## Connections
 
@@ -37,4 +37,4 @@ testUrls key overriding the ChatGPT auth base and the allowed sign-in URL prefix
 
 ## Sources
 
-- `main.cjs:177`
+- `main.cjs`

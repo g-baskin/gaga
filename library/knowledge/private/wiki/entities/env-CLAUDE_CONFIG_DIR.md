@@ -18,12 +18,12 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - ai/claude-code.cjs:49
+  - ai/claude-code.cjs
 ---
 
 # CLAUDE_CONFIG_DIR (and env allow-list)
 
-The only env vars passed to the `claude` child are HOME, USER, LOGNAME, LANG, LC_ALL, TMPDIR, CLAUDE_CONFIG_DIR; PATH is rebuilt (ai/claude-code.cjs:49). Shell API keys are deliberately not inherited.
+The only env vars passed to the `claude` child are HOME, USER, LOGNAME, LANG, LC_ALL, TMPDIR, CLAUDE_CONFIG_DIR; PATH is rebuilt (ai/claude-code.cjs). Shell API keys are deliberately not inherited.
 
 ## Connections
 
@@ -37,4 +37,4 @@ The only env vars passed to the `claude` child are HOME, USER, LOGNAME, LANG, LC
 
 ## Sources
 
-- `ai/claude-code.cjs:49`
+- `ai/claude-code.cjs`

@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:511
-  - preload.cjs:28
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC import:story-text
 
-IPC channel `import:story-text`, registered with [[entities/handle]] at `main.cjs:511` (trusted-caller check applies). Open a text manuscript file and decode it → `{ name, text } | null`.
+IPC channel `import:story-text`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Open a text manuscript file and decode it → `{ name, text } | null`.
 
 ## Renderer side
 
-`window.storyloom.importStoryText` at `preload.cjs:28`
+`window.storyloom.importStoryText` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `import:story-text`, registered with [[entities/handle]] at `main.cj
 
 ## Sources
 
-- `main.cjs:511`
-- `preload.cjs:28`
+- `main.cjs`
+- `preload.cjs`

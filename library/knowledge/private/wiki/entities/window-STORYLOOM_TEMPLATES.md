@@ -21,12 +21,12 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - renderer/data/templates.js:2
+  - renderer/data/templates.js
 ---
 
 # window.STORYLOOM_TEMPLATES / STORYLOOM_WORD_LIMITS
 
-Renderer globals: templates catalogue (renderer/data/templates.js:2) and word limits shared from Manuscript to Story builder (renderer/screens/manuscript.js:6, read at renderer/screens/story-builder.js:6).
+Renderer globals: templates catalogue (renderer/data/templates.js) and word limits shared from Manuscript to Story builder (renderer/screens/manuscript.js, read at renderer/screens/story-builder.js).
 
 ## Connections
 
@@ -40,4 +40,4 @@ Renderer globals: templates catalogue (renderer/data/templates.js:2) and word li
 
 ## Sources
 
-- `renderer/data/templates.js:2`
+- `renderer/data/templates.js`

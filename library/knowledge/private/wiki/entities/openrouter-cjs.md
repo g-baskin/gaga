@@ -28,7 +28,7 @@ sources:
 
 ## Overview
 
-See [[entities/createOpenRouter]] (ai/openrouter.cjs:8). Requires `./model-picker.cjs` (ai/openrouter.cjs:4); catalogue cache TTL 6 h (ai/openrouter.cjs:6).
+See [[entities/createOpenRouter]] (ai/openrouter.cjs). Requires `./model-picker.cjs` (ai/openrouter.cjs); catalogue cache TTL 6 h (ai/openrouter.cjs).
 
 ## Connections
 

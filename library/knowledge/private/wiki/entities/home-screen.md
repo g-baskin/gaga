@@ -30,7 +30,7 @@ sources:
 
 ## Overview
 
-Registered via `registerScreen('home', …)` at renderer/screens/home.js:171. Header comment: renderer/screens/home.js:3.
+Registered via `registerScreen('home', …)` at renderer/screens/home.js. Header comment: renderer/screens/home.js.
 
 ## IPC used
 
@@ -41,7 +41,7 @@ Registered via `registerScreen('home', …)` at renderer/screens/home.js:171. He
 
 ## Changes since 2add52d
 
-Restyled for the picture-book design; new books take `authorName` from the profile (renderer/screens/home.js:64-86); registered at :175.
+Restyled for the picture-book design; new books take `authorName` from the profile (renderer/screens/home.js); registered at :175.
 
 ## Connections
 

@@ -20,14 +20,14 @@ tags:
 related:
   - "[[entities/page]]"
 sources:
-  - storage.cjs:135
+  - storage.cjs
 ---
 
 # sanitizePage
 
 ## Overview
 
-Defined at `storage.cjs:135`.
+Defined in `storage.cjs`.
 
 ## Signature
 
@@ -55,4 +55,4 @@ Normalises a [[entities/page]]; cover pages default to font size 48, others 24.
 
 ## Sources
 
-- `storage.cjs:135`
+- `storage.cjs`

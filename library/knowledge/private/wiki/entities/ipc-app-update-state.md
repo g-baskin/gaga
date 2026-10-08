@@ -24,21 +24,21 @@ related:
   - "[[entities/ipc-channels]]"
   - "[[concepts/signed-update-channel]]"
 sources:
-  - main.cjs:678
-  - preload.cjs:47
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC app:update-state
 
 **IPC channel app:update-state (in-app updates).**
 
-IPC channel `app:update-state`, registered with [[entities/handle]] at `main.cjs:678` (trusted-caller check applies). Returns the current update state; the same channel name is also a main→page push sent by `setUpdateState` (main.cjs:202-206), received by `onUpdateState` (preload.cjs:52).
+IPC channel `app:update-state`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Returns the current update state; the same channel name is also a main→page push sent by `setUpdateState` (main.cjs), received by `onUpdateState` (preload.cjs).
 
-States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (main.cjs:195-196), always with `current` = app version.
+States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (main.cjs), always with `current` = app version.
 
 ## Renderer side
 
-`window.storyloom.updateState` at `preload.cjs:47`; used by update views in [[entities/app-js]] and [[entities/account-screen]].
+`window.storyloom.updateState` at `preload.cjs`; used by update views in [[entities/app-js]] and [[entities/account-screen]].
 
 ## Connections
 
@@ -52,5 +52,5 @@ States shared with the page: `idle | checking | up-to-date | available | downloa
 
 ## Sources
 
-- `main.cjs:678`
-- `preload.cjs:47`
+- `main.cjs`
+- `preload.cjs`

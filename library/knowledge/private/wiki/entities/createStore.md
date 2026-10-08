@@ -21,14 +21,14 @@ related:
   - "[[concepts/atomic-file-writes]]"
   - "[[concepts/sanitize-on-every-boundary]]"
 sources:
-  - storage.cjs:310
+  - storage.cjs
 ---
 
 # createStore
 
 ## Overview
 
-Defined at `storage.cjs:310`.
+Defined in `storage.cjs`.
 
 ## Signature
 
@@ -56,4 +56,4 @@ Factory over a userData root: `books/<id>/book.json` + `assets/`, `characters/`,
 
 ## Sources
 
-- `storage.cjs:310`
+- `storage.cjs`

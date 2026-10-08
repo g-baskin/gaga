@@ -11,9 +11,9 @@
 
 ### Home (`renderer/screens/home.js`, app scope)
 - Prompt box with quick-idea chips and a "star of the story" name; continuing opens the Story builder prefilled.
-- "Import a story" (.txt / .md via `import:story-text`) — text is split into Manuscript chapters on headings / blank lines (`window.storyloomSplitStory`, home.js:170).
+- "Import a story" (.txt / .md via `import:story-text`) — text is split into Manuscript chapters on headings / blank lines (`window.storyloomSplitStory`, home.js).
 - Recent books row and template strip.
-- **Not available (labelled cards):** story from a drawing, photo → avatar. Both need a vision AI service (home.js:147-160).
+- **Not available (labelled cards):** story from a drawing, photo → avatar. Both need a vision AI service (home.js).
 
 ### Bookshelf (`renderer/screens/bookshelf.js`, app scope)
 - Grid of all books; search; sort: recently edited, oldest, A–Z, Z–A, custom (drag to reorder). Sort choice kept in `localStorage`; custom order kept in `profile.json` (`bookOrder`) so it survives restart.

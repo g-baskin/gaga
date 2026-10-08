@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:558
-  - preload.cjs:53
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC ai:chapter
 
-IPC channel `ai:chapter`, registered with [[entities/handle]] at `main.cjs:558` (trusted-caller check applies). [[entities/generateChapter]].
+IPC channel `ai:chapter`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). [[entities/generateChapter]].
 
 ## Renderer side
 
-`window.storyloom.generateChapter` at `preload.cjs:53`
+`window.storyloom.generateChapter` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `ai:chapter`, registered with [[entities/handle]] at `main.cjs:558` 
 
 ## Sources
 
-- `main.cjs:558`
-- `preload.cjs:53`
+- `main.cjs`
+- `preload.cjs`

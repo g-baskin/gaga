@@ -20,14 +20,14 @@ tags:
 related:
   - "[[entities/settings-tier]]"
 sources:
-  - ai/model-picker.cjs:177
+  - ai/model-picker.cjs
 ---
 
 # pickClaudeModel
 
 ## Overview
 
-Defined at `ai/model-picker.cjs:177`.
+Defined in `ai/model-picker.cjs`.
 
 ## Signature
 
@@ -55,4 +55,4 @@ best→opus for stories else sonnet; balanced→sonnet; thrifty→haiku. Caption
 
 ## Sources
 
-- `ai/model-picker.cjs:177`
+- `ai/model-picker.cjs`

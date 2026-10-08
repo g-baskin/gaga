@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:524
-  - preload.cjs:39
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:export-pdf
 
-IPC channel `books:export-pdf`, registered with [[entities/handle]] at `main.cjs:524` (trusted-caller check applies). `printToPDF` of the current page into a chosen file.
+IPC channel `books:export-pdf`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). `printToPDF` of the current page into a chosen file.
 
 ## Renderer side
 
-`window.storyloom.exportPdf` at `preload.cjs:39`
+`window.storyloom.exportPdf` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `books:export-pdf`, registered with [[entities/handle]] at `main.cjs
 
 ## Sources
 
-- `main.cjs:524`
-- `preload.cjs:39`
+- `main.cjs`
+- `preload.cjs`

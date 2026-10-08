@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:518
-  - preload.cjs:32
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC characters:list
 
-IPC channel `characters:list`, registered with [[entities/handle]] at `main.cjs:518` (trusted-caller check applies). Read the reusable character library.
+IPC channel `characters:list`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Read the reusable character library.
 
 ## Renderer side
 
-`window.storyloom.listCharacters` at `preload.cjs:32`
+`window.storyloom.listCharacters` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `characters:list`, registered with [[entities/handle]] at `main.cjs:
 
 ## Sources
 
-- `main.cjs:518`
-- `preload.cjs:32`
+- `main.cjs`
+- `preload.cjs`

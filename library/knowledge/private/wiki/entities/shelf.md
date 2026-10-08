@@ -19,12 +19,12 @@ tags:
 related:
   - "[[concepts/sanitize-on-every-boundary]]"
 sources:
-  - storage.cjs:250
+  - storage.cjs
 ---
 
 # shelf (data model)
 
-Shape enforced by `sanitizeShelves` (storage.cjs:250).
+Shape enforced by `sanitizeShelves` (storage.cjs).
 
 `{ id, name, bookIds[], order }` in `shelves.json`, deduped by id and sorted by order.
 
@@ -46,4 +46,4 @@ Invalid fields are replaced by defaults rather than rejected.
 
 ## Sources
 
-- `storage.cjs:250`
+- `storage.cjs`

@@ -18,12 +18,12 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - main.cjs:158
+  - main.cjs
 ---
 
 # useTestServices
 
-Self-test-only setter for testUrls; throws outside `--self-test`; resets all cached AI clients (main.cjs:158). Passed to `selftest/index.cjs` run().
+Self-test-only setter for testUrls; throws outside `--self-test`; resets all cached AI clients (main.cjs). Passed to `selftest/index.cjs` run().
 
 ## Connections
 
@@ -37,4 +37,4 @@ Self-test-only setter for testUrls; throws outside `--self-test`; resets all cac
 
 ## Sources
 
-- `main.cjs:158`
+- `main.cjs`

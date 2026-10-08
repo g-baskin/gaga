@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:566
-  - preload.cjs:57
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC ai:chatgpt-status
 
-IPC channel `ai:chatgpt-status`, registered with [[entities/handle]] at `main.cjs:566` (trusted-caller check applies). ChatGPT sign-in status (soft).
+IPC channel `ai:chatgpt-status`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). ChatGPT sign-in status (soft).
 
 ## Renderer side
 
-`window.storyloom.chatGptStatus` at `preload.cjs:57` (via `soft`: `{ ok }`/`{ error }` envelope)
+`window.storyloom.chatGptStatus` at `preload.cjs` (via `soft`: `{ ok }`/`{ error }` envelope)
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `ai:chatgpt-status`, registered with [[entities/handle]] at `main.cj
 
 ## Sources
 
-- `main.cjs:566`
-- `preload.cjs:57`
+- `main.cjs`
+- `preload.cjs`

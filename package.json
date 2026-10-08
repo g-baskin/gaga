@@ -19,7 +19,7 @@
     "preview": "node scripts/preview.mjs",
     "lint": "eslint .",
     "test": "node --test test/*.test.cjs",
-    "test:live": "node --env-file-if-exists=../.env.local --test test/live/*.live.cjs",
+    "test:live": "node --env-file-if-exists=.env.local --env-file-if-exists=../.env.local --test test/live/*.live.cjs",
     "self-test": "electron . --self-test",
     "package": "node package.mjs",
     "dist": "node dist.mjs",

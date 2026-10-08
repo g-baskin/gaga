@@ -18,12 +18,12 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - main.cjs:178
+  - main.cjs
 ---
 
 # STORYLOOM_TEST_CHATGPT_API
 
-testUrls key overriding the ChatGPT API base (main.cjs:178).
+testUrls key overriding the ChatGPT API base (main.cjs).
 
 ## Connections
 
@@ -37,4 +37,4 @@ testUrls key overriding the ChatGPT API base (main.cjs:178).
 
 ## Sources
 
-- `main.cjs:178`
+- `main.cjs`

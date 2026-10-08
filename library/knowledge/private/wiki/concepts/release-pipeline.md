@@ -23,10 +23,10 @@ sources:
 
 Driven by `.github/workflows/release.yml` (last touched `eb83d47`), which runs on a pushed version tag:
 
-1. **Check the tag, version, and changelog** (release.yml:44): tag must match `package.json`; notes come from [[entities/changelog-mjs]].
-2. **Build the Mac disk images** (release.yml:60): [[entities/dist-mjs]] builds Intel and Apple Silicon apps via [[entities/package-mjs]], ad-hoc signs, checks the chip, and also makes the per-chip `.app.zip` update archives (`makeUpdateZip`, dist.mjs:71).
-3. **Sign the in-app updates** (release.yml:64): [[entities/update-manifest-mjs]] writes a signed `latest.json`; the signing key comes from a CI secret.
-4. **Publish the release** (release.yml:70): DMGs, `.app.zip` files and `latest.json` go to the GitHub release that [[entities/updater-cjs]] reads.
+1. **Check the tag, version, and changelog** (release.yml): tag must match `package.json`; notes come from [[entities/changelog-mjs]].
+2. **Build the Mac disk images** (release.yml): [[entities/dist-mjs]] builds Intel and Apple Silicon apps via [[entities/package-mjs]], ad-hoc signs, checks the chip, and also makes the per-chip `.app.zip` update archives (`makeUpdateZip`, dist.mjs).
+3. **Sign the in-app updates** (release.yml): [[entities/update-manifest-mjs]] writes a signed `latest.json`; the signing key comes from a CI secret.
+4. **Publish the release** (release.yml): DMGs, `.app.zip` files and `latest.json` go to the GitHub release that [[entities/updater-cjs]] reads.
 
 ## Entities
 

@@ -21,14 +21,14 @@ related:
   - "[[concepts/secret-storage]]"
   - "[[concepts/atomic-file-writes]]"
 sources:
-  - main.cjs:108
+  - main.cjs
 ---
 
 # saveSettings
 
 ## Overview
 
-Defined at `main.cjs:108`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -42,7 +42,7 @@ Runs one save at a time (a queue), so overlapping saves can't lose each other's 
 
 ## Changes since 2add52d
 
-Now at main.cjs:127 (line numbers in older text are from `2add52d`). Implemented by `saveSettingsNow`; handles `falKey`/`clearFalKey` and `checkUpdates`.
+In main.cjs. Implemented by `saveSettingsNow`; handles `falKey`/`clearFalKey` and `checkUpdates`.
 
 ## Connections
 
@@ -56,4 +56,4 @@ Now at main.cjs:127 (line numbers in older text are from `2add52d`). Implemented
 
 ## Sources
 
-- `main.cjs:108`
+- `main.cjs`

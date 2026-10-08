@@ -31,13 +31,13 @@ sources:
 
 ## Overview
 
-Header comment states the design (updater.cjs:2-11): every release publishes `latest.json` plus one signed `.app.zip` per Mac chip; the Ed25519 signature covers version, chip, file name, SHA-256 and size so a download can't be swapped for another release or chip. Order of checks: manifest signature, then size and SHA-256, then unpack, then bundle ID / version / chip / code signature.
+Header comment states the design (updater.cjs): every release publishes `latest.json` plus one signed `.app.zip` per Mac chip; the Ed25519 signature covers version, chip, file name, SHA-256 and size so a download can't be swapped for another release or chip. Order of checks: manifest signature, then size and SHA-256, then unpack, then bundle ID / version / chip / code signature.
 
-Constants: `REPO = 'g-baskin/gaga'` (updater.cjs:22), `FEED_URL` (:23), `DOWNLOAD_BASE` (:24), `RELEASES_PAGE` (:25), `GITHUB_HOSTS` (:27), [[entities/TRUSTED_KEYS]] (:30), `BUNDLE_ID = 'local.storyloom.app'` (:31), `SIGNED_PREFIX = 'storyloom-update-v1'` (:32), `MAX_MANIFEST` 64 KB (:33), `MAX_ARCHIVE` 600 MB (:34), [[entities/updater-PLATFORMS]] (:38).
+Constants: `REPO = 'g-baskin/gaga'` (updater.cjs), `FEED_URL`, `DOWNLOAD_BASE`, `RELEASES_PAGE`, `GITHUB_HOSTS`, [[entities/TRUSTED_KEYS]], `BUNDLE_ID = 'local.storyloom.app'`, `SIGNED_PREFIX = 'storyloom-update-v1'`, `MAX_MANIFEST` 64 KB, `MAX_ARCHIVE` 600 MB, [[entities/updater-PLATFORMS]].
 
-Exports (updater.cjs:267-270): [[entities/createUpdater]], [[entities/installTarget]], `installArgs` and [[entities/startInstall]], [[entities/signedMessage]], [[entities/verifySignature]], `isNewer` (:45, strict `x.y.z` comparison), `UpdateError` (:43, user-facing message class), `PLATFORMS`, `TRUSTED_KEYS`, `BUNDLE_ID`, `RELEASES_PAGE`.
+Exports (updater.cjs): [[entities/createUpdater]], [[entities/installTarget]], `installArgs` and [[entities/startInstall]], [[entities/signedMessage]], [[entities/verifySignature]], `isNewer` (strict `x.y.z` comparison), `UpdateError` (user-facing message class), `PLATFORMS`, `TRUSTED_KEYS`, `BUNDLE_ID`, `RELEASES_PAGE`.
 
-Packed into the app by [[entities/package-mjs]] (package.mjs:9).
+Packed into the app by [[entities/package-mjs]] (package.mjs).
 
 ## Connections
 

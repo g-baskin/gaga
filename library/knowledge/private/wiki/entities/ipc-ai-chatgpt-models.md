@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:571
-  - preload.cjs:62
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC ai:chatgpt-models
 
-IPC channel `ai:chatgpt-models`, registered with [[entities/handle]] at `main.cjs:571` (trusted-caller check applies). Force-refresh the ChatGPT model list (soft).
+IPC channel `ai:chatgpt-models`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Force-refresh the ChatGPT model list (soft).
 
 ## Renderer side
 
-`window.storyloom.chatGptModels` at `preload.cjs:62` (via `soft`: `{ ok }`/`{ error }` envelope)
+`window.storyloom.chatGptModels` at `preload.cjs` (via `soft`: `{ ok }`/`{ error }` envelope)
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `ai:chatgpt-models`, registered with [[entities/handle]] at `main.cj
 
 ## Sources
 
-- `main.cjs:571`
-- `preload.cjs:62`
+- `main.cjs`
+- `preload.cjs`

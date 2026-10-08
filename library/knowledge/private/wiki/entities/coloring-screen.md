@@ -30,7 +30,7 @@ sources:
 
 ## Overview
 
-Registered via `registerScreen('coloring', …)` at renderer/screens/coloring.js:412. Header comment: renderer/screens/coloring.js:3.
+Registered via `registerScreen('coloring', …)` at renderer/screens/coloring.js. Header comment: renderer/screens/coloring.js.
 
 ## IPC used
 
@@ -45,7 +45,7 @@ Registered via `registerScreen('coloring', …)` at renderer/screens/coloring.js
 
 ## Changes since 2add52d
 
-Shows `aiWriterNote()` (renderer/screens/coloring.js:194).
+Shows `aiWriterNote()` (renderer/screens/coloring.js).
 
 ## Connections
 

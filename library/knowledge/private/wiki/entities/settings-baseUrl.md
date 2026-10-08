@@ -21,8 +21,7 @@ tags:
 related:
   - "[[entities/settings-json]]"
 sources:
-  - main.cjs:64
-  - main.cjs:108
+  - main.cjs
 ---
 
 # settings.baseUrl
@@ -34,7 +33,7 @@ Field of [[entities/settings-json]].
 
 Address of the user's own OpenAI-compatible service; https only, http allowed for localhost/127.0.0.1/[::1]; hash, query and trailing slashes stripped (`checkBaseUrl`).
 
-Read/coerced in [[entities/readSettings]] (`main.cjs:64`), validated in [[entities/saveSettings]] (`main.cjs:108`).
+Read/coerced in [[entities/readSettings]] (`main.cjs`), validated in [[entities/saveSettings]] (`main.cjs`).
 
 ## Connections
 
@@ -48,5 +47,4 @@ Read/coerced in [[entities/readSettings]] (`main.cjs:64`), validated in [[entiti
 
 ## Sources
 
-- `main.cjs:64`
-- `main.cjs:108`
+- `main.cjs`

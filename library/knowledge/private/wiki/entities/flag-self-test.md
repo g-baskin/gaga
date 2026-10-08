@@ -20,12 +20,12 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - main.cjs:14
+  - main.cjs
 ---
 
 # --self-test
 
-CLI flag (main.cjs:14). Uses a temp `mkdtemp` userData, fake media device, mock keychain; fixed save paths; dialogs bypassed; runs `selftest/index.cjs` after load and exits 0/1. Run with `npm run self-test`.
+CLI flag (main.cjs). Uses a temp `mkdtemp` userData, fake media device, mock keychain; fixed save paths; dialogs bypassed; runs `selftest/index.cjs` after load and exits 0/1. Run with `npm run self-test`.
 
 ## Connections
 
@@ -39,4 +39,4 @@ CLI flag (main.cjs:14). Uses a temp `mkdtemp` userData, fake media device, mock 
 
 ## Sources
 
-- `main.cjs:14`
+- `main.cjs`

@@ -43,7 +43,7 @@ sources:
 
 ## Changes since 2add52d
 
-Committed in `ded9f37` ("Add fal.ai pictures, live cover preview, and picture-service notes"). Self-test hooks: [[entities/test-url-STORYLOOM_TEST_FAL_RUN]], [[entities/test-url-STORYLOOM_TEST_FAL_API]]; `mediaHostOk` allows 127.0.0.1 only in self-test (main.cjs:297).
+Committed in `ded9f37` ("Add fal.ai pictures, live cover preview, and picture-service notes"). Self-test hooks: [[entities/test-url-STORYLOOM_TEST_FAL_RUN]], [[entities/test-url-STORYLOOM_TEST_FAL_API]]; `mediaHostOk` allows 127.0.0.1 only in self-test (main.cjs).
 
 ## Connections
 

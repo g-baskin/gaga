@@ -12,10 +12,10 @@
 `renderer/screens/manuscript.js` (book scope):
 
 - Chapter list: add, rename, reorder, delete.
-- `contenteditable` editor whose content is converted to **structured blocks** (paragraph, heading, subheading, quote, list item; runs with bold / italic / underline). Toolbar plus ⌘B/⌘I/⌘U; paste is plain text. HTML is never saved (manuscript.js:3, storage `sanitizeBlock`).
-- Live word count with a per-chapter limit by reading level (manuscript.js:5). Typing past the limit is blocked with a notice; a session-only override allows longer text (`allowLonger`, manuscript.js:11).
+- `contenteditable` editor whose content is converted to **structured blocks** (paragraph, heading, subheading, quote, list item; runs with bold / italic / underline). Toolbar plus ⌘B/⌘I/⌘U; paste is plain text. HTML is never saved (manuscript.js, storage `sanitizeBlock`).
+- Live word count with a per-chapter limit by reading level (manuscript.js). Typing past the limit is blocked with a notice; a session-only override allows longer text (`allowLonger`, manuscript.js).
 - Title / author areas.
-- **Write / rewrite chapter with AI** (needs AI writing service) → `ai:chapter` → `generateChapter` (main.cjs:316).
+- **Write / rewrite chapter with AI** (needs AI writing service) → `ai:chapter` → `generateChapter` (main.cjs).
 - **Lay out into pages** → creates/updates Designer pages from chapters, page font size by reading level; warns before replacing existing page text.
 
 ## Acceptance criteria (as verified)

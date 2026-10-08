@@ -30,7 +30,7 @@ sources:
 
 ## Overview
 
-Registered via `registerScreen('templates', …)` at renderer/screens/templates.js:148. Header comment: renderer/screens/templates.js:1.
+Registered via `registerScreen('templates', …)` at renderer/screens/templates.js. Header comment: renderer/screens/templates.js.
 
 ## IPC used
 

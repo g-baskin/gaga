@@ -19,14 +19,14 @@ tags:
 related:
   - "[[concepts/ipc-trust-boundary]]"
 sources:
-  - main.cjs:46
+  - main.cjs
 ---
 
 # handle
 
 ## Overview
 
-Defined at `main.cjs:46`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -50,4 +50,4 @@ IPC registration wrapper that rejects any caller other than the main window's to
 
 ## Sources
 
-- `main.cjs:46`
+- `main.cjs`

@@ -19,14 +19,14 @@ tags:
 related:
   - "[[entities/element]]"
 sources:
-  - storage.cjs:61
+  - storage.cjs
 ---
 
 # sanitizeElement
 
 ## Overview
 
-Defined at `storage.cjs:61`.
+Defined in `storage.cjs`.
 
 ## Signature
 
@@ -54,4 +54,4 @@ Normalises an [[entities/element]] by `type`; unknown types or invalid images/st
 
 ## Sources
 
-- `storage.cjs:61`
+- `storage.cjs`

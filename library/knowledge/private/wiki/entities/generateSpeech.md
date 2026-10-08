@@ -22,14 +22,14 @@ tags:
 related:
   - "[[entities/settings-voices]]"
 sources:
-  - main.cjs:362
+  - main.cjs
 ---
 
 # generateSpeech
 
 ## Overview
 
-Defined at `main.cjs:362`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -53,4 +53,4 @@ Text ≤4000 chars to speech; voice from input (validated) or `settings.voice` o
 
 ## Sources
 
-- `main.cjs:362`
+- `main.cjs`

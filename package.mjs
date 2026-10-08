@@ -23,6 +23,9 @@ export async function checkRuntimeNotices(appPath) {
 // Electron switches baked into the app. Off: running the app as plain Node (ELECTRON_RUN_AS_NODE), NODE_OPTIONS,
 // and --inspect, any of which would let another program on this Mac run code as Storyloom and unseal its keys.
 // On: the app only loads from its checked app.asar, and cookies are encrypted.
+// Inside renderer/ for the browser preview (npm run preview), but never part of the app.
+export const DEV_ONLY = new Set(['/renderer/preview-boot.js']);
+
 export const FUSES = {
   [FuseV1Options.RunAsNode]: false,
   [FuseV1Options.EnableCookieEncryption]: true,
@@ -61,8 +64,8 @@ export async function buildApp({ arch = process.arch, out = path.join(root, 'rel
     prune: false,
     overwrite: true,
     quiet,
-    // Ship only the app itself: no tests, build tools, or verification output.
-    ignore: (file) => !(keep.has(file) || ['/renderer', '/ai'].some((dir) => file === dir || file.startsWith(`${dir}/`))),
+    // Ship only the app itself: no tests, build tools, verification output, or the browser preview's stand-in data.
+    ignore: (file) => DEV_ONLY.has(file) || !(keep.has(file) || ['/renderer', '/ai'].some((dir) => file === dir || file.startsWith(`${dir}/`))),
   });
   for (const output of outputs) {
     const resources = path.join(output, 'Storyloom.app', 'Contents', 'Resources');

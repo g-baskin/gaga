@@ -21,8 +21,7 @@ related:
   - "[[concepts/picture-service-routing]]"
   - "[[entities/settings-tier]]"
 sources:
-  - ai/model-picker.cjs:195
-  - ai/model-picker.cjs:205
+  - ai/model-picker.cjs
 ---
 
 # pickFalModel
@@ -35,7 +34,7 @@ sources:
 function pickFalModel({ models = [], tier = 'balanced', lineArt = false }) // → { model, reason } | null
 ```
 
-Defined at ai/model-picker.cjs:205. Drops entries whose `endpoint_id` matches `FAL_SKIP` (vector/svg/lora/controlnet/kontext/material/layer) or aren't `active` (:207-208). Walks `FAL_PREFERENCE[tier]` regex families best-first (:195-199); for `lineArt` outside `thrifty`, Recraft patterns (`FAL_LINE_ART`, :201) go first. Within a family the highest `/vN/` version wins (:212). Falls back to the first usable model. Returns `null` if none. Called by [[entities/fal-cjs]] (ai/fal.cjs:146).
+Defined in ai/model-picker.cjs. Drops entries whose `endpoint_id` matches `FAL_SKIP` (vector/svg/lora/controlnet/kontext/material/layer) or aren't `active`. Walks `FAL_PREFERENCE[tier]` regex families best-first; for `lineArt` outside `thrifty`, Recraft patterns (`FAL_LINE_ART`) go first. Within a family the highest `/vN/` version wins. Falls back to the first usable model. Returns `null` if none. Called by [[entities/fal-cjs]] (ai/fal.cjs).
 
 ## Connections
 
@@ -49,5 +48,4 @@ Defined at ai/model-picker.cjs:205. Drops entries whose `endpoint_id` matches `F
 
 ## Sources
 
-- `ai/model-picker.cjs:195`
-- `ai/model-picker.cjs:205`
+- `ai/model-picker.cjs`

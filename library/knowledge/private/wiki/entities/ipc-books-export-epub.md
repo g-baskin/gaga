@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:534
-  - preload.cjs:40
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:export-epub
 
-IPC channel `books:export-epub`, registered with [[entities/handle]] at `main.cjs:534` (trusted-caller check applies). Build a fixed-layout EPUB via [[entities/exportEpub]].
+IPC channel `books:export-epub`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Build a fixed-layout EPUB via [[entities/exportEpub]].
 
 ## Renderer side
 
-`window.storyloom.exportEpub` at `preload.cjs:40`
+`window.storyloom.exportEpub` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `books:export-epub`, registered with [[entities/handle]] at `main.cj
 
 ## Sources
 
-- `main.cjs:534`
-- `preload.cjs:40`
+- `main.cjs`
+- `preload.cjs`

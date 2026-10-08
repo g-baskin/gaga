@@ -1,13 +1,13 @@
 'use strict';
 // Live checks against the real OpenRouter, run only by `npm run test:live` (not `npm test`).
-// Needs OPENROUTER_TEST_API, read from scrively/.env.local or the environment. Skips without it.
+// Needs OPENROUTER_TEST_API, from the environment or a gitignored .env.local in the repo folder. Skips without it.
 // Costs a fraction of a cent per run: one short chat on the thrifty budget. Everything else is free.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { createOpenRouter } = require('../../ai/openrouter.cjs');
 
 const key = process.env.OPENROUTER_TEST_API?.trim();
-const live = { skip: key ? false : 'set OPENROUTER_TEST_API in scrively/.env.local to run live OpenRouter checks' };
+const live = { skip: key ? false : 'set OPENROUTER_TEST_API (environment or .env.local) to run live OpenRouter checks' };
 const client = () => createOpenRouter({ getKey: async () => key });
 
 test('live OpenRouter: picks a model for every job from the real catalogues', live, async () => {

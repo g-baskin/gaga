@@ -23,9 +23,7 @@ related:
   - "[[entities/settings-falKeyEnc]]"
   - "[[concepts/picture-service-routing]]"
 sources:
-  - main.cjs:80
-  - main.cjs:154
-  - main.cjs:481
+  - main.cjs
 ---
 
 # settings.falImageModel
@@ -34,10 +32,10 @@ sources:
 
 Field of [[entities/settings-json]].
 
-- **Type:** string, validated by `checkModel` (main.cjs:154)
-- **Default:** `""` (main.cjs:80)
+- **Type:** string, validated by `checkModel` (main.cjs)
+- **Default:** `""` (main.cjs)
 
-Passed as `model` to [[entities/fal-cjs]] `image()` (main.cjs:481) and shown as the pinned "Pictures" row in [[entities/aiRecommendations]] (main.cjs:536). Set from the fal.ai panel's "Always use a specific model instead" field in [[entities/account-screen]].
+Passed as `model` to [[entities/fal-cjs]] `image()` (main.cjs) and shown as the pinned "Pictures" row in [[entities/aiRecommendations]] (main.cjs). Set from the fal.ai panel's "Always use a specific model instead" field in [[entities/account-screen]].
 
 ## Connections
 
@@ -51,6 +49,4 @@ Passed as `model` to [[entities/fal-cjs]] `image()` (main.cjs:481) and shown as 
 
 ## Sources
 
-- `main.cjs:80`
-- `main.cjs:154`
-- `main.cjs:481`
+- `main.cjs`

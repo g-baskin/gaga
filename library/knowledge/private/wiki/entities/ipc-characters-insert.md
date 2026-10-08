@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:521
-  - preload.cjs:35
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC characters:insert
 
-IPC channel `characters:insert`, registered with [[entities/handle]] at `main.cjs:521` (trusted-caller check applies). Copy a library character picture into a book.
+IPC channel `characters:insert`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Copy a library character picture into a book.
 
 ## Renderer side
 
-`window.storyloom.insertCharacter` at `preload.cjs:35`
+`window.storyloom.insertCharacter` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `characters:insert`, registered with [[entities/handle]] at `main.cj
 
 ## Sources
 
-- `main.cjs:521`
-- `preload.cjs:35`
+- `main.cjs`
+- `preload.cjs`

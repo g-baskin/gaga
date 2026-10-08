@@ -19,12 +19,12 @@ tags:
 related:
   - "[[concepts/sanitize-on-every-boundary]]"
 sources:
-  - storage.cjs:157
+  - storage.cjs
 ---
 
 # character (data model)
 
-Shape enforced by `sanitizeCharacter` (storage.cjs:157).
+Shape enforced by `sanitizeCharacter` (storage.cjs).
 
 `{ id, name (required), role, description, image }`; library stored in `characters.json` (≤500) with pictures under `characters/` (media id `_characters`).
 
@@ -46,4 +46,4 @@ Invalid fields are replaced by defaults rather than rejected.
 
 ## Sources
 
-- `storage.cjs:157`
+- `storage.cjs`

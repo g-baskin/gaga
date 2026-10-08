@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:570
-  - preload.cjs:61
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC ai:chatgpt-sign-out
 
-IPC channel `ai:chatgpt-sign-out`, registered with [[entities/handle]] at `main.cjs:570` (trusted-caller check applies). Revoke and forget ChatGPT tokens (soft).
+IPC channel `ai:chatgpt-sign-out`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Revoke and forget ChatGPT tokens (soft).
 
 ## Renderer side
 
-`window.storyloom.chatGptSignOut` at `preload.cjs:61` (via `soft`: `{ ok }`/`{ error }` envelope)
+`window.storyloom.chatGptSignOut` at `preload.cjs` (via `soft`: `{ ok }`/`{ error }` envelope)
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `ai:chatgpt-sign-out`, registered with [[entities/handle]] at `main.
 
 ## Sources
 
-- `main.cjs:570`
-- `preload.cjs:61`
+- `main.cjs`
+- `preload.cjs`

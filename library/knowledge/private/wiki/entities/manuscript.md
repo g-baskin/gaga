@@ -19,12 +19,12 @@ tags:
 related:
   - "[[concepts/sanitize-on-every-boundary]]"
 sources:
-  - storage.cjs:196
+  - storage.cjs
 ---
 
 # manuscript (data model)
 
-Shape enforced by `sanitizeManuscript` (storage.cjs:196).
+Shape enforced by `sanitizeManuscript` (storage.cjs).
 
 `{ chapters: [{ id, title, blocks: [{ type: p|h2|h3|quote|li, runs: [{ text, b?, i?, u? }] }] }] }` — structured runs, never HTML. ≤200 chapters, ≤2000 blocks.
 
@@ -46,4 +46,4 @@ Invalid fields are replaced by defaults rather than rejected.
 
 ## Sources
 
-- `storage.cjs:196`
+- `storage.cjs`

@@ -24,21 +24,21 @@ related:
   - "[[entities/ipc-channels]]"
   - "[[concepts/signed-update-channel]]"
 sources:
-  - main.cjs:682
-  - preload.cjs:51
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC app:open-update-notes
 
 **IPC channel app:open-update-notes (in-app updates).**
 
-IPC channel `app:open-update-notes`, registered with [[entities/handle]] at `main.cjs:682` (trusted-caller check applies). Opens `updateState.notesUrl` (the GitHub release tag page) with `shell.openExternal`; throws if none. Skipped in self-test.
+IPC channel `app:open-update-notes`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Opens `updateState.notesUrl` (the GitHub release tag page) with `shell.openExternal`; throws if none. Skipped in self-test.
 
-States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (main.cjs:195-196), always with `current` = app version.
+States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (main.cjs), always with `current` = app version.
 
 ## Renderer side
 
-`window.storyloom.openUpdateNotes` at `preload.cjs:51`; used by update views in [[entities/app-js]] and [[entities/account-screen]].
+`window.storyloom.openUpdateNotes` at `preload.cjs`; used by update views in [[entities/app-js]] and [[entities/account-screen]].
 
 ## Connections
 
@@ -52,5 +52,5 @@ States shared with the page: `idle | checking | up-to-date | available | downloa
 
 ## Sources
 
-- `main.cjs:682`
-- `preload.cjs:51`
+- `main.cjs`
+- `preload.cjs`

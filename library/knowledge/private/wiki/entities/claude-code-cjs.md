@@ -28,7 +28,7 @@ sources:
 
 ## Overview
 
-Never reads Claude's login; runs the official program with tools, settings, MCP and slash commands disabled in an empty temp folder (ai/claude-code.cjs:2). Factory: [[entities/createClaudeCode]].
+Never reads Claude's login; runs the official program with tools, settings, MCP and slash commands disabled in an empty temp folder (ai/claude-code.cjs). Factory: [[entities/createClaudeCode]].
 
 ## Connections
 

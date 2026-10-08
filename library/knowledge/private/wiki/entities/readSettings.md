@@ -22,14 +22,14 @@ tags:
 related:
   - "[[entities/settings-json]]"
 sources:
-  - main.cjs:64
+  - main.cjs
 ---
 
 # readSettings
 
 ## Overview
 
-Defined at `main.cjs:64`.
+Defined in `main.cjs`.
 
 ## Signature
 
@@ -43,7 +43,7 @@ Reads `settings.json` from userData and coerces every field: strings default to 
 
 ## Changes since 2add52d
 
-Now at main.cjs:69 (line numbers in older text are from `2add52d`). Reads `falKeyEnc`, `falImageModel`, and `checkUpdates` (default on).
+In main.cjs. Reads `falKeyEnc`, `falImageModel`, and `checkUpdates` (default on).
 
 ## Connections
 
@@ -57,4 +57,4 @@ Now at main.cjs:69 (line numbers in older text are from `2add52d`). Reads `falKe
 
 ## Sources
 
-- `main.cjs:64`
+- `main.cjs`

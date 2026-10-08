@@ -32,7 +32,7 @@ sources:
 
 ## Overview
 
-Registered via `registerScreen('orders', …)` at renderer/screens/orders.js:25. Header comment: renderer/screens/orders.js:3.
+Registered via `registerScreen('orders', …)` at renderer/screens/orders.js. Header comment: renderer/screens/orders.js.
 
 ## IPC used
 
@@ -40,7 +40,7 @@ Registered via `registerScreen('orders', …)` at renderer/screens/orders.js:25.
 
 ## Changes since 2add52d
 
-Header now says print orders are "not available yet (needs a print partner and payments)" (renderer/screens/orders.js:3).
+Header now says print orders are "not available yet (needs a print partner and payments)" (renderer/screens/orders.js).
 
 ## Connections
 

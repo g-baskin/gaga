@@ -27,7 +27,7 @@ sources:
 
 ## Overview
 
-Plain `http` server bound to `127.0.0.1:${PORT||4173}` (scripts/preview.mjs:62). `fileFor()` (:20) decodes the path and rejects anything resolving outside `renderer/`. For `index.html` only, it injects `<script src="preview-boot.js">` before `core.js` (:51), so Electron's own index.html is untouched. `Cache-Control: no-store`.
+Plain `http` server bound to `127.0.0.1:${PORT||4173}` (scripts/preview.mjs). `fileFor()` decodes the path and rejects anything resolving outside `renderer/`. For `index.html` only, it injects `<script src="preview-boot.js">` before `core.js`, so Electron's own index.html is untouched. `Cache-Control: no-store`.
 
 Added by Kelly's commit `99aea2b` ("browser preview"); script `preview` in package.json.
 

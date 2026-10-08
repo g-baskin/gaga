@@ -20,16 +20,16 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - main.cjs:184
+  - main.cjs
 ---
 
 # STORYLOOM_TEST_UPDATES
 
 **Self-test-only service address (not a real environment variable).**
 
-Key in `testUrls`, set only through [[entities/useTestServices]], which throws outside `--self-test` (main.cjs:184-186); read through `testUrl()`/`testUrls`. Base URL of the local fake update server (selftest/mock-updates.cjs). When set, `getUpdater()` points `feedUrl` at `<url>/latest.json` and `downloadBase` at `<url>/download/`, and allows only host `127.0.0.1` (main.cjs:219-222). When unset in self-test, `checkForUpdate` returns idle without any network call (main.cjs:232).
+Key in `testUrls`, set only through [[entities/useTestServices]], which throws outside `--self-test` (main.cjs); read through `testUrl()`/`testUrls`. Base URL of the local fake update server (selftest/mock-updates.cjs). When set, `getUpdater()` points `feedUrl` at `<url>/latest.json` and `downloadBase` at `<url>/download/`, and allows only host `127.0.0.1` (main.cjs). When unset in self-test, `checkForUpdate` returns idle without any network call (main.cjs).
 
-Setting test services also resets the update client, pending/ready update, and update state (main.cjs:187-190).
+Setting test services also resets the update client, pending/ready update, and update state (main.cjs).
 
 ## Connections
 
@@ -43,4 +43,4 @@ Setting test services also resets the update client, pending/ready update, and u
 
 ## Sources
 
-- `main.cjs:184`
+- `main.cjs`

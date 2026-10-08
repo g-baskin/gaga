@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:568
-  - preload.cjs:59
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC ai:chatgpt-cancel
 
-IPC channel `ai:chatgpt-cancel`, registered with [[entities/handle]] at `main.cjs:568` (trusted-caller check applies). Cancel a pending sign-in.
+IPC channel `ai:chatgpt-cancel`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Cancel a pending sign-in.
 
 ## Renderer side
 
-`window.storyloom.chatGptCancel` at `preload.cjs:59`
+`window.storyloom.chatGptCancel` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `ai:chatgpt-cancel`, registered with [[entities/handle]] at `main.cj
 
 ## Sources
 
-- `main.cjs:568`
-- `preload.cjs:59`
+- `main.cjs`
+- `preload.cjs`

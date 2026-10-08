@@ -23,17 +23,17 @@ related:
   - "[[concepts/ipc-trust-boundary]]"
   - "[[entities/ipc-channels]]"
 sources:
-  - main.cjs:505
-  - preload.cjs:25
+  - main.cjs
+  - preload.cjs
 ---
 
 # IPC books:import-audio
 
-IPC channel `books:import-audio`, registered with [[entities/handle]] at `main.cjs:505` (trusted-caller check applies). Open-file dialog, sniff and copy an audio file.
+IPC channel `books:import-audio`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Open-file dialog, sniff and copy an audio file.
 
 ## Renderer side
 
-`window.storyloom.importAudio` at `preload.cjs:25`
+`window.storyloom.importAudio` at `preload.cjs`
 
 ## Connections
 
@@ -47,5 +47,5 @@ IPC channel `books:import-audio`, registered with [[entities/handle]] at `main.c
 
 ## Sources
 
-- `main.cjs:505`
-- `preload.cjs:25`
+- `main.cjs`
+- `preload.cjs`

@@ -18,12 +18,12 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
-  - renderer/screens/bookshelf.js:5
+  - renderer/screens/bookshelf.js
 ---
 
 # storyloom.bookshelf.sort
 
-localStorage key holding the bookshelf sort (renderer/screens/bookshelf.js:5).
+localStorage key holding the bookshelf sort (renderer/screens/bookshelf.js).
 
 ## Connections
 
@@ -37,4 +37,4 @@ localStorage key holding the bookshelf sort (renderer/screens/bookshelf.js:5).
 
 ## Sources
 
-- `renderer/screens/bookshelf.js:5`
+- `renderer/screens/bookshelf.js`

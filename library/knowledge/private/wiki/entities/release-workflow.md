@@ -30,7 +30,7 @@ sources:
 
 ## Overview
 
-Triggered by a `v*` tag push. Steps per the header comment and body (.github/workflows/release.yml:3-13): tag must be `vX.Y.Z` on `main` and match package.json; [[entities/changelog-mjs]] `check`; unit tests; `npm run dist` ([[entities/dist-mjs]]); **Sign the in-app updates** runs [[entities/update-manifest-mjs]] — the only step given the `STORYLOOM_UPDATE_SIGNING_KEY` secret; `gh release create` uploads both .dmgs, both .app.zips, `latest.json`, and `SHA256SUMS.txt` with display labels.
+Triggered by a `v*` tag push. Steps per the header comment and body (.github/workflows/release.yml): tag must be `vX.Y.Z` on `main` and match package.json; [[entities/changelog-mjs]] `check`; unit tests; `npm run dist` ([[entities/dist-mjs]]); **Sign the in-app updates** runs [[entities/update-manifest-mjs]] — the only step given the `STORYLOOM_UPDATE_SIGNING_KEY` secret; `gh release create` uploads both .dmgs, both .app.zips, `latest.json`, and `SHA256SUMS.txt` with display labels.
 
 `7a2e83f` dropped the second `git fetch` of main (relies on `fetch-depth: 0`).
 
