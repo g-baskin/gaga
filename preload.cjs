@@ -58,6 +58,7 @@ contextBridge.exposeInMainWorld('storyloom', {
   },
   generateStory: (input) => call('ai:generate', input), // → { title, chapters: [{ title, text }], pages: [text] }
   generateChapter: (input) => call('ai:chapter', input), // → { text }
+  scenePrompts: (input) => call('ai:scene-prompts', input), // → { scenes: [{ index, prompt }] } one picture description per page
   generateImage: (input) => call('ai:image', input), // { bookId, prompt, style?, lineArt? } → asset name
   generateSpeech: (input) => call('ai:speech', input), // { bookId, text, voice? } → asset name
   aiRecommendations: () => soft('ai:recommendations'), // → [{ job, model, fallbacks, reason }]

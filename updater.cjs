@@ -271,5 +271,5 @@ function startInstall(options) {
 
 module.exports = {
   createUpdater, installTarget, installArgs, startInstall, signedMessage, verifySignature, isNewer,
-  UpdateError, PLATFORMS, TRUSTED_KEYS, BUNDLE_ID, RELEASES_PAGE, INSTALL_WAIT_TENTHS,
+  UpdateError, PLATFORMS, TRUSTED_KEYS, RELEASES_PAGE, INSTALL_WAIT_TENTHS,
 };

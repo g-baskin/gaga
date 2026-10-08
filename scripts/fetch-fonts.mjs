@@ -20,7 +20,7 @@ const ALLOWED_HOST = 'cdn.jsdelivr.net';
 
 // Storyloom's fonts: key (stored in books), Fontsource id, label, the weights and styles to bundle.
 // Keep keys stable: books save them.
-export const FONT_LIST = [
+const FONT_LIST = [
   { key: 'andika', id: 'andika', label: 'Andika (easy reading)', weights: [400, 700], styles: ['normal', 'italic'] },
   { key: 'atkinson', id: 'atkinson-hyperlegible', label: 'Atkinson (clear)', weights: [400, 700], styles: ['normal', 'italic'] },
   { key: 'nunito', id: 'nunito', label: 'Nunito (soft sans)', weights: [400, 800], styles: ['normal', 'italic'] },

@@ -23,7 +23,7 @@ const OR_MODELS = [
 const OR_CREATIVE = ['mock/popular-writer', 'mock/fine-writer', 'mock/grand-writer'];
 const OR_IMAGES = [
   { id: 'mock/vector-art', name: 'Vector', supported_parameters: {} },
-  { id: 'openai/gpt-image-mock', name: 'GPT Image (mock)', supported_parameters: { aspect_ratio: { values: ['1:1', '16:9'] }, output_format: { values: ['png', 'webp'] } } },
+  { id: 'openai/gpt-image-mock', name: 'GPT Image (mock)', supported_parameters: { aspect_ratio: { values: ['1:1', '3:4', '4:3', '16:9'] }, output_format: { values: ['png', 'webp'] }, input_references: { type: 'array' } } },
   { id: 'google/gemini-nano-banana-mock', name: 'Nano Banana (mock)', supported_parameters: { aspect_ratio: { values: ['1:1'] } } },
   { id: 'recraft/recraft-mock', name: 'Recraft (mock)', supported_parameters: {} },
 ];
@@ -219,7 +219,11 @@ const FAL_MODELS = [
   { endpoint_id: 'openai/gpt-image-2.5/sunburst/text-to-image', metadata: { display_name: 'GPT Image 2.5 Sunburst (mock)', status: 'active' } },
 ];
 // Input fields per model, shaped like fal's real schemas (Recraft has no sync_mode, so it returns a URL).
+const FAL_EDIT_MODELS = [
+  { endpoint_id: 'fal-ai/nano-banana-2/edit', metadata: { display_name: 'Nano Banana 2 Edit (mock)', status: 'active' } },
+];
 const FAL_FIELDS = {
+  'fal-ai/nano-banana-2/edit': { prompt: {}, image_urls: { type: 'array' }, aspect_ratio: { anyOf: [{ enum: ['auto', '1:1', '3:4', '4:3'] }] }, output_format: { enum: ['png'] }, num_images: {}, sync_mode: {} },
   'fal-ai/flux/schnell': { prompt: {}, image_size: { anyOf: [{ $ref: '#/x' }, { enum: ['square_hd', 'square', 'landscape_4_3'] }] }, output_format: { enum: ['jpeg', 'png'] }, num_images: {}, sync_mode: {} },
   'fal-ai/nano-banana-2': { prompt: {}, aspect_ratio: { anyOf: [{ enum: ['auto', '1:1', '16:9'] }, { type: 'null' }] }, output_format: { enum: ['jpeg', 'png', 'webp'] }, num_images: {}, sync_mode: {} },
   'fal-ai/recraft/v4.1/text-to-image': { prompt: {}, image_size: { anyOf: [{ $ref: '#/x' }, { enum: ['square_hd', 'square'] }] } },
@@ -229,6 +233,7 @@ const FAL_FIELDS = {
 function startFal({ key = 'fal-test-key' } = {}) {
   const calls = [];
   const options = { outOfCredit: false };
+  const uploads = []; // reference pictures uploaded to the fake storage
   let base = '';
   const server = http.createServer((req, res) => {
     let raw = '';
@@ -245,7 +250,20 @@ function startFal({ key = 'fal-test-key' } = {}) {
           const fields = FAL_FIELDS[id];
           return json({ models: [{ endpoint_id: id, openapi: { components: { schemas: { [`${id.replace(/\W/g, '')}Input`]: { properties: fields || {} } } } } }], has_more: false });
         }
+        if (url.searchParams.get('category') === 'image-to-image') return json({ models: FAL_EDIT_MODELS, has_more: false, next_cursor: null });
         return json({ models: FAL_MODELS, has_more: false, next_cursor: null });
+      }
+      // Storage upload, as fal's client does it: initiate (with a key), then PUT the bytes to upload_url.
+      if (req.method === 'POST' && url.pathname === '/rest/storage/upload/initiate') {
+        if (req.headers.authorization !== `Key ${key}`) return json({ detail: 'Authentication is required' }, 401);
+        const id = `ref-${uploads.length + 1}`;
+        uploads.push({ id, lifecycle: req.headers['x-fal-object-lifecycle'] || '', type: body.content_type, size: 0 });
+        return json({ upload_url: `${base}/rest/upload/${id}`, file_url: `${base}/media/${id}.png` });
+      }
+      if (req.method === 'PUT' && url.pathname.startsWith('/rest/upload/')) {
+        const item = uploads.find((u) => u.id === url.pathname.split('/').pop());
+        if (item) item.size = raw.length;
+        res.writeHead(200); return res.end();
       }
       if (req.method === 'GET' && url.pathname === '/media/picture.png') {
         res.writeHead(200, { 'Content-Type': 'image/png' });
@@ -265,7 +283,7 @@ function startFal({ key = 'fal-test-key' } = {}) {
     });
   });
   return listen(server, { calls, key, options, onUrl: (url) => { base = url; } }).then((s) => ({
-    ...s, runBase: `${s.url}/run`, apiBase: `${s.url}/v1`,
+    ...s, runBase: `${s.url}/run`, apiBase: `${s.url}/v1`, restBase: `${s.url}/rest`, uploads,
   }));
 }
 
@@ -297,4 +315,4 @@ esac
 }
 const shellQuote = (value) => `'${String(value).replace(/'/g, `'\\''`)}'`;
 
-module.exports = { startOpenRouter, startChatGpt, startFal, makeFakeClaude, OR_MODELS };
+module.exports = { startOpenRouter, startChatGpt, startFal, makeFakeClaude };

@@ -8,7 +8,7 @@ const fsSync = require('node:fs');
 const path = require('node:path');
 const mockAi = require('./mock-ai.cjs');
 
-const FULL_ORDER = ['designer', 'home', 'bookshelf', 'story-builder', 'manuscript', 'templates', 'studio', 'coloring', 'export-orders-account', 'ai-services', 'updates', 'text-fit'];
+const FULL_ORDER = ['designer', 'home', 'bookshelf', 'story-builder', 'manuscript', 'templates', 'studio', 'coloring', 'export-orders-account', 'ai-services', 'updates', 'text-fit', 'illustrate', 'boundaries'];
 const EXPECTED_SCREENS = ['home', 'bookshelf', 'templates', 'coloring', 'orders', 'account', 'story-builder', 'manuscript', 'designer', 'studio', 'export'];
 const APP_NAV = ['home', 'bookshelf', 'templates', 'coloring', 'orders', 'account'];
 const BOOK_TABS = ['story-builder', 'manuscript', 'designer', 'studio', 'export'];
@@ -162,7 +162,7 @@ async function run({ app, win, store, argv, root, setOpenFile, useTestServices }
       result = await require(path.join(__dirname, `${name}.cjs`))(ctx);
     } catch (error) {
       await ctx.screenshot(`${name}-failed`).catch(() => {});
-      throw new Error(`[${name}] ${error.message}`);
+      throw new Error(`[${name}] ${error.message}`, { cause: error });
     }
     if (!result || typeof result !== 'object' || Object.keys(result).length === 0) throw new Error(`[${name}] returned no checks`);
     const failed = Object.entries(result).filter(([, v]) => v === false).map(([k]) => k);
@@ -204,4 +204,4 @@ async function run({ app, win, store, argv, root, setOpenFile, useTestServices }
   console.log('SELF_TEST_PASSED', JSON.stringify(checks));
 }
 
-module.exports = { run, FULL_ORDER, EXPECTED_SCREENS };
+module.exports = { run };

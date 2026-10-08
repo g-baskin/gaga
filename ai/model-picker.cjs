@@ -124,10 +124,12 @@ const LINE_ART_PREFERENCE = [/^recraft\//, /^openai\/gpt-image/, /^black-forest-
 // Vector/layered outputs are SVG or multi-layer files, which a picture page can't use.
 const NOT_RASTER = /vector|svg|layer/i;
 
-function pickImageModel({ models = [], tier = 'balanced', lineArt = false }) {
+// withReferences: only models that accept reference pictures (to keep characters looking the same).
+function pickImageModel({ models = [], tier = 'balanced', lineArt = false, withReferences = false }) {
   const budget = normalTier(tier);
   const usable = models.filter((m) => typeof m.id === 'string' && !NOT_RASTER.test(m.id)
-    && (m.architecture?.output_modalities || ['image']).includes('image'));
+    && (m.architecture?.output_modalities || ['image']).includes('image')
+    && (!withReferences || Boolean(m.supported_parameters?.input_references)));
   if (!usable.length) return null;
   const patterns = lineArt && budget !== 'thrifty' ? [...LINE_ART_PREFERENCE, ...IMAGE_PREFERENCE[budget]] : IMAGE_PREFERENCE[budget];
   for (const pattern of patterns) {
@@ -202,6 +204,23 @@ const FAL_LINE_ART = [/^fal-ai\/recraft\/v[\d.]+\/text-to-image$/, /^recraft\/v[
 // Not plain picture makers: vector/SVG output, add-on-weight (LoRA) variants, control rigs, material maps.
 const FAL_SKIP = /vector|svg|lora|controlnet|kontext|material|layer/i;
 
+// fal.ai: the "edit" form of a picture model takes reference pictures (image_urls). Same families, per budget.
+const FAL_EDIT_PREFERENCE = {
+  best: [/^openai\/gpt-image-[\d.]+\/sunburst\/edit$/, /^fal-ai\/nano-banana-pro\/edit$/, /^fal-ai\/flux-2-pro\/edit$/, /^openai\/gpt-image-\d[\d.]*\/edit$/],
+  balanced: [/^fal-ai\/nano-banana-2\/edit$/, /^bytedance\/seedream\/v\d+\/pro\/edit$/, /^fal-ai\/flux-2-pro\/edit$/],
+  thrifty: [/^google\/nano-banana-lite\/edit$/, /^fal-ai\/flux-2\/klein\/4b\/edit$/, /^bytedance\/seedream\/v\d+\/lite\/edit$/, /^fal-ai\/nano-banana-2\/edit$/],
+};
+function pickFalEditModel({ models = [], tier = 'balanced' }) {
+  const budget = normalTier(tier);
+  const usable = models.filter((m) => typeof m?.endpoint_id === 'string' && /\/edit$/.test(m.endpoint_id) && !FAL_SKIP.test(m.endpoint_id)
+    && (m.metadata?.status ?? 'active') === 'active');
+  for (const pattern of FAL_EDIT_PREFERENCE[budget]) {
+    const hit = usable.find((m) => pattern.test(m.endpoint_id));
+    if (hit) return { model: hit.endpoint_id, reason: `Pictures with your characters: ${hit.metadata?.display_name || hit.endpoint_id} on fal.ai.` };
+  }
+  return usable[0] ? { model: usable[0].endpoint_id, reason: `Pictures with your characters: ${usable[0].metadata?.display_name || usable[0].endpoint_id} on fal.ai.` } : null;
+}
+
 function pickFalModel({ models = [], tier = 'balanced', lineArt = false }) {
   const budget = normalTier(tier);
   const usable = models.filter((m) => typeof m?.endpoint_id === 'string' && !FAL_SKIP.test(m.endpoint_id)
@@ -222,4 +241,4 @@ function pickFalModel({ models = [], tier = 'balanced', lineArt = false }) {
   return { model: fallback.endpoint_id, reason: `Pictures: ${fallback.metadata?.display_name || fallback.endpoint_id}, the most-used picture model on fal.ai.` };
 }
 
-module.exports = { TIERS, TASKS, pickTextModels, pickImageModel, pickFalModel, pickSpeechModel, pickVoice, pickClaudeModel, pickChatGptModel };
+module.exports = { TIERS, pickTextModels, pickImageModel, pickFalModel, pickFalEditModel, pickSpeechModel, pickVoice, pickClaudeModel, pickChatGptModel };

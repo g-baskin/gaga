@@ -5,7 +5,7 @@ const fs = require('node:fs/promises');
 const fsSync = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { createStore } = require('./storage.cjs');
+const { createStore, sniffImage, plainFsError, readJsonFile } = require('./storage.cjs');
 const { buildEpub, collectImages } = require('./epub.cjs');
 const modelPicker = require('./ai/model-picker.cjs');
 const { createOpenRouter } = require('./ai/openrouter.cjs');
@@ -52,8 +52,24 @@ function handle(channel, fn) {
     if (!win || event.sender !== win.webContents || frame !== win.webContents.mainFrame || !frame.url.startsWith('app://local/')) {
       throw new Error('Untrusted caller');
     }
-    return fn(event, ...args);
+    // Disk errors reach the page in plain words (no file paths); the original stays attached as the cause.
+    return Promise.resolve().then(() => fn(event, ...args)).catch((error) => { throw plainFsError(error); });
   });
+}
+
+// A saved file that can't be understood is set aside by readJsonFile (never overwritten). Say so, and where it went.
+const SAVED_FILE_NAMES = {
+  'settings.json': 'your AI and app settings', 'profile.json': 'your profile',
+  'shelves.json': 'your shelves', 'characters.json': 'your character library',
+};
+function reportDamaged({ file, backup }) {
+  const what = SAVED_FILE_NAMES[path.basename(file)] || path.basename(file);
+  const options = {
+    type: 'warning',
+    message: `Storyloom couldn’t read ${what}`,
+    detail: `The saved file was damaged, so Storyloom started ${what} fresh. The damaged copy was kept as “${path.basename(backup)}” in ${path.dirname(backup)}.`,
+  };
+  (win ? dialog.showMessageBox(win, options) : dialog.showMessageBox(options)).catch((error) => console.error(error));
 }
 
 // --- Optional AI services. Keys and sign-ins stay in this process; the page only sees what is connected. ---
@@ -69,8 +85,7 @@ const VOICES = ['custom', 'openrouter'];
 async function readSettings() {
   const str = (v) => (typeof v === 'string' ? v : '');
   const one = (v, list, fallback) => (list.includes(v) ? v : fallback);
-  let raw = {};
-  try { raw = JSON.parse(await fs.readFile(settingsFile(), 'utf8')) || {}; } catch { /* first run */ }
+  const raw = (await readJsonFile(settingsFile(), {}, reportDamaged)) || {};
   return {
     baseUrl: str(raw.baseUrl), model: str(raw.model), imageModel: str(raw.imageModel), speechModel: str(raw.speechModel),
     voice: str(raw.voice), apiKeyEnc: str(raw.apiKeyEnc),
@@ -299,6 +314,7 @@ function getFal() {
   fal ||= createFal({
     runBase: testUrl('STORYLOOM_TEST_FAL_RUN'),
     apiBase: testUrl('STORYLOOM_TEST_FAL_API'),
+    restBase: testUrl('STORYLOOM_TEST_FAL_REST'),
     getKey: async () => decryptSecret((await readSettings()).falKeyEnc),
     // The self-test's fake fal serves pictures from 127.0.0.1; real installs accept only fal's own hosts.
     ...(selfTest && testUrls.STORYLOOM_TEST_FAL_RUN ? { mediaHostOk: (host) => host === '127.0.0.1' } : {}),
@@ -366,7 +382,7 @@ async function aiRequest(endpoint, body, { needs, maxBytes = 2_000_000, binary =
       method: 'POST', headers, redirect: 'error', signal: AbortSignal.timeout(timeout), body: JSON.stringify({ model, ...body }),
     });
   } catch (error) {
-    throw new Error(error.name === 'TimeoutError' ? 'The AI service took too long to answer' : 'Could not reach the AI service');
+    throw new Error(error.name === 'TimeoutError' ? 'The AI service took too long to answer' : 'Could not reach the AI service', { cause: error });
   }
   if (!response.ok) throw new Error(`The AI service returned an error (HTTP ${response.status})`);
   const declared = Number(response.headers.get('content-length'));
@@ -447,6 +463,34 @@ async function generateStory(input = {}) {
 }
 
 // Writes or rewrites one chapter in the Manuscript.
+// One short picture description per page, for illustrating a whole book. Uses the writing service.
+// input: { bookTitle, style, characters: [{ name, description }], pages: [{ index, text }] }
+// → { scenes: [{ index, prompt }] } with one entry per page sent, in the same order.
+async function generateScenePrompts(input = {}) {
+  const pages = (Array.isArray(input.pages) ? input.pages : []).slice(0, 60)
+    .map((p) => ({ index: Math.max(0, Math.round(Number(p?.index) || 0)), text: clip(p?.text, 1200) }));
+  if (!pages.length) throw new Error('There are no pages to illustrate');
+  const cast = (Array.isArray(input.characters) ? input.characters : []).slice(0, 8)
+    .map((c) => `${clip(c?.name, 60) || 'Unnamed'}: ${clip(c?.description, 300) || 'no description'}`).filter(Boolean);
+  const { json } = await chatJson(
+    'You plan the illustrations for an original children\'s picture book. For each page, write one picture description (1-2 sentences): '
+      + 'who is in it, what they are doing, where, and the mood. Name characters exactly as listed. Describe only what can be drawn; no words or letters in the picture. '
+      + 'Keep the same setting details from page to page. Reply with JSON only: {"scenes": [{"index": number, "prompt": string}]}, one item per page, in order.',
+    [
+      `Book: ${clip(input.bookTitle, 200) || 'Untitled'}`,
+      input.style ? `Art style: ${clip(input.style, 100)}` : '',
+      cast.length ? `Characters:\n${cast.join('\n')}` : '',
+      `Pages:\n${pages.map((p) => `[${p.index}] ${p.text || '(no words: the title page)'}`).join('\n')}`,
+    ].filter(Boolean).join('\n'),
+    { task: 'captions', maxTokens: 4000 },
+  );
+  const byIndex = new Map((Array.isArray(json?.scenes) ? json.scenes : [])
+    .filter((s) => Number.isInteger(s?.index) && typeof s?.prompt === 'string' && s.prompt.trim())
+    .map((s) => [s.index, clip(s.prompt.trim(), 600)]));
+  // A page the AI skipped falls back to its own words, so every page still gets a picture.
+  return { scenes: pages.map((p) => ({ index: p.index, prompt: byIndex.get(p.index) || clip(p.text, 600) || clip(input.bookTitle, 200) || 'A friendly picture-book scene' })) };
+}
+
 async function generateChapter(input = {}) {
   const wordLimit = Math.min(2000, Math.max(5, Math.round(Number(input.wordLimit) || 120)));
   const language = clip(input.language, 40) || 'English';
@@ -469,25 +513,52 @@ async function generateChapter(input = {}) {
   return { text, model };
 }
 
+// Reference pictures (character portraits) from the book's own folder, to keep characters looking the same.
+// Only names of pictures in this book are accepted; at most 4, each a real image under 10 MB.
+const IMAGE_MIME = { png: 'image/png', jpg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif' };
+async function readReferences(bookId, names) {
+  if (!Array.isArray(names)) return [];
+  const out = [];
+  for (const name of [...new Set(names.filter((n) => typeof n === 'string'))].slice(0, 4)) {
+    let data;
+    try {
+      const file = store.mediaPath(bookId, name); // throws for anything that isn't a plain picture name
+      if ((await fs.stat(file)).size > 10_000_000) continue;
+      data = await fs.readFile(file);
+    } catch {
+      continue; // a missing or unusable picture just isn't sent
+    }
+    const kind = sniffImage(data.subarray(0, 16));
+    if (kind) out.push({ data, type: IMAGE_MIME[kind] });
+  }
+  return out;
+}
+const ASPECTS = new Set(['1:1', '3:4', '4:3']);
+
 // Generates a picture and stores it in the book. Returns the new asset name.
+// Optional: references (names of pictures in this book, e.g. character portraits) and aspect ('1:1', '3:4', '4:3').
 async function generateImage(input = {}) {
   const book = await store.read(input.bookId);
   const prompt = clip(input.prompt, 3000);
   if (!prompt) throw new Error('Describe the picture first');
   const style = clip(input.style, 200);
   const lineArt = Boolean(input.lineArt);
+  const aspect = ASPECTS.has(input.aspect) ? input.aspect : '1:1';
+  const references = lineArt ? [] : await readReferences(book.id, input.references);
   const fullPrompt = lineArt
     ? `Black and white line art coloring page for children, clean bold outlines, no shading, white background: ${prompt}`
-    : `Children's picture-book illustration${style ? ` in a ${style} style` : ''}: ${prompt}`;
+    : `Children's picture-book illustration${style ? ` in a ${style} style` : ''}${references.length
+      ? '. Keep each character looking exactly like their reference picture (same face, colors, and clothes)' : ''}: ${prompt}`;
   const settings = await readSettings();
   if (settings.pictures === 'openrouter') {
-    const { bytes } = await getOpenRouter().image({ prompt: fullPrompt, tier: settings.tier, lineArt, model: settings.orImageModel });
+    const { bytes } = await getOpenRouter().image({ prompt: fullPrompt, tier: settings.tier, lineArt, model: settings.orImageModel, references, aspect });
     return store.saveImageBytes(book.id, bytes);
   }
   if (settings.pictures === 'fal') {
-    const { bytes } = await getFal().image({ prompt: fullPrompt, tier: settings.tier, lineArt, model: settings.falImageModel });
+    const { bytes } = await getFal().image({ prompt: fullPrompt, tier: settings.tier, lineArt, model: settings.falImageModel, references, aspect });
     return store.saveImageBytes(book.id, bytes);
   }
+  // Your own service: the standard picture call has no reference pictures, so characters may vary.
   const { data } = await aiRequest('/images/generations', {
     prompt: fullPrompt, n: 1, size: '1024x1024', response_format: 'b64_json',
   }, { needs: 'imageModel', maxBytes: 40_000_000, timeout: 180000 });
@@ -721,6 +792,7 @@ function registerHandlers() {
   });
   handle('ai:generate', (_e, input) => generateStory(input && typeof input === 'object' ? input : {}));
   handle('ai:chapter', (_e, input) => generateChapter(input && typeof input === 'object' ? input : {}));
+  handle('ai:scene-prompts', (_e, input) => generateScenePrompts(input && typeof input === 'object' ? input : {}));
   handle('ai:image', (_e, input) => generateImage(input && typeof input === 'object' ? input : {}));
   handle('ai:speech', (_e, input) => generateSpeech(input && typeof input === 'object' ? input : {}));
   // Expected failures (not signed in, declined, no connection) come back as { error } rather than a logged exception.
@@ -815,7 +887,7 @@ async function serve(request) {
 }
 
 app.whenReady().then(async () => {
-  store = createStore(app.getPath('userData'));
+  store = createStore(app.getPath('userData'), { onDamaged: reportDamaged });
   const ses = session.defaultSession;
   // Only the microphone, only audio, only for the app's own page (Studio narration). Everything else is denied.
   const isOwnPage = (wc, url) => Boolean(win) && wc === win.webContents && typeof url === 'string' && url.startsWith('app://local/');
@@ -856,6 +928,9 @@ app.whenReady().then(async () => {
     // The self-test drives the app with simulated input (webContents.sendInputEvent). Ignore the real mouse,
     // so someone moving their pointer over the test window can't disturb a drag or click.
     win.setIgnoreMouseEvents(true);
+    // If the test window is covered or minimized, Chromium would pause animation frames and slow timers,
+    // and every $waitFor (which polls each frame) would time out. Keep the page running at full speed.
+    win.webContents.setBackgroundThrottling(false);
     try {
       await require('./selftest/index.cjs').run({ app, win, store, argv: process.argv, root: __dirname, setOpenFile: (file) => { selfTestOpenFile = file; }, useTestServices });
       cleanSelfTestData();

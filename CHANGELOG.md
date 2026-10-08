@@ -8,6 +8,24 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Changed
+
+- Updated the built-in Electron runtime to 44.7.0, which includes the latest Chromium and V8 security fixes.
+
+### Added
+
+- **Illustrate the whole book** (Designer → Pictures): Storyloom plans a picture for every page from its words, then draws them one at a time, with progress and a Stop button. Choose pages without a picture, or every picture page.
+- Characters look the same on every page: their Story builder portraits are sent as reference pictures with OpenRouter and fal.ai.
+- **Redraw this picture** on pages drawn by AI, using the same description, with no retyping.
+- AI pictures now match the book's shape (square, portrait, or landscape) when the picture model supports it.
+
+### Fixed
+
+- The last beige and peach leftovers from the old colour scheme (the Designer canvas, cover previews, layout icons, hover colours, and the toast's action link) now match the lavender theme, and text sizes, spacing, and corners follow one consistent scale.
+- Chapters written with AI and stories you import now read text the same way: `###` subheadings no longer show up as literal hash marks, and lines that wrap inside a paragraph stay one paragraph.
+- When a save fails because the disk is full, read-only, or Storyloom isn't allowed to write there, you now get a plain explanation instead of a technical error with a file path, and no leftover temporary files.
+- If your settings, profile, shelves, or character library file is ever damaged, Storyloom now keeps the damaged copy, tells you where it is, and starts fresh, instead of quietly replacing it on the next save.
+
 ## [0.6.1] - 2026-10-07
 
 ### Fixed

@@ -723,8 +723,22 @@ function pageInspector() {
       page.layout === 'text-only' || page.layout === 'blank' ? null : h('div', { class: 'tool-row' },
         h('button', { class: 'btn secondary', onclick: () => run(choosePagePicture) }, page.image ? 'Replace layout picture' : 'Choose layout picture'),
         page.image ? cropButton({ image: page.image, crop: page.crop }, (crop) => { checkpoint(); page.crop = crop; refreshPage(); renderInspector(); scheduleSave(); }) : null,
-        page.image ? h('button', { class: 'btn ghost danger', onclick: () => set('image', null) }, 'Remove') : null)),
+        ...pagePictureButtons(page),
+        page.image ? h('button', { class: 'btn ghost danger', onclick: () => { page.imagePrompt = ''; set('image', null); } }, 'Remove') : null)),
   ];
+}
+
+// Other screens add page-picture buttons here (window.pagePictureExtras), e.g. "Redraw this picture".
+window.pagePictureExtras = window.pagePictureExtras || [];
+function pagePictureButtons(page) {
+  const out = [];
+  for (const make of window.pagePictureExtras) {
+    try {
+      const node = make(state.book, page);
+      if (node instanceof Node) out.push(node);
+    } catch (error) { console.error(error); }
+  }
+  return out;
 }
 
 // The crop dialog itself lives in screens/crop.js (window.openCropDialog).
@@ -948,6 +962,7 @@ async function choosePagePicture() {
   if (!name) return;
   checkpoint();
   page.image = name;
+  page.imagePrompt = '';
   refreshPage();
   renderInspector();
   scheduleSave();

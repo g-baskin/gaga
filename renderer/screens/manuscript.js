@@ -19,16 +19,6 @@
   const chapterWords = (chapter) => chapter.blocks.reduce((n, b) => n + countWords(blockText(b)), 0);
   const limitFor = (book) => WORD_LIMITS[book.builder?.readingLevel] || WORD_LIMITS['early-reader'];
 
-  function textToBlocks(text) {
-    return String(text || '').replace(/\r\n?/g, '\n').split(/\n\s*\n|\n/).map((line) => line.trim()).filter(Boolean).map((line) => {
-      let m;
-      if ((m = /^#{1,2}\s+(.*)$/.exec(line))) return { type: line.startsWith('##') ? 'h3' : 'h2', runs: [{ text: m[1] }] };
-      if ((m = /^[-*]\s+(.*)$/.exec(line))) return { type: 'li', runs: [{ text: m[1] }] };
-      if ((m = /^>\s?(.*)$/.exec(line))) return { type: 'quote', runs: [{ text: m[1] }] };
-      return { type: 'p', runs: [{ text: line }] };
-    });
-  }
-
   // ---------- DOM <-> blocks ----------
   function renderBlock(block) {
     const runs = block.runs.filter((r) => r.text).map((r) => {

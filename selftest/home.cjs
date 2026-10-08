@@ -45,6 +45,18 @@ module.exports = async function home(ctx) {
   checks.importLi = ch[0].blocks.some((b) => b.type === 'li' && b.runs[0].text === 'one');
   checks.importTitle = imported.title === 'tale';
 
+  // One text → blocks parser (core.js) for imports and AI chapters: headings at every level, wrapped lines joined.
+  const parsed = await js(`JSON.stringify(textToBlocks('# Big Day\\n## Morning\\nPip woke up early\\nand ran outside.\\n\\n### A surprise\\n- a kite\\n> said Mum\\r\\n\\r\\nThe end.'))`);
+  checks.parserShared = parsed === JSON.stringify([
+    { type: 'h2', runs: [{ text: 'Big Day' }] },
+    { type: 'h3', runs: [{ text: 'Morning' }] },
+    { type: 'p', runs: [{ text: 'Pip woke up early and ran outside.' }] },
+    { type: 'h3', runs: [{ text: 'A surprise' }] },
+    { type: 'li', runs: [{ text: 'a kite' }] },
+    { type: 'quote', runs: [{ text: 'said Mum' }] },
+    { type: 'p', runs: [{ text: 'The end.' }] },
+  ]);
+
   // Screenshot with recent books present.
   await ctx.navigate('home');
   await ctx.assertNoMissing();

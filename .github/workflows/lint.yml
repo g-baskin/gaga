@@ -1,0 +1,31 @@
+name: Lint
+
+# Runs ESLint (eslint.config.mjs) on every push to main and every pull request.
+# Same check locally: npm run lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.x
+          cache: npm
+
+      # Electron 44 has no install script: its binary is only downloaded the first time Electron runs, so linting never fetches it.
+      - run: npm ci
+
+      - run: npm run lint

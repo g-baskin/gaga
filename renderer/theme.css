@@ -2,33 +2,90 @@
    Kelly's lavender palette: a lilac sky, deep purple ink and buttons, pink and sunny-yellow touches,
    and a wooden shelf. Loaded last, so it restyles the app on top of each screen's own layout. */
 
+/* The design tokens: the only place colours, type sizes, spacing, and radii are defined. Every CSS file uses these. */
 :root {
+  color-scheme: light;
+
+  /* Colour. Contrast pairs (measured): ink on paper 12.5:1, muted on paper 5.3:1 / panel 6.0:1 / sunk 4.9:1 / hover 5.2:1. */
   --paper: #f4f0fa;
   --panel: #ffffff;
+  --panel-soft: #f8f5ff;    /* side columns and quiet fields that sit on white */
+  --page: #ffffff;          /* a book's paper (page frames, the coloring canvas), not interface chrome */
+  --sunk: #ece6f6;          /* behind pages and covers: the Designer canvas, previews, empty covers */
+  --hover: #f3ecff;         /* hover background for rows, tiles, and icon buttons */
   --ink: #2c2458;
   --muted: #655e86;
+  --placeholder: #6b6488;   /* 5.5:1 on white */
   --line: #e4daf5;
+  --line-strong: #d9c8ff;   /* hover borders, dashed "not available" outlines, picture blocks in layout icons */
   --accent: #2a2158;        /* main buttons */
   --accent-hover: #1b153f;
   --accent-ink: #ffffff;
   --accent-soft: #efe7ff;
+  --accent-soft-hover: #e2d6ff;
   --violet: #5b4fd6;        /* links and highlights; 5.9:1 on white */
+  --violet-bright: #7c5cff; /* decoration only: the logo thread and selection bars */
   --pink: #ff8fb8;
+  --pink-soft: #ffe7f4;
   --sun: #ffd36e;
+  --sky-top: #c9b6ff;       /* the lilac sky behind Home and the sidebar */
+  --sky-mid: #eadbff;
+  --sky-low: #fff0f7;
   --teal: #3a2f86;          /* selected states: purple text on lilac, 9:1 */
   --teal-soft: #efe7ff;
+  --on-dark: #ffffff;       /* text on dark fills: main buttons, danger buttons, the toast, the read-along */
+  --on-dark-muted: #cbc3e3; /* secondary text on those fills */
+  --on-ink-link: #d9c8ff;   /* action link in the dark toast, 9.1:1 on ink */
+  --danger: #b3362b;        /* 6.0:1 on white; white on it 6.0:1 */
+  --danger-hover: #9a2c22;
+  --danger-soft: #fff7f5;   /* danger text on it 5.7:1 */
+  --warn: #7a5410;          /* on --warn-soft 6.2:1 */
+  --warn-soft: #fff4dc;
+  --guide: #e0457b;         /* Designer alignment guides and the safe-area outline */
   --wood: #b07a45;
   --wood-edge: #8a5a2e;
-  --radius: 10px;
-  --radius-control: 6px;
-  --shadow: 0 1px 0 rgba(38, 48, 74, .06), 0 6px 18px rgba(38, 48, 74, .08);
+
+  /* Type: system font for the interface, Rockwell for display. */
   --display: Rockwell, "Rockwell Nova", "Roboto Slab", Georgia, serif;
+  --text-xs: 11px;          /* badges */
+  --text-sm: 12px;          /* labels, panel headings, hints */
+  --text-md: 13px;          /* secondary text, compact controls */
+  --text-base: 14px;        /* body and controls */
+  --text-lg: 16px;          /* card and panel titles */
+  --text-xl: 18px;          /* dialog and section titles */
+  --text-2xl: 20px;         /* sub-screen titles */
+  --text-3xl: 28px;         /* screen titles */
+  --text-4xl: 40px;         /* the Home page headline */
+
+  /* Space: a 4px base, with 2px half steps for tight controls. Larger layout offsets stay as plain values. */
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+
+  /* Radius: sharp books, soft controls. Circles and pills use 50% and 999px. */
+  --radius-xs: 2px;         /* handles and tiny marks */
+  --radius-cover: 3px;      /* book covers and page frames */
+  --radius-sm: 4px;         /* badges, meters, small canvases */
+  --radius-control: 6px;    /* buttons, inputs, notes */
+  --radius: 10px;           /* cards and panels */
+  --radius-lg: 16px;        /* dialogs */
+
+  --shadow: 0 1px 0 rgba(38, 48, 74, .06), 0 6px 18px rgba(38, 48, 74, .08);
   --ease: 120ms ease-out;
 }
 
 body { background: var(--paper); }
 h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: 0; color: var(--ink); }
-::placeholder { color: #6b6488; }
+::placeholder { color: var(--placeholder); }
 :focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
 
 /* ---------- buttons ---------- */
@@ -36,34 +93,34 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: 0; c
 .btn.primary { background: var(--accent); color: var(--accent-ink); }
 .btn.primary:hover:not(:disabled) { background: var(--accent-hover); }
 .btn.secondary { background: var(--teal-soft); color: var(--teal); }
-.btn.secondary:hover:not(:disabled) { background: #e2d6ff; }
-.btn.ghost { background: var(--panel); border-color: var(--line); color: #3a2f86; }
-.btn.ghost:hover:not(:disabled) { background: #f6f0ff; border-color: #d9c8ff; }
-.icon-btn:hover { background: #f3ecff; }
+.btn.secondary:hover:not(:disabled) { background: var(--accent-soft-hover); }
+.btn.ghost { background: var(--panel); border-color: var(--line); color: var(--teal); }
+.btn.ghost:hover:not(:disabled) { background: var(--hover); border-color: var(--line-strong); }
+.icon-btn:hover { background: var(--hover); }
 
 /* ---------- sidebar navigation ---------- */
-.app-nav { background: linear-gradient(180deg, #e9ddff, #f4f0fa 60%); border-right-color: var(--line); }
-.brand { font-family: var(--display); font-weight: 700; font-size: 21px; color: var(--ink); }
+.app-nav { background: linear-gradient(180deg, var(--sky-mid), var(--paper) 60%); border-right-color: var(--line); }
+.brand { font-family: var(--display); font-weight: 700; font-size: var(--text-2xl); color: var(--ink); }
 /* The logo: a spool of thread (the "loom" in Storyloom). */
 .brand-mark {
   flex: none; width: 26px; height: 26px; border-radius: 50%;
   background:
     radial-gradient(circle, var(--sun) 0 3px, transparent 3.5px),
-    repeating-radial-gradient(circle, #7c5cff 0 2px, var(--pink) 2px 4px);
+    repeating-radial-gradient(circle, var(--violet-bright) 0 2px, var(--pink) 2px 4px);
   box-shadow: 0 0 0 2px var(--ink);
 }
 .app-nav-item { border-radius: var(--radius-control); color: var(--muted); transition: background-color var(--ease), color var(--ease); }
 .app-nav-item:hover { background: rgba(255, 255, 255, .7); color: var(--ink); }
-.app-nav-item.active { background: var(--panel); color: #3a2f86; box-shadow: inset 3px 0 0 #7c5cff, 0 1px 2px rgba(70, 46, 130, .1); font-weight: 600; }
+.app-nav-item.active { background: var(--panel); color: var(--teal); box-shadow: inset 3px 0 0 var(--violet-bright), 0 1px 2px rgba(70, 46, 130, .1); font-weight: 600; }
 
 /* ---------- book screens ---------- */
-.book-bar { background: linear-gradient(180deg, #f7f3ff, #fff); border-bottom-color: var(--line); }
+.book-bar { background: linear-gradient(180deg, var(--panel-soft), var(--panel)); border-bottom-color: var(--line); }
 .title-input { font-family: var(--display); }
-.book-tabs { background: #efe7ff; }
-.book-tab.active { background: #3a2f86; color: #fff; }
+.book-tabs { background: var(--accent-soft); }
+.book-tab.active { background: var(--teal); color: var(--on-dark); }
 
 /* ---------- Home: a lilac sky behind the page ---------- */
-.screen-home .home-main { background: linear-gradient(180deg, #c9b6ff 0%, #eadbff 22%, #fff0f7 55%, var(--paper) 100%); }
+.screen-home .home-main { background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 22%, var(--sky-low) 55%, var(--paper) 100%); }
 
 /* ---------- Home: an open notebook page ---------- */
 .home-inner { max-width: 1040px; grid-template-columns: minmax(0, 1fr); }
@@ -74,7 +131,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: 0; c
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 36px 40px 28px 64px;
+  padding: var(--space-40) var(--space-40) var(--space-24) 64px;
   box-shadow: var(--shadow);
 }
 /* The notebook margin rule: the one decorative line on the page. */
@@ -82,72 +139,72 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: 0; c
   content: ""; position: absolute; top: 0; bottom: 0; left: 40px; width: 2px;
   background: var(--pink);
 }
-.home-page h1 { font-size: 40px; line-height: 1.1; margin: 0 0 24px; max-width: 18ch; }
+.home-page h1 { font-size: var(--text-4xl); line-height: 1.1; margin: 0 0 var(--space-24); max-width: 18ch; }
 .home-page .field-label { font-weight: 600; color: var(--ink); }
 .screen-home .home-prompt {
-  margin-top: 8px;
-  font-size: 18px; line-height: 1.5;
+  margin-top: var(--space-8);
+  font-size: var(--text-xl); line-height: 1.5;
   background: transparent;
   border: 0; border-bottom: 2px solid var(--line); border-radius: 0;
-  padding: 6px 0 10px;
+  padding: var(--space-6) 0 var(--space-10);
 }
 .screen-home .home-prompt:focus { border-bottom-color: var(--ink); background: transparent; }
-.home-sparks-label { margin: 22px 0 8px; font-size: 13px; color: var(--muted); }
-.screen-home .home-chips { margin: 0 0 24px; }
+.home-sparks-label { margin: var(--space-24) 0 var(--space-8); font-size: var(--text-md); color: var(--muted); }
+.screen-home .home-chips { margin: 0 0 var(--space-24); }
 .screen-home .home-chip {
   border-radius: var(--radius-control);
-  background: #f4ecff; border: 1px solid transparent; color: #3a2f86;
+  background: var(--hover); border: 1px solid transparent; color: var(--teal);
   white-space: normal; text-align: left; line-height: 1.35;
   transition: background-color var(--ease), border-color var(--ease);
 }
-.screen-home .home-chip:hover { background: #ffe7f4; border-color: transparent; }
-.screen-home .home-star { border-radius: var(--radius-control); background: #f7f4ff; border-color: #e4daf5; }
+.screen-home .home-chip:hover { background: var(--pink-soft); border-color: transparent; }
+.screen-home .home-star { border-radius: var(--radius-control); background: var(--panel-soft); border-color: var(--line); }
 .screen-home .home-alt { border-top: 1px dashed var(--line); }
-.home-section-head h2 { font-size: 20px; }
+.home-section-head h2 { font-size: var(--text-2xl); }
 .home-recent-cover, .home-theme { border-radius: var(--radius-control); }
 .home-unavailable { background: var(--panel); border-radius: var(--radius); }
 
 /* ---------- Bookshelf: books standing on a wooden shelf ---------- */
-.bs-shelves { background: #faf8ff; border-right-color: var(--line); }
-.bs-side-title { font-family: var(--display); letter-spacing: 0; text-transform: none; font-size: 15px; color: var(--ink); }
+.bs-shelves { background: var(--panel-soft); border-right-color: var(--line); }
+.bs-side-title { font-family: var(--display); letter-spacing: 0; text-transform: none; font-size: var(--text-lg); color: var(--ink); }
 .bs-shelf { border-radius: var(--radius-control); }
-.bs-shelf:hover { background: #f3ecff; }
-.bs-shelf.active { background: #efe7ff; box-shadow: inset 3px 0 0 #7c5cff; }
-.bs-shelf.active .bs-shelf-btn, .bs-shelf.active .bs-shelf-count { color: #3a2f86; }
-.bs-title-row h1 { font-size: 30px; }
-.bs-cover { position: relative; overflow: visible; padding-bottom: 14px; background: transparent; }
+.bs-shelf:hover { background: var(--hover); }
+.bs-shelf.active { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--violet-bright); }
+.bs-shelf.active .bs-shelf-btn, .bs-shelf.active .bs-shelf-count { color: var(--teal); }
+.bs-title-row h1 { font-size: var(--text-3xl); }
+.bs-cover { position: relative; overflow: visible; padding-bottom: var(--space-16); background: transparent; }
 .bs-cover .page-frame { border-radius: 2px 3px 3px 2px; box-shadow: inset 6px 0 0 rgba(0, 0, 0, .12), 0 8px 14px -6px rgba(38, 48, 74, .35); }
 /* The shelf plank under each book. */
 .bs-cover::after {
-  content: ""; position: absolute; left: -6%; right: -6%; bottom: 0; height: 12px; border-radius: 2px;
-  background: linear-gradient(var(--wood), #9a6838);
+  content: ""; position: absolute; left: -6%; right: -6%; bottom: 0; height: 12px; border-radius: var(--radius-xs);
+  background: linear-gradient(var(--wood), #9a6838); /* the plank's shaded underside, used only here */
   box-shadow: 0 3px 0 var(--wood-edge);
   pointer-events: none;
 }
 .bs-card:active .bs-cover .page-frame { transform: translateY(-2px); }
 .bs-card-title { font-family: var(--display); font-weight: 700; }
-.bs-more:hover, .bs-more:focus-visible { background: #f3ecff; }
+.bs-more:hover, .bs-more:focus-visible { background: var(--hover); }
 
 /* ---------- Templates ---------- */
-.templates-head h1 { font-size: 32px; }
+.templates-head h1 { font-size: var(--text-3xl); }
 .templates-chip { border-radius: var(--radius-control); }
-.templates-chip.active { background: #3a2f86; color: #fff; }
+.templates-chip.active { background: var(--teal); color: var(--on-dark); }
 .templates-card { border-radius: var(--radius); transition: border-color var(--ease); }
-.templates-card:hover { border-color: #d9c8ff; }
+.templates-card:hover { border-color: var(--line-strong); }
 .templates-cover, .templates-stage { border-radius: var(--radius-control); }
 
 /* ---------- shared surfaces ---------- */
 .export-unavailable, .coloring-start, .export-details { border-radius: var(--radius); }
 .page-image.placeholder {
-  background: repeating-linear-gradient(135deg, #f6efff 0 14pt, #fff4f9 14pt 28pt);
+  background: repeating-linear-gradient(135deg, #f6efff 0 14pt, #fff4f9 14pt 28pt); /* faint stripes, only here */
   color: var(--muted);
 }
 
 /* Browser preview badge (npm run preview only). */
-html[data-preview="1"] .brand { flex-wrap: wrap; row-gap: 4px; }
+html[data-preview="1"] .brand { flex-wrap: wrap; row-gap: var(--space-4); }
 html[data-preview="1"] .brand::after {
-  content: "Preview"; padding: 1px 6px; border-radius: 4px;
-  font: 600 11px/1.6 system-ui, sans-serif; color: var(--muted); border: 1px solid var(--line);
+  content: "Preview"; padding: 1px var(--space-6); border-radius: var(--radius-sm);
+  font: 600 var(--text-xs)/1.6 system-ui, sans-serif; color: var(--muted); border: 1px solid var(--line);
 }
 
 @media (prefers-reduced-motion: reduce) {

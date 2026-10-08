@@ -7,7 +7,9 @@
 **Type.**
 - Display: Rockwell, a slab serif like the type in classic printed picture books. It ships with macOS, so it needs no download. Fallback is Georgia.
 - Body and controls: the system font, for clear, native-feeling forms.
-- Scale: 13 / 14 / 16 / 20 / 28 / 40 px.
+- Scale (`--text-*` in `renderer/theme.css`): 11 / 12 / 13 / 14 / 16 / 18 / 20 / 28 / 40 px. Body is 14; screen titles 28; the Home headline 40.
+
+**Tokens.** Every colour, type size, spacing step, and radius is a custom property in the one `:root` block in `renderer/theme.css`; other CSS files only use `var(--…)`. The few plain values left are deliberate: OpenAI's own ChatGPT button colours, two single-use decorative shades in `theme.css`, layout offsets above 48px, and negative nudges.
 
 **Colour** (Kelly's lavender palette, kept by request):
 - paper #f4f0fa and panels #ffffff; a lilac sky gradient (#c9b6ff to #eadbff to #fff0f7) behind the Home page and the sidebar.
@@ -18,9 +20,9 @@
 
 Contrast pairs (measured): ink on paper 12.5:1, muted on paper 5.3:1 and on lilac 5.5:1, white on the main button 14.4:1, purple on lilac 9.1:1, placeholder #6b6488 on white 5.5:1.
 
-**Space and density.** 4px base; 8 / 12 / 16 / 24 / 32 / 48. Comfortable, not dense.
+**Space and density.** 4px base with 2px half steps for tight controls (`--space-*`): 2 / 4 / 6 / 8 / 10 / 12 / 16 / 20 / 24 / 32 / 40 / 48. Comfortable, not dense.
 
-**Radius and material.** Flat paper with hairline borders: 6px on controls, 10px on cards, 3px on book covers (books have sharp corners). One soft shadow under books on the shelf. No glass, no blur.
+**Radius and material.** Flat paper with hairline borders: 6px on controls, 10px on cards, 16px on dialogs, 3px on book covers (books have sharp corners), 2px and 4px for handles and badges. One soft shadow under books on the shelf. No glass, no blur.
 
 **Imagery.** Only the user's real book covers. No invented art.
 

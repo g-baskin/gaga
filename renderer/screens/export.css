@@ -1,85 +1,86 @@
 /* Shared by Export, Print orders, and Account. */
 .screen-export, .screen-orders, .screen-account { overflow: auto; }
-.export-main { max-width: 920px; margin: 0 auto; padding: 32px 32px 64px; display: grid; gap: 20px; align-content: start; }
+.export-main { max-width: 920px; margin: 0 auto; padding: var(--space-32) var(--space-32) 64px; display: grid; gap: var(--space-20); align-content: start; }
 .account-main { max-width: 720px; }
-.export-head { display: grid; gap: 6px; }
-.export-head h1 { font-size: 28px; }
+.export-head { display: grid; gap: var(--space-6); }
+.export-head h1 { font-size: var(--text-3xl); }
 .export-head p { margin: 0; }
-.export-panel { display: grid; gap: 20px; }
-.export-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.export-panel { display: grid; gap: var(--space-20); }
+.export-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-16); }
 .export-card, .export-details {
   background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
-  padding: 18px 20px; display: grid; gap: 10px; align-content: start;
+  padding: var(--space-20) var(--space-20); display: grid; gap: var(--space-10); align-content: start;
 }
-.export-card h3, .export-details h3 { font-size: 16px; }
-.export-details h2 { font-size: 18px; }
+.export-card h3, .export-details h3 { font-size: var(--text-lg); }
+.export-details h2 { font-size: var(--text-xl); }
 .export-card p, .export-details p { margin: 0; }
-.export-card > .btn { justify-self: start; margin-top: 4px; }
+.export-card > .btn { justify-self: start; margin-top: var(--space-4); }
 .export-details .form { padding: 0; }
-.export-warning { background: #fff4dc; color: #7a5410; border-radius: 8px; padding: 8px 10px; font-size: 13px; }
-.export-error { color: #b2382a; font-size: 13px; min-height: 0; }
+.export-warning { background: var(--warn-soft); color: var(--warn); border-radius: var(--radius-control); padding: var(--space-8) var(--space-10); font-size: var(--text-md); }
+.export-error { color: var(--danger); font-size: var(--text-md); min-height: 0; }
 .export-error:empty { display: none; }
-.export-isbn-row { display: flex; gap: 10px; align-items: center; }
+.export-isbn-row { display: flex; gap: var(--space-10); align-items: center; }
 .export-isbn-row input { max-width: 260px; flex: 1; }
-.export-isbn-row input[aria-invalid="true"] { border-color: #b2382a; }
-.export-saved { font-size: 12px; }
+.export-isbn-row input[aria-invalid="true"] { border-color: var(--danger); }
+.export-saved { font-size: var(--text-sm); }
 .export-unavailable {
-  border: 1px dashed #d6cbbb; border-radius: 10px; background: var(--paper); padding: 10px 12px; font-size: 13px; color: var(--muted);
+  border: 1px dashed var(--line-strong); border-radius: var(--radius); background: var(--paper); padding: var(--space-10) var(--space-12); font-size: var(--text-md); color: var(--muted);
 }
 .export-unavailable strong { color: var(--ink); }
-.export-unavailable-large { padding: 20px 22px; display: grid; gap: 8px; font-size: 14px; }
-.export-unavailable-large h2 { font-size: 18px; color: var(--ink); }
+.export-unavailable-large { padding: var(--space-20) var(--space-24); display: grid; gap: var(--space-8); font-size: var(--text-base); }
+.export-unavailable-large h2 { font-size: var(--text-xl); color: var(--ink); }
 .export-unavailable-large p { margin: 0; }
-.export-checklist { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
-.export-checklist li { display: grid; gap: 2px; padding-left: 26px; position: relative; }
+.export-checklist { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-10); }
+.export-checklist li { display: grid; gap: var(--space-2); padding-left: var(--space-24); position: relative; }
 .export-checklist li::before {
   content: "✓"; position: absolute; left: 0; top: 1px; width: 18px; height: 18px; border-radius: 50%;
-  background: var(--teal-soft); color: var(--teal); font-size: 11px; display: grid; place-items: center; font-weight: 700;
+  background: var(--teal-soft); color: var(--teal); font-size: var(--text-xs); display: grid; place-items: center; font-weight: 700;
 }
 .export-start { justify-content: flex-start; }
-.export-book-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 50vh; overflow: auto; }
+.export-book-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-6); max-height: 50vh; overflow: auto; }
 .export-book-pick {
-  width: 100%; text-align: left; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); padding: 10px 12px; cursor: pointer;
+  width: 100%; text-align: left; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); padding: var(--space-10) var(--space-12); cursor: pointer;
 }
 .export-book-pick:hover { border-color: var(--teal); }
-.account-form { gap: 12px; }
+.account-form { gap: var(--space-12); }
 .account-form .form-actions { align-items: center; }
-.account-path { display: block; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 12px; overflow-wrap: anywhere; }
+.account-path { display: block; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-control); padding: var(--space-8) var(--space-10); font-size: var(--text-sm); overflow-wrap: anywhere; }
 .modal.export-modal { width: min(880px, 94vw); max-height: 90vh; }
 
 /* Account → AI services */
-.account-ai { display: grid; gap: 12px; }
+.account-ai { display: grid; gap: var(--space-12); }
 .account-ai > p { margin: 0; }
-.ai-subhead { font-size: 15px; margin: 4px 0 0; }
-.ai-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.ai-subhead { font-size: var(--text-lg); margin: var(--space-4) 0 0; }
+.ai-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-8); }
 .ai-choice {
-  position: relative; display: grid; gap: 2px; padding: 10px 12px 10px 34px; border: 1px solid var(--line); border-radius: 10px;
+  position: relative; display: grid; gap: var(--space-2); padding: var(--space-10) var(--space-12) var(--space-10) var(--space-32); border: 1px solid var(--line); border-radius: var(--radius);
   background: var(--paper); cursor: pointer;
 }
 .ai-choice input[type="radio"] { position: absolute; left: 12px; top: 13px; margin: 0; accent-color: var(--teal); }
-.ai-key-input { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--panel); }
+.ai-key-input { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: var(--radius-control); padding: var(--space-8) var(--space-10); background: var(--panel); }
 .ai-key-input:focus { border-color: var(--teal); outline: none; }
 .ai-choice:has(input:checked) { border-color: var(--teal); background: var(--teal-soft); }
 .ai-choice:has(input:focus-visible) { outline: 2px solid var(--teal); outline-offset: 2px; }
-.ai-choice-label { font-weight: 600; font-size: 14px; }
-.ai-choice-hint { font-size: 12px; color: var(--muted); line-height: 1.35; }
-.ai-media-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ai-choice-label { font-weight: 600; font-size: var(--text-base); }
+.ai-choice-hint { font-size: var(--text-sm); color: var(--muted); line-height: 1.35; }
+.ai-media-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-12); }
 .ai-status:empty { display: none; }
-.ai-panel { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 10px; background: #fffdf9; }
+.ai-panel { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--space-16) var(--space-16); display: grid; gap: var(--space-10); background: var(--panel); }
 .ai-panel p { margin: 0; }
-.ai-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.ai-badge { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: #efe8dc; color: var(--muted); white-space: nowrap; }
+.ai-panel-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-10); }
+.ai-badge { font-size: var(--text-sm); padding: var(--space-2) var(--space-8); border-radius: 999px; background: var(--sunk); color: var(--muted); white-space: nowrap; }
 .ai-badge.ok { background: var(--teal-soft); color: var(--teal); }
-.ai-badge.warn { background: #fff4dc; color: #7a5410; }
-.ai-picks ul { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 8px; }
-.ai-picks li { display: grid; grid-template-columns: 130px 1fr; column-gap: 10px; row-gap: 2px; align-items: baseline; }
-.ai-picks code { font-size: 12px; overflow-wrap: anywhere; }
-.ai-pick-job { font-size: 13px; font-weight: 600; }
+.ai-badge.warn { background: var(--warn-soft); color: var(--warn); }
+.ai-picks ul { list-style: none; margin: var(--space-6) 0 0; padding: 0; display: grid; gap: var(--space-8); }
+.ai-picks li { display: grid; grid-template-columns: 130px 1fr; column-gap: var(--space-10); row-gap: var(--space-2); align-items: baseline; }
+.ai-picks code { font-size: var(--text-sm); overflow-wrap: anywhere; }
+.ai-pick-job { font-size: var(--text-md); font-weight: 600; }
 .ai-pick-why { grid-column: 2; }
-.ai-advanced summary { cursor: pointer; font-size: 13px; color: var(--teal); }
-.ai-advanced[open] { display: grid; gap: 8px; }
+.ai-advanced summary { cursor: pointer; font-size: var(--text-md); color: var(--teal); }
+.ai-advanced[open] { display: grid; gap: var(--space-8); }
 /* "Continue with ChatGPT": OpenAI's guidance is a neutral black button with the ChatGPT name. */
-.btn.chatgpt-btn { background: #0d0d0d; color: #fff; }
+/* OpenAI's own button colours for "Continue with ChatGPT" (a third-party brand, so not Storyloom tokens). */
+.btn.chatgpt-btn { background: #0d0d0d; color: var(--on-dark); }
 .btn.chatgpt-btn:hover:not(:disabled) { background: #2b2b2b; }
-.export-modal .export-panel { padding: 16px 20px 20px; }
-.ai-fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 6px; min-width: 0; }
+.export-modal .export-panel { padding: var(--space-16) var(--space-20) var(--space-20); }
+.ai-fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: var(--space-6); min-width: 0; }

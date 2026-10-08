@@ -23,7 +23,7 @@ module.exports = async function updates(ctx) {
   // 1. A real signed update: notice, download, verify, ready to install.
   const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'storyloom-selftest-update-'));
   const server = await startUpdateServer({ version: '9.9.9', zip: await makeAppZip({ dir: tmp, version: '9.9.9' }), privateKey });
-  let staged = '';
+  let staged;
   try {
     // Without a test server, the self-test never contacts GitHub.
     await ctx.navigate('home');

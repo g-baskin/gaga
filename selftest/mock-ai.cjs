@@ -53,6 +53,11 @@ function makeWav(seconds = 1, rate = 16000) {
 // What every fake writing service answers: one chapter, or a whole story with the requested number of pages.
 function writerReply(system, user) {
   if (/one chapter/.test(system)) return JSON.stringify({ text: 'The moon hummed a quiet song.\n\nEveryone in the meadow listened.' });
+  if (/plan the illustrations/.test(system)) {
+    // One scene per "[n]" page line, naming the page so tests can tell them apart.
+    const indexes = [...user.matchAll(/^\[(\d+)\]/gm)].map((m) => Number(m[1]));
+    return JSON.stringify({ scenes: indexes.map((index) => ({ index, prompt: `Scene for page ${index}: Pip waves under a big moon.` })) });
+  }
   const count = Math.min(30, Number(/Number of pages: (\d+)/.exec(user)?.[1]) || 4);
   const star = /Characters: ([^—;\n]+)/.exec(user)?.[1]?.trim() || 'Pip';
   return `Here you go:\n${JSON.stringify({

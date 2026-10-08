@@ -250,3 +250,45 @@ test('fal.ai: no key, wrong key, empty balance, and pictures from other hosts ar
   // With the real host rule, a picture URL on any host other than fal's own is refused (plain http too).
   await assert.rejects(make('fal-test-key').image({ prompt: 'x', model: 'fal-ai/recraft/v4.1/text-to-image' }), /unexpected address/);
 });
+
+// ---------- character reference pictures ----------
+const PNG_HEAD = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13]);
+
+test('OpenRouter: with reference pictures, picks a model that accepts them and sends them with the page shape', async (t) => {
+  const server = await mocks.startOpenRouter({ key: 'sk-or-test' });
+  t.after(() => server.close());
+  const client = createOpenRouter({ baseUrl: server.url, getKey: async () => 'sk-or-test' });
+  // Balanced would normally pick Nano Banana (mock), which doesn't take references here.
+  const result = await client.image({ prompt: 'Pip waves', tier: 'balanced', references: [{ data: PNG_HEAD, type: 'image/png' }], aspect: '3:4' });
+  assert.equal(result.model, 'openai/gpt-image-mock');
+  assert.equal(result.usedReferences, true);
+  const call = server.calls.filter((c) => c.path === '/images').at(-1);
+  assert.equal(call.body.aspect_ratio, '3:4');
+  assert.equal(call.body.input_references.length, 1);
+  assert.match(call.body.input_references[0].image_url.url, /^data:image\/png;base64,/);
+  // Without references, the usual pick stays the same.
+  assert.equal((await client.image({ prompt: 'Pip waves', tier: 'balanced' })).model, 'google/gemini-nano-banana-mock');
+});
+
+test('fal.ai: with reference pictures, uploads them for an hour and uses the model’s edit form', async (t) => {
+  const server = await mocks.startFal({ key: 'fal-test-key' });
+  t.after(() => server.close());
+  const client = createFal({
+    runBase: server.runBase, apiBase: server.apiBase, restBase: server.restBase, getKey: async () => 'fal-test-key',
+    mediaHostOk: (host) => host === '127.0.0.1',
+  });
+  const result = await client.image({ prompt: 'Pip waves', tier: 'balanced', references: [{ data: PNG_HEAD, type: 'image/png' }], aspect: '4:3' });
+  assert.equal(result.model, 'fal-ai/nano-banana-2/edit');
+  assert.equal(result.usedReferences, true);
+  assert.equal(server.uploads.length, 1);
+  assert.equal(server.uploads[0].size, PNG_HEAD.length, 'the picture bytes were uploaded');
+  assert.equal(JSON.parse(server.uploads[0].lifecycle).expiration_duration_seconds, 3600, 'uploads expire after an hour');
+  const call = server.calls.find((c) => c.path === '/run/fal-ai/nano-banana-2/edit');
+  assert.equal(call.body.image_urls.length, 1);
+  assert.match(call.body.image_urls[0], /\/media\/ref-1\.png$/);
+  assert.equal(call.body.aspect_ratio, '4:3');
+  // Coloring pages never send references (they're line art from the words).
+  const lineArt = await client.image({ prompt: 'line art', tier: 'balanced', lineArt: true, references: [{ data: PNG_HEAD, type: 'image/png' }] });
+  assert.equal(lineArt.usedReferences, false);
+  assert.equal(server.uploads.length, 1);
+});

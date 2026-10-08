@@ -22,7 +22,7 @@ function createOpenRouter({ baseUrl = 'https://openrouter.ai/api/v1', getKey }) 
         method, headers, redirect: 'error', signal: AbortSignal.timeout(timeout), body: body ? JSON.stringify(body) : undefined,
       });
     } catch (error) {
-      throw new Error(error.name === 'TimeoutError' ? 'OpenRouter took too long to answer' : 'Could not reach OpenRouter');
+      throw new Error(error.name === 'TimeoutError' ? 'OpenRouter took too long to answer' : 'Could not reach OpenRouter', { cause: error });
     }
     const declared = Number(response.headers.get('content-length'));
     if (declared > maxBytes) throw new Error('OpenRouter’s answer was too large');
@@ -94,17 +94,21 @@ function createOpenRouter({ baseUrl = 'https://openrouter.ai/api/v1', getKey }) 
     return { content, model: typeof data.model === 'string' ? data.model : plan.models[0] };
   }
 
-  async function chooseImage({ tier, lineArt }) {
-    return picker.pickImageModel({ models: await catalog('/images/models'), tier, lineArt });
+  async function chooseImage({ tier, lineArt, withReferences = false }) {
+    return picker.pickImageModel({ models: await catalog('/images/models'), tier, lineArt, withReferences });
   }
 
-  async function image({ prompt, tier, lineArt, model }) {
+  // references: [{ data: Buffer, type: 'image/png' }] pictures to keep characters looking the same.
+  // aspect: '1:1' | '3:4' | '4:3'. Returns { bytes, model, usedReferences }.
+  async function image({ prompt, tier, lineArt, model, references = [], aspect = '1:1' }) {
     let plan;
     if (model) plan = { model, params: {} };
     else {
-      plan = await chooseImage({ tier, lineArt });
+      // With references, prefer a model that accepts them; if none does, draw without them.
+      plan = (references.length && await chooseImage({ tier, lineArt, withReferences: true })) || await chooseImage({ tier, lineArt });
       if (!plan) throw new Error('OpenRouter has no picture models available right now');
     }
+    const useReferences = references.length > 0 && (Boolean(model) || Boolean(plan.params?.input_references));
     // Only send optional settings the model says it supports (a typed-in model has no catalogue data, so none).
     const allowed = (name, value) => {
       const spec = plan.params?.[name];
@@ -112,14 +116,17 @@ function createOpenRouter({ baseUrl = 'https://openrouter.ai/api/v1', getKey }) 
     };
     const body = {
       model: plan.model, prompt, n: 1,
-      ...(allowed('aspect_ratio', '1:1') ? { aspect_ratio: '1:1' } : {}),
+      ...(allowed('aspect_ratio', aspect) ? { aspect_ratio: aspect } : allowed('aspect_ratio', '1:1') ? { aspect_ratio: '1:1' } : {}),
       ...(allowed('output_format', 'png') ? { output_format: 'png' } : {}),
+      ...(useReferences ? {
+        input_references: references.map((r) => ({ type: 'image_url', image_url: { url: `data:${r.type};base64,${r.data.toString('base64')}` } })),
+      } : {}),
     };
     const data = await request('/images', { method: 'POST', body, auth: true, maxBytes: 40_000_000, timeout: 240000 });
     const item = data?.data?.[0];
     if (typeof item?.b64_json !== 'string') throw new Error('OpenRouter did not return a picture');
     if (item.media_type && !/^image\/(png|jpeg|webp|gif)$/.test(item.media_type)) throw new Error('OpenRouter returned a picture format Storyloom can’t use — try another picture model');
-    return { bytes: Buffer.from(item.b64_json, 'base64'), model: plan.model };
+    return { bytes: Buffer.from(item.b64_json, 'base64'), model: plan.model, usedReferences: useReferences };
   }
 
   async function chooseSpeech({ tier, voice }) {

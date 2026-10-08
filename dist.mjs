@@ -8,13 +8,12 @@
 // The apps are ad-hoc signed (no Apple Developer account): Apple Silicon Macs refuse to run code
 // without at least that. They are not notarized, so macOS asks people to confirm the first launch.
 import { execFile } from 'node:child_process';
-import { createHash } from 'node:crypto';
-import { createReadStream } from 'node:fs';
 import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import { buildApp, readManifest, root } from './package.mjs';
+import { sha256 } from './scripts/sha256.mjs';
 
 const run = promisify(execFile);
 // Electron's name for each chip, and how the file name marks it, so people can tell which Mac each download is for.
@@ -28,11 +27,6 @@ function chosenArches() {
   return [arch];
 }
 
-async function sha256(file) {
-  const hash = createHash('sha256');
-  for await (const chunk of createReadStream(file)) hash.update(chunk);
-  return hash.digest('hex');
-}
 
 async function makeDmg({ app, arch, version, outDir }) {
   // Re-sign the whole bundle ad hoc: packaging renames and edits the app, which breaks Electron's own signature.

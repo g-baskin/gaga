@@ -2,7 +2,7 @@ name: Release
 
 # Publishes a GitHub release when a version tag (v1.2.3) is pushed:
 #   1. checks the tag matches package.json and CHANGELOG.md has that version's notes,
-#   2. runs the unit tests,
+#   2. runs the linter and the unit tests,
 #   3. builds Storyloom for Apple Silicon and Intel Macs as .dmg files and .app.zip update archives (both on
 #      one Apple Silicon runner; Storyloom has no native add-ons, so the Intel build doesn't need an Intel runner),
 #   4. signs the update archives into latest.json (the in-app updater only installs signed updates),
@@ -54,6 +54,8 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - run: npm ci
+
+      - run: npm run lint
 
       - run: npm test
 

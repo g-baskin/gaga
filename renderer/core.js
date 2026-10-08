@@ -29,6 +29,27 @@ function svg(tag, attrs, ...children) {
 
 const cleanError = (error) => String(error?.message || error).replace(/^Error invoking remote method '[^']+': (Error: )?/, '');
 const newId = () => crypto.randomUUID();
+
+// Plain or lightly marked-up text → manuscript blocks. Used for imported stories and AI-written chapters.
+// Paragraphs are separated by blank lines; the lines inside one are joined (so hard-wrapped text reads normally).
+// A line starting with "# " is a heading, "## "/"### " a subheading, "- "/"* " a list item, "> " a quote.
+function textToBlocks(text) {
+  const block = (type, line) => ({ type, runs: [{ text: line }] });
+  const blocks = [];
+  for (const para of String(text || '').replace(/\r\n?/g, '\n').split(/\n\s*\n/)) {
+    let buffer = [];
+    const flush = () => { if (buffer.length) blocks.push(block('p', buffer.join(' '))); buffer = []; };
+    for (const line of para.split('\n').map((l) => l.trim()).filter(Boolean)) {
+      let m;
+      if ((m = /^(#{1,3})\s+(.*)$/.exec(line))) { flush(); blocks.push(block(m[1].length === 1 ? 'h2' : 'h3', m[2])); }
+      else if ((m = /^[-*]\s+(.*)$/.exec(line))) { flush(); blocks.push(block('li', m[1])); }
+      else if ((m = /^>\s?(.*)$/.exec(line))) { flush(); blocks.push(block('quote', m[1])); }
+      else buffer.push(line);
+    }
+    flush();
+  }
+  return blocks;
+}
 const round2 = (n) => Math.round(n * 100) / 100;
 const mediaUrl = (bookId, name) => `app://media/${bookId}/${encodeURIComponent(name)}`;
 const dateFormat = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' });

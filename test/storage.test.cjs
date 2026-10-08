@@ -4,7 +4,9 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
-const { createStore } = require('../storage.cjs');
+const { execFile } = require('node:child_process');
+const { promisify } = require('node:util');
+const { createStore, plainFsError } = require('../storage.cjs');
 
 const PNG = Buffer.from('89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000d49444154789c6360000002000154a24f5d0000000049454e44ae426082', 'hex');
 
@@ -208,4 +210,64 @@ test('saves a profile with a default author name', async () => {
   assert.equal((await store.getProfile()).authorName, '');
   await store.saveProfile({ authorName: 'Ada', bookOrder: ['a-1', '../x'] });
   assert.deepEqual(await store.getProfile(), { authorName: 'Ada', bookOrder: ['a-1'] });
+});
+
+test('a damaged saved file is set aside and reported, never silently overwritten', async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'storyloom-unit-'));
+  const reported = [];
+  const store = createStore(root, { onDamaged: (info) => reported.push(info) });
+  await fs.writeFile(path.join(root, 'shelves.json'), '[{"id": "s1", "name": "Bedtime"');
+  assert.deepEqual(await store.listShelves(), []);
+  assert.equal(reported.length, 1);
+  assert.equal(reported[0].file, path.join(root, 'shelves.json'));
+  assert.match(path.basename(reported[0].backup), /^shelves\.json\.damaged-\d+$/);
+  assert.equal(await fs.readFile(reported[0].backup, 'utf8'), '[{"id": "s1", "name": "Bedtime"'); // kept as it was
+  await store.saveProfile({ authorName: 'Ada' }); // other saves still work
+  assert.equal((await store.getProfile()).authorName, 'Ada');
+  assert.equal(reported.length, 1);
+});
+
+test('a saved file that can’t be read is not replaced with an empty one', async () => {
+  const { root, store } = await setup();
+  await store.saveProfile({ authorName: 'Ada' });
+  const file = path.join(root, 'profile.json');
+  await fs.chmod(file, 0o000);
+  try {
+    await assert.rejects(store.getProfile(), { code: 'EACCES' });
+  } finally {
+    await fs.chmod(file, 0o600);
+  }
+  assert.equal((await store.getProfile()).authorName, 'Ada');
+});
+
+test('a failed save leaves no temporary file behind, and disk errors read as plain words', async () => {
+  const { root, store } = await setup();
+  // shelves.json can't be replaced (it's a folder), so the save fails after the temporary file was written.
+  await fs.mkdir(path.join(root, 'shelves.json', 'x'), { recursive: true });
+  await assert.rejects(store.saveShelves([{ name: 'Bedtime' }]));
+  assert.deepEqual((await fs.readdir(root)).filter((n) => n.endsWith('.tmp')), []);
+
+  for (const [code, words] of [['EACCES', /isn’t allowed/], ['EPERM', /isn’t allowed/], ['ENOSPC', /disk is full/], ['EROFS', /read-only/], ['ENOENT', /isn’t there/]]) {
+    const raw = Object.assign(new Error(`${code}: something, open '/Users/someone/Library/book.json'`), { code });
+    const plain = plainFsError(raw);
+    assert.match(plain.message, words);
+    assert.doesNotMatch(plain.message, /\/Users\//);
+    assert.equal(plain.cause, raw);
+  }
+  const other = new Error('The AI service took too long to answer');
+  assert.equal(plainFsError(other), other);
+  assert.equal(plainFsError(Object.assign(new Error('x'), { code: 'toString' })).message, 'x');
+});
+
+test('a broken font list stops Storyloom from starting instead of stripping fonts from books', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'storyloom-fonts-'));
+  await fs.copyFile(path.join(__dirname, '..', 'storage.cjs'), path.join(dir, 'storage.cjs'));
+  await fs.mkdir(path.join(dir, 'renderer', 'fonts'), { recursive: true });
+  const load = () => promisify(execFile)(process.execPath, ['-e', `require(${JSON.stringify(path.join(dir, 'storage.cjs'))})`]);
+  await fs.writeFile(path.join(dir, 'renderer', 'fonts', 'fonts.json'), '{ "fonts": [');
+  await assert.rejects(load(), /font list .* can't be read/);
+  await fs.writeFile(path.join(dir, 'renderer', 'fonts', 'fonts.json'), '{ "fonts": [] }');
+  await assert.rejects(load(), /font list .* has no fonts/);
+  await fs.copyFile(path.join(__dirname, '..', 'renderer', 'fonts', 'fonts.json'), path.join(dir, 'renderer', 'fonts', 'fonts.json'));
+  await load(); // the real list loads
 });

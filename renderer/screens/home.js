@@ -14,28 +14,7 @@
     'A pebble’s long journey from the mountains to the sea',
   ];
 
-  // ---------- plain text → manuscript ----------
-  const block = (type, text) => ({ type, runs: [{ text }] });
-
-  function textToBlocks(text) {
-    const blocks = [];
-    for (const para of text.split(/\n\s*\n/)) {
-      const lines = para.split('\n').map((l) => l.trim()).filter(Boolean);
-      if (!lines.length) continue;
-      let buffer = [];
-      const flush = () => { if (buffer.length) blocks.push(block('p', buffer.join(' '))); buffer = []; };
-      for (const line of lines) {
-        let m;
-        if ((m = /^[-*]\s+(.*)$/.exec(line))) { flush(); blocks.push(block('li', m[1])); }
-        else if ((m = /^>\s?(.*)$/.exec(line))) { flush(); blocks.push(block('quote', m[1])); }
-        else if ((m = /^###\s+(.*)$/.exec(line))) { flush(); blocks.push(block('h3', m[1])); }
-        else buffer.push(line);
-      }
-      flush();
-    }
-    return blocks;
-  }
-
+  // ---------- plain text → manuscript (textToBlocks lives in core.js) ----------
   function splitStory(raw) {
     const text = String(raw || '').replace(/\r\n?/g, '\n');
     const chapters = [];

@@ -11,7 +11,7 @@ const MAX_IMAGE = 40_000_000;
 // Where fal serves finished pictures when it doesn't return them inline.
 const FAL_MEDIA_HOST = /(^|\.)fal\.(media|ai|run)$/i;
 
-function createFal({ runBase = 'https://fal.run', apiBase = 'https://api.fal.ai/v1', getKey, mediaHostOk = (host) => FAL_MEDIA_HOST.test(host) }) {
+function createFal({ runBase = 'https://fal.run', apiBase = 'https://api.fal.ai/v1', restBase = 'https://rest.fal.ai', getKey, mediaHostOk = (host) => FAL_MEDIA_HOST.test(host) }) {
   const cache = new Map(); // url -> { at, data }
 
   async function key() {
@@ -40,7 +40,7 @@ function createFal({ runBase = 'https://fal.run', apiBase = 'https://api.fal.ai/
     try {
       response = await fetch(url, { headers, redirect: 'error', signal: AbortSignal.timeout(timeout) });
     } catch (error) {
-      throw new Error(error.name === 'TimeoutError' ? 'fal.ai took too long to answer' : 'Could not reach fal.ai');
+      throw new Error(error.name === 'TimeoutError' ? 'fal.ai took too long to answer' : 'Could not reach fal.ai', { cause: error });
     }
     const data = await response.json().catch(() => null);
     if (!response.ok) throw falError(response.status, data);
@@ -96,9 +96,14 @@ function createFal({ runBase = 'https://fal.run', apiBase = 'https://api.fal.ai/
     return values === null || values.includes(value);
   };
 
-  function body(prompt, fields) {
+  // fal names for each page shape.
+  const SIZE_NAME = { '1:1': 'square_hd', '3:4': 'portrait_4_3', '4:3': 'landscape_4_3' };
+  function body(prompt, fields, aspect = '1:1') {
     const out = { prompt };
-    if (fields.image_size && accepts(fields.image_size, 'square_hd')) out.image_size = 'square_hd';
+    const size = SIZE_NAME[aspect] || 'square_hd';
+    if (fields.image_size && accepts(fields.image_size, size)) out.image_size = size;
+    else if (fields.image_size && accepts(fields.image_size, 'square_hd')) out.image_size = 'square_hd';
+    else if (fields.aspect_ratio && accepts(fields.aspect_ratio, aspect)) out.aspect_ratio = aspect;
     else if (fields.aspect_ratio && accepts(fields.aspect_ratio, '1:1')) out.aspect_ratio = '1:1';
     if (fields.output_format && accepts(fields.output_format, 'png')) out.output_format = 'png';
     if (fields.num_images) out.num_images = 1;
@@ -146,8 +151,46 @@ function createFal({ runBase = 'https://fal.run', apiBase = 'https://api.fal.ai/
     return picker.pickFalModel({ models: await catalog(), tier, lineArt });
   }
 
-  async function image({ prompt, tier, lineArt, model }) {
+  // Picture models that take reference pictures, from fal's image-to-image list.
+  function editCatalog() {
+    const url = `${apiBase}/models?category=image-to-image&status=active&limit=100`;
+    return cached(url, async () => {
+      const data = await getJson(url);
+      return Array.isArray(data?.models) ? data.models.filter((m) => typeof m?.endpoint_id === 'string') : [];
+    });
+  }
+
+  // Uploads a reference picture to fal's storage, kept for one hour, and returns its address.
+  // (fal's models read input pictures from an address; this is the same upload fal's own client does.)
+  async function uploadReference({ data, type }, authorization) {
+    const response = await fetch(`${restBase}/storage/upload/initiate?storage_type=fal-cdn-v3`, {
+      method: 'POST', redirect: 'error', signal: AbortSignal.timeout(30000),
+      headers: { Authorization: authorization, 'Content-Type': 'application/json', 'X-Fal-Object-Lifecycle': JSON.stringify({ expiration_duration_seconds: 3600 }) },
+      body: JSON.stringify({ content_type: type, file_name: `storyloom-reference.${type.split('/')[1] || 'png'}` }),
+    }).catch(() => { throw new Error('Could not reach fal.ai'); });
+    const info = await response.json().catch(() => null);
+    if (!response.ok) throw falError(response.status, info);
+    const loopback = (u) => ['127.0.0.1', 'localhost'].includes(u.hostname);
+    let uploadUrl;
+    try { uploadUrl = new URL(info?.upload_url); } catch { throw new Error('fal.ai’s upload answer was not understood'); }
+    if (!(uploadUrl.protocol === 'https:' || (uploadUrl.protocol === 'http:' && loopback(uploadUrl))) || typeof info?.file_url !== 'string') {
+      throw new Error('fal.ai’s upload answer was not understood');
+    }
+    const put = await fetch(uploadUrl, { method: 'PUT', redirect: 'error', signal: AbortSignal.timeout(60000), headers: { 'Content-Type': type }, body: data })
+      .catch(() => { throw new Error('Could not upload the character picture to fal.ai'); });
+    if (!put.ok) throw new Error(`Could not upload the character picture to fal.ai (HTTP ${put.status})`);
+    return info.file_url;
+  }
+
+  // references: [{ data: Buffer, type }] pictures to keep characters looking the same.
+  // aspect: '1:1' | '3:4' | '4:3'. Returns { bytes, model, usedReferences }.
+  async function image({ prompt, tier, lineArt, model, references = [], aspect = '1:1' }) {
     let endpoint = model;
+    let useReferences = false;
+    if (!endpoint && references.length && !lineArt) {
+      const edit = picker.pickFalEditModel({ models: await editCatalog().catch(() => []), tier });
+      if (edit) { endpoint = edit.model; useReferences = true; }
+    }
     if (!endpoint) {
       const plan = await chooseImage({ tier, lineArt });
       if (!plan) throw new Error('fal.ai has no picture models available right now');
@@ -155,21 +198,23 @@ function createFal({ runBase = 'https://fal.run', apiBase = 'https://api.fal.ai/
     }
     const authorization = `Key ${await key()}`;
     const fields = await inputFields(endpoint);
+    if (model && references.length && fields.image_urls) useReferences = true; // a pinned model that takes references
+    const imageUrls = useReferences ? await Promise.all(references.slice(0, 4).map((r) => uploadReference(r, authorization))) : [];
     let response;
     try {
       response = await fetch(`${runBase}/${endpoint.split('/').map(encodeURIComponent).join('/')}`, {
         method: 'POST', redirect: 'error', signal: AbortSignal.timeout(300000),
         headers: { Authorization: authorization, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body(prompt, fields)),
+        body: JSON.stringify({ ...body(prompt, fields, aspect), ...(imageUrls.length ? { image_urls: imageUrls } : {}) }),
       });
     } catch (error) {
-      throw new Error(error.name === 'TimeoutError' ? 'fal.ai took too long to draw the picture' : 'Could not reach fal.ai');
+      throw new Error(error.name === 'TimeoutError' ? 'fal.ai took too long to draw the picture' : 'Could not reach fal.ai', { cause: error });
     }
     const data = await response.json().catch(() => null);
     if (!response.ok) throw falError(response.status, data);
     if (data?.has_nsfw_concepts?.[0] === true) throw new Error('fal.ai’s safety filter blocked this picture — try describing it differently');
     const first = data?.images?.[0] || data?.image;
-    return { bytes: await readImage(first?.url), model: endpoint };
+    return { bytes: await readImage(first?.url), model: endpoint, usedReferences: imageUrls.length > 0 };
   }
 
   // What would be used right now for pictures and coloring pages, for the Account screen.

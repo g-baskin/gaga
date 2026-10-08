@@ -93,8 +93,6 @@
     orTextModel: '', orImageModel: '', orSpeechModel: '',
     chatgptModel: '', claudeModel: '', claudePath: '',
   };
-  let onClose = () => {};
-  let onMenu = () => {};
 
   const summary = (book) => ({
     id: book.id, kind: book.kind, title: book.title, author: book.author, size: book.size,
@@ -201,8 +199,9 @@
     chatGptModels: () => ok([]),
     claudeStatus: () => ok({ installed: false, signedIn: false, method: '', version: '', message: previewNote }),
     openLink: () => ok(null),
-    onBeforeClose: (fn) => { onClose = fn; },
-    onMenuAction: (fn) => { onMenu = fn; },
+    // The preview never closes the window or shows the app menu, so these listeners are never called.
+    onBeforeClose: () => {},
+    onMenuAction: () => {},
     closeReady: () => {}, // nothing to flush in a browser tab
   };
 })();

@@ -115,7 +115,7 @@
           ? h('button', { type: 'button', class: 'btn chatgpt-btn', id: 'account-chatgpt-sign-in', disabled: gpt?.signingIn, onclick: signIn },
             'Continue with ChatGPT')
           : null,
-        gpt?.signingIn ? h('button', { type: 'button', class: 'btn ghost small', onclick: async () => { await api.chatGptCancel(); drawAi(); } }, 'Cancel') : null,
+        gpt?.signingIn ? h('button', { type: 'button', class: 'btn ghost small', onclick: () => run(async () => { await api.chatGptCancel(); drawAi(); }) }, 'Cancel') : null,
         signedIn ? h('button', { type: 'button', class: 'btn ghost small', id: 'account-chatgpt-usage', onclick: () => api.openLink('chatgpt-usage') }, 'Manage usage') : null,
         signedIn ? h('button', { type: 'button', class: 'btn ghost small danger', id: 'account-chatgpt-sign-out', onclick: async () => {
           if (!(await confirmDialog('Sign out of ChatGPT in Storyloom?', { confirmLabel: 'Sign out' }))) return;

@@ -16,6 +16,7 @@ Storyloom is a free, open-source Mac app for parents, teachers, and new authors.
 - **Write.** A manuscript editor with chapters and word limits that match the reading level. Ask AI to write or rewrite a chapter, or start from an outline without any AI.
 - **Design every page.** Text, shapes, stickers, your own pictures, frames, layers, cropping, and undo. Choose from 21 fonts, and start from 24 page themes or 7 starter books.
 - **Add characters.** Describe them once, give them a photo or an AI portrait, and reuse them in other books.
+- **Illustrate the whole book in one go.** Storyloom plans a picture for every page and draws them, keeping your characters looking the same from page to page. Redraw any picture you don't like.
 - **Make it talk.** Record narration for each page, add background music and tap-to-play sound buttons, then play it back as a full-screen read-along.
 - **Make coloring books.** Turn any book into outline pages, or make one from an idea, then paint with fill, brush, and eraser.
 - **Export.** PDF for screens, PDF for printing (with bleed), EPUB 3 e-books, and WAV audiobooks, with an optional ISBN and copyright page.
@@ -75,6 +76,7 @@ npm start            # run the app
 | Command | What it does |
 | --- | --- |
 | `npm test` | Unit tests |
+| `npm run test:live` | Optional checks against the real OpenRouter. Needs `OPENROUTER_TEST_API` in `scrively/.env.local`; costs a fraction of a cent |
 | `npm run self-test` | Drives every screen of the real app with mouse and keyboard events, against local stand-in services, and saves screenshots to `verification/` |
 | `npm run preview` | Opens the screens in a browser at http://127.0.0.1:4173 with sample books |
 | `npm run package` | Builds `Storyloom.app` for this Mac in `releases/` |

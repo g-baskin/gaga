@@ -18,12 +18,57 @@ const MAX_ELEMENTS = 200;
 // Font keys a book may use: the four Mac fonts plus every bundled font (renderer/fonts/fonts.json).
 // Read once, so the list always matches what the app ships.
 const FONTS = new Set(['serif', 'sans', 'rounded', 'hand', ...bundledFontKeys()]);
+// A broken list would silently strip the bundled fonts from every book on its next save, so refuse to start instead.
 function bundledFontKeys() {
+  const file = path.join(__dirname, 'renderer', 'fonts', 'fonts.json');
+  let keys;
   try {
-    const manifest = JSON.parse(require('node:fs').readFileSync(path.join(__dirname, 'renderer', 'fonts', 'fonts.json'), 'utf8'));
-    return (manifest.fonts || []).map((f) => f.key).filter((key) => typeof key === 'string' && /^[a-z0-9-]{1,32}$/.test(key));
+    const manifest = JSON.parse(require('node:fs').readFileSync(file, 'utf8'));
+    keys = (manifest.fonts || []).map((f) => f.key).filter((key) => typeof key === 'string' && /^[a-z0-9-]{1,32}$/.test(key));
+  } catch (error) {
+    throw new Error(`Storyloom's font list (${file}) can't be read. Reinstall Storyloom.`, { cause: error });
+  }
+  if (!keys.length) throw new Error(`Storyloom's font list (${file}) has no fonts. Reinstall Storyloom.`);
+  return keys;
+}
+
+// Node's file errors ("EACCES: permission denied, open '/Users/…/book.json.tmp'") mean nothing to people and show
+// private paths, so the IPC boundary in main.cjs swaps them for plain words. Any other error passes through unchanged.
+const NOT_ALLOWED = 'Storyloom isn’t allowed to change that file or folder. Check its permissions in Finder (File → Get Info), then try again';
+const DISK_FULL = 'Your disk is full. Free up some space, then try again';
+const PLAIN_FS = {
+  EACCES: NOT_ALLOWED, EPERM: NOT_ALLOWED, ENOSPC: DISK_FULL, EDQUOT: DISK_FULL,
+  EROFS: 'That disk is read-only, so Storyloom can’t save there',
+  ENOENT: 'That file isn’t there any more. It may have been moved or deleted',
+};
+function plainFsError(error) {
+  const message = typeof error?.code === 'string' && Object.hasOwn(PLAIN_FS, error.code) ? PLAIN_FS[error.code] : null;
+  return message ? new Error(message, { cause: error }) : error;
+}
+
+// Reads a small JSON file (settings, profile, shelves, characters). Missing means "not saved yet": the fallback.
+// Unreadable throws, so a later save can't replace data that is still there. Damaged JSON is moved aside to
+// <file>.damaged-<time> (never overwritten), onDamaged is told, and the fallback is used from then on.
+async function readJsonFile(file, fallback, onDamaged) {
+  let text;
+  try {
+    text = await fs.readFile(file, 'utf8');
+  } catch (error) {
+    if (error.code === 'ENOENT') return fallback;
+    throw error;
+  }
+  try {
+    return JSON.parse(text);
   } catch {
-    return [];
+    const backup = `${file}.damaged-${Date.now()}`;
+    try {
+      await fs.rename(file, backup);
+    } catch (error) {
+      if (error.code === 'ENOENT') return fallback; // Another read set it aside first.
+      throw error;
+    }
+    onDamaged?.({ file, backup });
+    return fallback;
   }
 }
 const SIZES = new Set(['square', 'portrait', 'landscape']);
@@ -149,6 +194,8 @@ function sanitizePage(page = {}) {
     layout,
     text: text(page.text, 20000),
     image: imageName(page.image),
+    // What the page's AI picture was drawn from, so it can be redrawn without retyping.
+    imagePrompt: text(page.imagePrompt, 2000),
     crop: sanitizeCrop(page.crop),
     background: color(page.background, '#ffffff'),
     color: color(page.color, '#2a2433'),
@@ -332,21 +379,24 @@ async function readHead(file, size) {
   }
 }
 
-function createStore(root) {
+function createStore(root, { onDamaged } = {}) {
   const booksDir = path.join(root, 'books');
   const bookDir = (id) => path.join(booksDir, assertId(id));
   const bookFile = (id) => path.join(bookDir(id), 'book.json');
 
   async function writeJson(file, data) {
     const temp = `${file}.${crypto.randomBytes(6).toString('hex')}.tmp`;
-    await fs.writeFile(temp, JSON.stringify(data, null, 2), { mode: 0o600 });
-    await fs.rename(temp, file); // Atomic replace: a crash never leaves a half-written book.
+    try {
+      await fs.writeFile(temp, JSON.stringify(data, null, 2), { mode: 0o600 });
+      await fs.rename(temp, file); // Atomic replace: a crash never leaves a half-written book.
+    } catch (error) {
+      await fs.rm(temp, { force: true }); // A failed save (disk full, no permission) leaves nothing behind.
+      throw error;
+    }
   }
 
   const libraryDir = path.join(root, 'characters');
-  async function readJson(file, fallback) {
-    try { return JSON.parse(await fs.readFile(file, 'utf8')); } catch { return fallback; }
-  }
+  const readJson = (file, fallback) => readJsonFile(file, fallback, onDamaged);
   const shelvesFile = path.join(root, 'shelves.json');
   const charactersFile = path.join(root, 'characters.json');
   const profileFile = path.join(root, 'profile.json');
@@ -570,7 +620,4 @@ function createStore(root) {
   };
 }
 
-module.exports = {
-  createStore, sanitizeBook, sanitizePage, sanitizeElement, sanitizeCrop, sniffAudio, sniffImage, decodeStoryText,
-  LIBRARY, READING_LEVELS, LENGTHS,
-};
+module.exports = { createStore, sanitizePage, sniffImage, plainFsError, readJsonFile, LENGTHS };

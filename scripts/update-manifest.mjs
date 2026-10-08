@@ -6,12 +6,12 @@
 // It is read from the environment only, never written to disk or printed. Every signature is checked
 // against the built-in public keys before latest.json is written, so a wrong key fails the release
 // instead of publishing updates that no copy of Storyloom would accept.
-import { createHash, createPrivateKey, sign } from 'node:crypto';
-import { createReadStream } from 'node:fs';
+import { createPrivateKey, sign } from 'node:crypto';
 import { readFile, stat, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { sha256 } from './sha256.mjs';
 
 const require = createRequire(import.meta.url);
 const { PLATFORMS, RELEASES_PAGE, signedMessage, verifySignature, TRUSTED_KEYS } = require('../updater.cjs');
@@ -19,12 +19,6 @@ const { PLATFORMS, RELEASES_PAGE, signedMessage, verifySignature, TRUSTED_KEYS }
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = path.join(root, 'releases', 'dist');
 const version = process.argv[2];
-
-async function sha256(file) {
-  const hash = createHash('sha256');
-  for await (const chunk of createReadStream(file)) hash.update(chunk);
-  return hash.digest('hex');
-}
 
 async function main() {
   if (!/^\d+\.\d+\.\d+$/.test(version || '')) throw new Error('Usage: node scripts/update-manifest.mjs <version>');

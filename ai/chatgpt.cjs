@@ -197,9 +197,9 @@ function createChatGpt({ authBase = 'https://auth.openai.com', apiBase = 'https:
     } catch (error) {
       if (UNUSABLE_REFRESH.has(error.code)) {
         await saveRecord({ ...record, accessToken: '', refreshToken: '', expiresAt: 0 });
-        throw new Error('Your ChatGPT sign-in has expired — sign in with ChatGPT again in Account');
+        throw new Error('Your ChatGPT sign-in has expired — sign in with ChatGPT again in Account', { cause: error });
       }
-      throw new Error(error.retryable ? 'Could not reach ChatGPT — check your connection' : 'Could not renew your ChatGPT sign-in — try again');
+      throw new Error(error.retryable ? 'Could not reach ChatGPT — check your connection' : 'Could not renew your ChatGPT sign-in — try again', { cause: error });
     }
   }
 
@@ -280,7 +280,7 @@ function createChatGpt({ authBase = 'https://auth.openai.com', apiBase = 'https:
         body: JSON.stringify({ model, instructions, input: [{ role: 'user', content: user }], store: false, stream: true }),
       });
     } catch (error) {
-      throw new Error(error.name === 'TimeoutError' ? 'ChatGPT took too long to answer' : 'Could not reach ChatGPT');
+      throw new Error(error.name === 'TimeoutError' ? 'ChatGPT took too long to answer' : 'Could not reach ChatGPT', { cause: error });
     }
     if (!response.ok) {
       const text = await response.text().catch(() => '');
@@ -321,4 +321,4 @@ function createChatGpt({ authBase = 'https://auth.openai.com', apiBase = 'https:
   return { signIn, cancelSignIn, signOut, status, models, respond, markWelcomed };
 }
 
-module.exports = { createChatGpt, PLAN_SCOPE };
+module.exports = { createChatGpt };

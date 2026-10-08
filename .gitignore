@@ -3,3 +3,10 @@ releases/
 # Per-run screenshot folders from `npm run self-test -- --only=...`
 verification/*/
 .DS_Store
+
+# Never commit secrets: env files and private keys (the update signing key lives outside the repo)
+.env
+.env.*
+*.pem
+*.key
+*.p12

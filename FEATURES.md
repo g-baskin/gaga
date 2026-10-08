@@ -49,7 +49,7 @@ Automatic model choice (`ai/model-picker.cjs`) picks a model per job from a budg
 | Manuscript → designer pages | ✅ | Warns before replacing page text. |
 | Designer: pages, text, shapes, stickers, pictures, frames, layers, undo, drag/resize/rotate | ✅ | |
 | Designer: image crop | ✅ | Free, square, 4:3, 3:4, 16:9. |
-| Designer: AI page illustration | ✅ AI service | "Generate a picture" in the Pictures drawer. |
+| Designer: AI page illustration | ✅ AI service | "Generate a picture" in the Pictures drawer, **Illustrate the whole book** (plans and draws every picture page), and **Redraw this picture**. Character portraits are sent as reference pictures (OpenRouter, fal.ai) so characters look the same on every page. |
 | Designer: image upscale | ⛔ | Labelled as not available. |
 | Templates catalogue + premade books | ✅ | 24 original themes in 7 categories (each with its own title + body font pairing), 7 original starter books, preview, use or apply. |
 | Fonts | ✅ | 21 fonts: 4 Mac fonts plus 17 free fonts bundled with the app (easy-reading, book, title, and handwriting). Browse them in Templates → Fonts; pick per page, per text box, and a separate title font on covers. PDFs wait for fonts to load, and e-books carry the fonts they use. |

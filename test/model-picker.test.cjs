@@ -145,3 +145,19 @@ test('fal.ai picture models: per-budget choice, newest line-art model for colori
   // An unknown model list still yields its most-used usable model.
   assert.equal(picker.pickFalModel({ models: [m('someone/new-painter')], tier: 'best' }).model, 'someone/new-painter');
 });
+
+test('pictures with characters: only models that take reference pictures', () => {
+  const or = [
+    { id: 'google/gemini-nano-banana-2.1', supported_parameters: { aspect_ratio: {} } },
+    { id: 'openai/gpt-image-2.5', supported_parameters: { aspect_ratio: {}, input_references: {} } },
+  ];
+  assert.equal(picker.pickImageModel({ models: or, tier: 'balanced' }).model, 'google/gemini-nano-banana-2.1');
+  assert.equal(picker.pickImageModel({ models: or, tier: 'balanced', withReferences: true }).model, 'openai/gpt-image-2.5');
+  assert.equal(picker.pickImageModel({ models: [or[0]], tier: 'best', withReferences: true }), null);
+  const m = (endpoint_id) => ({ endpoint_id, metadata: { status: 'active' } });
+  const fal = [m('fal-ai/nano-banana-2/edit'), m('openai/gpt-image-2.5/sunburst/edit'), m('google/nano-banana-lite/edit'), m('fal-ai/flux-lora/edit'), m('fal-ai/flux/schnell')];
+  assert.equal(picker.pickFalEditModel({ models: fal, tier: 'best' }).model, 'openai/gpt-image-2.5/sunburst/edit');
+  assert.equal(picker.pickFalEditModel({ models: fal, tier: 'balanced' }).model, 'fal-ai/nano-banana-2/edit');
+  assert.equal(picker.pickFalEditModel({ models: fal, tier: 'thrifty' }).model, 'google/nano-banana-lite/edit');
+  assert.equal(picker.pickFalEditModel({ models: [m('fal-ai/flux/schnell')], tier: 'best' }), null, 'non-edit models never qualify');
+});
