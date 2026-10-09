@@ -110,6 +110,7 @@ module.exports = async function templates(ctx) {
   await js(`$waitFor(() => document.querySelector('dialog[open] .crop-box').offsetWidth > 50).then(() => true)`);
   await ctx.click('dialog[open] [data-aspect="16-9"]');
   await ctx.click('dialog[open] [data-aspect="square"]');
+  await js('$settle()'); // the crop box is redrawn for the new shape; measure its handle once it's in place
   const corner = await ctx.centerOf('dialog[open] .crop-handle[data-dir="1,1"]');
   await ctx.drag(corner, { x: corner.x - 120, y: corner.y - 30 });
   const boxAfterDrag = await js(`(() => { const b = document.querySelector('dialog[open] .crop-box'); return { w: b.offsetWidth, h: b.offsetHeight, stage: document.querySelector('dialog[open] .crop-stage').offsetWidth }; })()`);

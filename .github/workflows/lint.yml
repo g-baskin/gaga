@@ -1,8 +1,9 @@
 name: Lint
 
-# Runs ESLint (eslint.config.mjs), the unit tests, and a build of the app on every push to main and every pull
-# request, so a broken test or a file missing from the packaged app shows up here rather than only when a release
-# tag is pushed. Same checks locally: npm run lint, npm test, npm run package + scripts/check-package.mjs
+# Runs ESLint (eslint.config.mjs), the unit tests, the Electron self-test, and a build of the app on every push to
+# main and every pull request, so a broken test, screen, or file missing from the packaged app shows up here rather
+# than only when a release tag is pushed. Same checks locally: npm run lint, npm test, npm run self-test,
+# npm run package + scripts/check-package.mjs
 
 on:
   push:
@@ -48,6 +49,34 @@ jobs:
       - run: npm ci
 
       - run: npm test
+
+  self-test:
+    # Drives the real Electron app (every screen, IPC boundaries, crash recovery) against local fake services.
+    # It uses a mock keychain and a fake microphone, so it needs no secrets or network.
+    runs-on: macos-14
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run self-test
+
+      # Screenshots of every screen (and *-failed.png for the module that failed), to see what went wrong.
+      - if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: self-test-screenshots
+          path: verification/
+          retention-days: 7
+          if-no-files-found: ignore
 
   build:
     # Builds Storyloom.app for this runner's chip (Apple Silicon), with the Electron fuses locked, and checks the

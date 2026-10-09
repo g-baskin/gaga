@@ -23,14 +23,15 @@ Storyloom is an original desktop app for making children's picture books on a Ma
 │ contextBridge → window.storyloom (api) ││
 └──────────────▲─────────────────────────┘│
 ┌──────────────┴───── renderer/ (sandboxed page) ─────────┐
-│ core.js → editor.js → app.js → data/templates.js →      │
+│ core.js → designer/*.js → editor.js → app.js →          │
+│ data/templates.js →                                      │
 │ screens/*.js (registerScreen)                            │
 └──────────────────────────────────────────────────────────┘
 ```
 
 | Layer | File | Role |
 |---|---|---|
-| Main | `main.cjs` | Window, menu, permission + network lockdown, `app://` protocol, all IPC handlers, AI calls, exports |
+| Main | `main.cjs`, `main/*.cjs` | Window, menu, permission + network lockdown, `app://` protocol, all IPC handlers; `main/` holds settings, AI calls, exports, and update state |
 | Storage | `storage.cjs` | JSON/media store with sanitizing and file sniffing ([PRD-001](../../../requirements/completed/prd-001-book-storage-data-model/prd-001-book-storage-data-model-index.md)) |
 | EPUB | `epub.cjs` | Zip + fixed-layout EPUB 3 writer |
 | AI | `ai/claude-code.cjs`, `ai/chatgpt.cjs`, `ai/openrouter.cjs`, `ai/fal.cjs`, `ai/model-picker.cjs` | Optional AI services |
@@ -38,7 +39,7 @@ Storyloom is an original desktop app for making children's picture books on a Ma
 | Bridge | `preload.cjs` | Exposes `window.storyloom` — one method per IPC channel; `soft()` unwraps `{ok}/{error}` replies |
 | Renderer | `renderer/index.html` | Loads scripts with `defer` in order (index.html); strict CSP (index.html) |
 | | `renderer/core.js` | Shared helpers (`h()` DOM builder, ids, page rendering) |
-| | `renderer/editor.js` | Designer page editor and `exportPdf` |
+| | `renderer/editor.js`, `renderer/designer/*.js` | The Designer: `editor.js` is the screen (layout and keyboard/menu listeners); `designer/` holds its model, canvas, drawers, inspector, and page operations (including `exportPdf`) |
 | | `renderer/app.js` | State, autosave, navigation, `registerScreen`, dialogs, sidebar version + update notice, `aiPictureNote` |
 | | `renderer/theme.css` | Visual design (loaded last); direction in `DESIGN.md` |
 | | `renderer/screens/*.js` | One file per screen |

@@ -99,6 +99,9 @@ module.exports = async function aiServices(ctx) {
     // ---------- OpenRouter ----------
     await ctx.click('#account-writer-openrouter');
     await until((s) => s.writer === 'openrouter');
+    // Wait for the model picks to load, as for fal.ai below: the screen redraws when they arrive, and a click
+    // measured before that redraw can miss the key field (the typed key then goes nowhere).
+    await ctx.waitFor('#account-openrouter-picks li');
     await ctx.waitFor('#account-openrouter-key');
     await ctx.click('#account-openrouter-key');
     await ctx.type('sk-or-selftest');

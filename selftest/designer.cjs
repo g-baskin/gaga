@@ -34,6 +34,7 @@ module.exports = async function designer(ctx) {
   await drag(start, { x: start.x + 90, y: start.y + 60 });
   const moved = await selected();
   checks.moved = Math.abs(moved.x - before.x - 90 / scale) < 3 && Math.abs(moved.y - before.y - 60 / scale) < 3;
+  await js('$settle()'); // the selection handles are redrawn after a move; measure them once they're in place
   const corner = await centerOf('.handle[data-dir="1,1"]');
   await drag(corner, { x: corner.x + 60, y: corner.y + 30 });
   const resized = await selected();

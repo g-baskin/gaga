@@ -4,7 +4,7 @@ title: "renderer/editor.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "renderer/editor.js"
 language: js
 depends_on:
@@ -20,6 +20,7 @@ related:
   - "[[entities/element]]"
 sources:
   - renderer/editor.js
+  - renderer/designer/
 ---
 
 # renderer/editor.js
@@ -28,7 +29,13 @@ sources:
 
 ## Overview
 
-Element factories (`textElement`, `shapeElement`, `imageElement`; renderer/editor.js), snapshot-based undo (`snapshot`/`checkpoint`/`undo`/`redo`; renderer/editor.js), `renderEditor` (renderer/editor.js), pointer interactions (`startMove`, `snapPosition`, `startResize`, `startRotate`; renderer/editor.js) and drawers (pages/text/shapes/stickers/uploads; renderer/editor.js).
+`renderer/editor.js` is the Designer screen: `renderEditor`, the drawer rail, and the keyboard, clipboard, and menu listeners (`installEditorListeners`, called by app.js once every script has loaded). The rest lives in `renderer/designer/`, loaded just before it:
+
+- `model.js`: the `editor` state, element factories (`textElement`, `shapeElement`, `imageElement`), and snapshot-based undo (`snapshot`/`checkpoint`/`undo`/`redo`).
+- `canvas.js`: drawing the page, selection, pointer interactions (`startMove`, `snapPosition`, `startResize`, `startRotate`), text editing, and element operations.
+- `drawers.js`: the pages, text, shapes, stickers, pictures, and frames drawers.
+- `inspector.js`: page and element settings and the layer list.
+- `pages.js`: page operations and `exportPdf`.
 
 ## Connections
 
@@ -43,3 +50,4 @@ Element factories (`textElement`, `shapeElement`, `imageElement`; renderer/edito
 ## Sources
 
 - `renderer/editor.js`
+- `renderer/designer/`
