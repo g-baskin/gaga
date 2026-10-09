@@ -4,54 +4,23 @@ title: "renderer/screens/orders.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-07
+updated: 2026-10-08
 path: "renderer/screens/orders.js"
 language: js
-depends_on:
-  - "[[entities/app-js]]"
-  - "[[entities/core-js]]"
-  - "[[entities/preload-cjs]]"
+last_commit_hash: "eb7001a858caffea046c3bcff873b59438da9b52"
+depends_on: []
 used_by: []
-last_commit_hash: "eb83d47"
 tested_by: []
-tags:
-  - entity
-  - module
-  - screen
-related:
-  - "[[concepts/screen-registry]]"
+related: ["[[entities/app-js]]"]
+tags: [entity, module]
 sources:
   - renderer/screens/orders.js
 ---
 
 # renderer/screens/orders.js
 
-> [!contradiction] Changed since 2add52d; see [[meta/2026-10-07-contradiction-report]].
-
-**Print orders: not available yet; points to a print-ready PDF.**
-
-## Overview
-
-Registered via `registerScreen('orders', …)` at renderer/screens/orders.js. Header comment: renderer/screens/orders.js.
-
-## IPC used
-
-- `api.listBooks` → [[entities/ipc-books-list]]
-
-## Changes since 2add52d
-
-Header now says print orders are "not available yet (needs a print partner and payments)" (renderer/screens/orders.js).
-
-## Connections
-
-- **depends_on:** [[entities/app-js]], [[entities/core-js]], [[entities/preload-cjs]]
-- **used_by:** —
-- **related:** [[concepts/screen-registry]]
-
-## History
-
-- **Created / last touched:** commit `a5dac04` by AutomationGod on 2026-10-06 (the first Storyloom commit). Scanned from the working tree, which had uncommitted changes at scan time.
+`registerScreen` exposes an app-scoped Orders screen. It explicitly says print orders are unavailable; `pickBook` loads a book to export a print-ready PDF instead. No printing partner or payment integration is implemented here.
 
 ## Sources
 
-- `renderer/screens/orders.js`
+- `renderer/screens/orders.js` (symbols cited above; manually inspected, not AST-extracted).

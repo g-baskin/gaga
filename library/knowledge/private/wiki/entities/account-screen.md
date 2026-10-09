@@ -4,69 +4,23 @@ title: "renderer/screens/account.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-07
+updated: 2026-10-08
 path: "renderer/screens/account.js"
 language: js
-depends_on:
-  - "[[entities/app-js]]"
-  - "[[entities/core-js]]"
-  - "[[entities/preload-cjs]]"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
+depends_on: []
 used_by: []
-last_commit_hash: "eb83d47"
 tested_by: []
-tags:
-  - entity
-  - module
-  - screen
-related:
-  - "[[concepts/picture-service-routing]]"
-  - "[[concepts/signed-update-channel]]"
-  - "[[concepts/screen-registry]]"
+related: ["[[entities/app-js]]", "[[entities/main-settings-cjs]]"]
+tags: [entity, module]
 sources:
   - renderer/screens/account.js
 ---
 
 # renderer/screens/account.js
 
-**Account: local profile, AI service settings, data folder, about.**
-
-## Overview
-
-Registered via `registerScreen('account', …)` at renderer/screens/account.js. Header comment: renderer/screens/account.js.
-
-## IPC used
-
-- `api.aiRecommendations` → [[entities/ipc-ai-recommendations]]
-- `api.appInfo` → [[entities/ipc-app-info]]
-- `api.chatGptCancel` → [[entities/ipc-ai-chatgpt-cancel]]
-- `api.chatGptModels` → [[entities/ipc-ai-chatgpt-models]]
-- `api.chatGptSignIn` → [[entities/ipc-ai-chatgpt-sign-in]]
-- `api.chatGptSignOut` → [[entities/ipc-ai-chatgpt-sign-out]]
-- `api.chatGptStatus` → [[entities/ipc-ai-chatgpt-status]]
-- `api.chatGptWelcomed` → [[entities/ipc-ai-chatgpt-welcomed]]
-- `api.claudeStatus` → [[entities/ipc-ai-claude-status]]
-- `api.getProfile` → [[entities/ipc-profile-get]]
-- `api.getSettings` → [[entities/ipc-settings-get]]
-- `api.openDataFolder` → [[entities/ipc-app-open-data-folder]]
-- `api.openLink` → [[entities/ipc-ai-open-link]]
-- `api.saveProfile` → [[entities/ipc-profile-save]]
-
-## Changes since 2add52d
-
-- `falPanel` (renderer/screens/account.js): fal.ai key and model fields.
-- `updatesSection(info, settings)`: version, status from `updateControls`, "Check for updates", and the [[entities/settings-checkUpdates]] checkbox.
-- Links to the source code via `openLink('source')` (AGPL notice). Registered at renderer/screens/account.js.
-
-## Connections
-
-- **depends_on:** [[entities/app-js]], [[entities/core-js]], [[entities/preload-cjs]]
-- **used_by:** —
-- **related:** [[concepts/screen-registry]]
-
-## History
-
-- **Created / last touched:** commit `a5dac04` by AutomationGod on 2026-10-06 (the first Storyloom commit). Scanned from the working tree, which had uncommitted changes at scan time.
+`profileSection` saves the local author profile. `saveAi` persists only the edited settings patch; `drawAi` loads provider status/models/recommendations in the background. Panels separate writing, pictures and voice services. `updatesSection` shares update controls with the app shell; data/log folder actions and the privacy/source links call named preload APIs. This is a local profile screen, not Storyloom cloud login.
 
 ## Sources
 
-- `renderer/screens/account.js`
+- `renderer/screens/account.js` (symbols cited above; manually inspected, not AST-extracted).

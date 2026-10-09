@@ -4,13 +4,13 @@ title: "scripts/changelog.mjs"
 entity_type: script
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 path: "scripts/changelog.mjs"
 language: js
 depends_on: []
 used_by:
   - "[[entities/release-workflow]]"
-last_commit_hash: "eb83d47"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by:
   - test/changelog.test.cjs
 tags:
@@ -43,3 +43,12 @@ CLI subcommands used by the release workflow: `check <version>` and `notes <vers
 ## Sources
 
 - `scripts/changelog.mjs`
+
+## Verified source surface (2026-10-08)
+
+Source-header scope (`scripts/changelog.mjs`):
+
+> Keeps CHANGELOG.md, package.json, and GitHub releases in step.  node scripts/changelog.mjs release 0.2.0   → moves "Unreleased" into a dated 0.2.0 section and sets the app version node scripts/changelog.mjs check 0.2.0     → fails unless package.json is 0.2.0 and the changelog has a 0.2.0 section node scripts/changelog.mjs notes 0.2.0     → prints the GitHub release notes for 0.2.0 (used by the release workflow)
+
+
+Named function declarations in `scripts/changelog.mjs`: `section`, `compare`, `release`, `notes`, `main`. This lexical list includes private helpers; it is not an export list.

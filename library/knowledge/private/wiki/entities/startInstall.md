@@ -4,15 +4,15 @@ title: "startInstall / installArgs"
 entity_type: function
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 path: "updater.cjs"
 language: js
 depends_on:
   - "[[entities/updater-cjs]]"
   - "[[entities/installTarget]]"
 used_by:
-  - "[[entities/main-cjs]]"
-last_commit_hash: "eb83d47"
+  - "[[entities/main-updates-cjs]]"
+last_commit_hash: "7d459e2d1140ffc4d9f2ab44379827342ea99b24"
 tested_by:
   - test/updater.test.cjs
 tags:
@@ -22,7 +22,7 @@ related:
   - "[[concepts/signed-update-channel]]"
 sources:
   - updater.cjs
-  - main.cjs
+  - main/updates.cjs
 ---
 
 # startInstall / installArgs
@@ -40,12 +40,12 @@ function startInstall(options) // spawn('/bin/bash', installArgs(options), { det
 
 **INSTALL_SCRIPT:** waits up to `$6` × 0.1 s (120 s by default) for the pid to exit; if it is still running, deletes the workdir and exits 1 without touching the installed app; otherwise moves the current app to `<name>.update-backup.app`; `ditto`s the staged app into place; on success deletes the backup, on failure deletes the partial copy and moves the backup back; removes the workdir; relaunches with `open` when `relaunch=1`.
 
-`installUpdate` (main.cjs) calls this, then quits through the normal close path after 200 ms so open books save first. If the app is still running 10 s after the installer stopped waiting, it discards the download and reports "Storyloom didn't close" instead of staying on "Installing…". In `--self-test` it stops before the swap and returns the staged path.
+`installUpdate` (main/updates.cjs) calls this, then quits through the normal close path after 200 ms so open books save first. If the app is still running 10 s after the installer stopped waiting, it discards the download and reports "Storyloom didn't close" instead of staying on "Installing…". In `--self-test` it stops before the swap and returns the staged path.
 
 ## Connections
 
 - **depends_on:** [[entities/updater-cjs]], [[entities/installTarget]]
-- **used_by:** [[entities/main-cjs]]
+- **used_by:** [[entities/main-updates-cjs]]
 - **related:** [[concepts/signed-update-channel]]
 
 ## History
@@ -55,4 +55,8 @@ function startInstall(options) // spawn('/bin/bash', installArgs(options), { det
 ## Sources
 
 - `updater.cjs`
-- `main.cjs`
+- `main/updates.cjs`
+
+## Ownership evidence
+
+Current caller: `main/updates.cjs` (`installUpdate`). The IPC registrations remain at `main.cjs` (`registerHandlers`).

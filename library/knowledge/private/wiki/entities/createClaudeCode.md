@@ -4,14 +4,14 @@ title: "createClaudeCode"
 entity_type: function
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "ai/claude-code.cjs"
 language: js
 depends_on: []
 used_by:
   - "[[entities/writeText]]"
-  - "[[entities/main-cjs]]"
-last_commit_hash: "a5dac04"
+  - "[[entities/main-ai-services-cjs]]"
+last_commit_hash: "798eda21d5a68570997be678147d5566173efa5b"
 tested_by: []
 tags:
   - entity
@@ -20,6 +20,7 @@ related:
   - "[[entities/settings-claudePath]]"
   - "[[entities/env-CLAUDE_CONFIG_DIR]]"
 sources:
+  - main/ai-services.cjs
   - ai/claude-code.cjs
 ---
 
@@ -42,7 +43,7 @@ Returns `{ status, ask, locate }`. `locate` uses the configured path or searches
 ## Connections
 
 - **depends_on:** —
-- **used_by:** [[entities/writeText]], [[entities/main-cjs]]
+- **used_by:** [[entities/writeText]], [[entities/main-ai-services-cjs]]
 - **related:** [[entities/settings-claudePath]], [[entities/env-CLAUDE_CONFIG_DIR]]
 
 ## History
@@ -52,3 +53,7 @@ Returns `{ status, ask, locate }`. `locate` uses the configured path or searches
 ## Sources
 
 - `ai/claude-code.cjs`
+
+## Ownership evidence
+
+AI client imports and factory calls live in `main/ai-services.cjs` imports, `main/ai-services.cjs` (`getOpenRouter`, `getFal`, `getChatGpt`, `getClaudeCode`); main composes the factory at `main.cjs` (`createAiServices` composition).

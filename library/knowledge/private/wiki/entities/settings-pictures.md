@@ -4,15 +4,15 @@ title: "settings.pictures"
 entity_type: config-key
 status: developing
 created: 2026-10-06
-updated: 2026-10-07
-path: "main.cjs"
+updated: 2026-10-08
+path: "main/settings.cjs"
 language: js
 depends_on:
   - "[[entities/settings-json]]"
 used_by:
   - "[[entities/readSettings]]"
   - "[[entities/saveSettings]]"
-last_commit_hash: "ded9f37"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by: []
 key: "pictures"
 tags:
@@ -22,7 +22,7 @@ related:
   - "[[concepts/picture-service-routing]]"
   - "[[entities/settings-json]]"
 sources:
-  - main.cjs
+  - main/settings.cjs
 ---
 
 # settings.pictures
@@ -36,11 +36,11 @@ Field of [[entities/settings-json]].
 
 Which service makes pictures.
 
-Read/coerced in [[entities/readSettings]] (`main.cjs`), validated in [[entities/saveSettings]] (`main.cjs`).
+Read/coerced in [[entities/readSettings]] (`main/settings.cjs`), validated in [[entities/saveSettings]] (`main/settings.cjs`).
 
 ## Changes since 2add52d
 
-Allowed values are now `custom`, `openrouter`, `fal` (main.cjs). See [[concepts/picture-service-routing]].
+Allowed values are now `custom`, `openrouter`, `fal` (main/settings.cjs). See [[concepts/picture-service-routing]].
 
 ## Connections
 
@@ -54,4 +54,8 @@ Allowed values are now `custom`, `openrouter`, `fal` (main.cjs). See [[concepts/
 
 ## Sources
 
-- `main.cjs`
+- `main/settings.cjs`
+
+## Source ownership
+
+Implementation moved to `main/settings.cjs` (factory-scoped symbols); IPC registration remains in `main.cjs` / `registerHandlers`. This is a source-location correction, not an inferred behavior change.

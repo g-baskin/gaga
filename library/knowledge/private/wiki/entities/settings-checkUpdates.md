@@ -4,8 +4,8 @@ title: "settings.checkUpdates"
 entity_type: config-key
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
-path: "main.cjs"
+updated: 2026-10-08
+path: "main/settings.cjs"
 language: js
 depends_on:
   - "[[entities/settings-json]]"
@@ -13,7 +13,7 @@ used_by:
   - "[[entities/readSettings]]"
   - "[[entities/saveSettings]]"
   - "[[entities/account-screen]]"
-last_commit_hash: "eb83d47"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by: []
 key: "checkUpdates"
 tags:
@@ -22,7 +22,8 @@ tags:
 related:
   - "[[concepts/signed-update-channel]]"
 sources:
-  - main.cjs
+  - main/settings.cjs
+  - main/updates.cjs
 ---
 
 # settings.checkUpdates
@@ -32,10 +33,10 @@ sources:
 Field of [[entities/settings-json]].
 
 - **Type:** boolean
-- **Default:** `true` — `raw.checkUpdates !== false` (main.cjs)
-- **Save:** only changed when the input has the key; must be exactly `true` to turn on (main.cjs). Exposed unchanged by [[entities/publicSettings]] (main.cjs).
+- **Default:** `true` — `raw.checkUpdates !== false` (main/settings.cjs)
+- **Save:** only changed when the input has the key; must be exactly `true` to turn on (main/settings.cjs). Exposed unchanged by [[entities/publicSettings]] (main/settings.cjs).
 
-When false, a background check returns `{ phase: 'idle', disabled: true }` without contacting GitHub (main.cjs). Manual checks ignore it. Toggled by the "Check for updates when Storyloom opens" checkbox in [[entities/account-screen]] (renderer/screens/account.js+).
+When false, a background check returns `{ phase: 'idle', disabled: true }` without contacting GitHub (`main/updates.cjs` / `checkForUpdate`). Manual checks ignore it. Toggled by the "Check for updates when Storyloom opens" checkbox in [[entities/account-screen]] (renderer/screens/account.js+).
 
 ## Connections
 
@@ -49,4 +50,9 @@ When false, a background check returns `{ phase: 'idle', disabled: true }` witho
 
 ## Sources
 
-- `main.cjs`
+- `main/settings.cjs` (`readSettings`, `saveSettingsNow`)
+- `main/updates.cjs` (`checkForUpdate`)
+
+## Source ownership
+
+Implementation moved to `main/settings.cjs` (factory-scoped symbols); IPC registration remains in `main.cjs` / `registerHandlers`. This is a source-location correction, not an inferred behavior change.

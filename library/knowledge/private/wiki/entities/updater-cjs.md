@@ -4,14 +4,14 @@ title: "updater.cjs"
 entity_type: module
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 path: "updater.cjs"
 language: js
 depends_on: []
 used_by:
-  - "[[entities/main-cjs]]"
+  - "[[entities/main-updates-cjs]]"
   - "[[entities/update-manifest-mjs]]"
-last_commit_hash: "eb83d47"
+last_commit_hash: "7d459e2d1140ffc4d9f2ab44379827342ea99b24"
 tested_by:
   - test/updater.test.cjs
   - selftest/updates.cjs
@@ -22,6 +22,7 @@ related:
   - "[[concepts/signed-update-channel]]"
   - "[[concepts/release-pipeline]]"
 sources:
+  - main/updates.cjs
   - updater.cjs
 ---
 
@@ -42,7 +43,7 @@ Packed into the app by [[entities/package-mjs]] (package.mjs).
 ## Connections
 
 - **depends_on:** —
-- **used_by:** [[entities/main-cjs]], [[entities/update-manifest-mjs]]
+- **used_by:** [[entities/main-updates-cjs]], [[entities/update-manifest-mjs]]
 - **related:** [[concepts/signed-update-channel]], [[concepts/release-pipeline]]
 
 ## History
@@ -52,3 +53,16 @@ Packed into the app by [[entities/package-mjs]] (package.mjs).
 ## Sources
 
 - `updater.cjs`
+
+## Verified source surface (2026-10-08)
+
+
+Named function declarations in `updater.cjs`: `isNewer`, `signedMessage`, `publicKey`, `verifySignature`, `createUpdater`, `open`, `check`, `download`, `verifyApp`, `installTarget`, `installArgs`, `startInstall`. This lexical list includes private helpers; it is not an export list.
+
+## Current responsibility boundary
+
+`createUpdater` owns check/download/app verification; `installTarget` validates the installation location, and `startInstall` launches the helper that swaps the installed bundle. User-visible state belongs to `main/updates.cjs` / `createUpdates`, not to this low-level module (`updater.cjs` / `createUpdater`, `installTarget`, `startInstall`).
+
+## Ownership evidence
+
+Current caller: `main/updates.cjs` imports. The IPC registrations remain at `main.cjs` (`registerHandlers`).

@@ -4,50 +4,23 @@ title: "renderer/screens/export.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "renderer/screens/export.js"
 language: js
-depends_on:
-  - "[[entities/app-js]]"
-  - "[[entities/core-js]]"
-  - "[[entities/preload-cjs]]"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
+depends_on: []
 used_by: []
-last_commit_hash: "a5dac04"
 tested_by: []
-tags:
-  - entity
-  - module
-  - screen
-related:
-  - "[[concepts/screen-registry]]"
+related: ["[[entities/designer-pages]]", "[[entities/main-export-cjs]]"]
+tags: [entity, module]
 sources:
   - renderer/screens/export.js
 ---
 
 # renderer/screens/export.js
 
-**Export: PDF (screen/print), fixed-layout EPUB 3, narrated WAV, ISBN + copyright page.**
-
-## Overview
-
-Registered via `registerScreen('export', …)` at renderer/screens/export.js. Header comment: renderer/screens/export.js.
-
-## IPC used
-
-- `api.exportEpub` → [[entities/ipc-books-export-epub]]
-- `api.exportWav` → [[entities/ipc-books-export-wav]]
-- `api.revealExport` → [[entities/ipc-books-reveal-export]]
-
-## Connections
-
-- **depends_on:** [[entities/app-js]], [[entities/core-js]], [[entities/preload-cjs]]
-- **used_by:** —
-- **related:** [[concepts/screen-registry]]
-
-## History
-
-- **Created / last touched:** commit `a5dac04` by AutomationGod on 2026-10-06 (the first Storyloom commit). Scanned from the working tree, which had uncommitted changes at scan time.
+`buildEpubInput` serializes page XHTML and supplies font keys, not arbitrary font paths. `pdf` delegates to shared `exportPdf`; `wav` decodes narration/music, mixes an OfflineAudioContext and calls `api.exportWav` with `encodeWav` output. `isbnError` validates ISBN; `copyrightPage` adds optional copyright content. This screen registers as book-scoped export.
 
 ## Sources
 
-- `renderer/screens/export.js`
+- `renderer/screens/export.js` (symbols cited above; manually inspected, not AST-extracted).

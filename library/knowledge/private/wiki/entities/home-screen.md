@@ -4,55 +4,23 @@ title: "renderer/screens/home.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-07
+updated: 2026-10-08
 path: "renderer/screens/home.js"
 language: js
-depends_on:
-  - "[[entities/app-js]]"
-  - "[[entities/core-js]]"
-  - "[[entities/preload-cjs]]"
+last_commit_hash: "eb7001a858caffea046c3bcff873b59438da9b52"
+depends_on: []
 used_by: []
-last_commit_hash: "3312b4e"
 tested_by: []
-tags:
-  - entity
-  - module
-  - screen
-related:
-  - "[[concepts/screen-registry]]"
+related: ["[[entities/app-js]]", "[[entities/core-js]]"]
+tags: [entity, module]
 sources:
   - renderer/screens/home.js
 ---
 
 # renderer/screens/home.js
 
-**Home: start from an idea, import a manuscript, recent books.**
-
-## Overview
-
-Registered via `registerScreen('home', …)` at renderer/screens/home.js. Header comment: renderer/screens/home.js.
-
-## IPC used
-
-- `api.createBook` → [[entities/ipc-books-create]]
-- `api.getProfile` → [[entities/ipc-profile-get]]
-- `api.importStoryText` → [[entities/ipc-import-story-text]]
-- `api.listBooks` → [[entities/ipc-books-list]]
-
-## Changes since 2add52d
-
-Restyled for the picture-book design; new books take `authorName` from the profile (renderer/screens/home.js); registered at :175.
-
-## Connections
-
-- **depends_on:** [[entities/app-js]], [[entities/core-js]], [[entities/preload-cjs]]
-- **used_by:** —
-- **related:** [[concepts/screen-registry]]
-
-## History
-
-- **Created / last touched:** commit `a5dac04` by AutomationGod on 2026-10-06 (the first Storyloom commit). Scanned from the working tree, which had uncommitted changes at scan time.
+`splitStory` converts imported text to chapter blocks; `importStory` uses `api.importStoryText`, the local profile and `api.createBook`. `render` distinguishes a failed library read from an empty library. `hero`, `recent` and `templates` provide entry points, and `registerScreen` registers the app-scoped home screen.
 
 ## Sources
 
-- `renderer/screens/home.js`
+- `renderer/screens/home.js` (symbols cited above; manually inspected, not AST-extracted).

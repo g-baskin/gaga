@@ -4,13 +4,13 @@ title: "scripts/preview.mjs"
 entity_type: script
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 path: "scripts/preview.mjs"
 language: js
 depends_on:
   - "[[entities/preview-boot-js]]"
 used_by: []
-last_commit_hash: "3312b4e"
+last_commit_hash: "dec43bdfdf6e578945857dc98c7e782dee8ee022"
 tested_by: []
 tags:
   - entity
@@ -44,3 +44,12 @@ Added by Kelly's commit `99aea2b` ("browser preview"); script `preview` in packa
 ## Sources
 
 - `scripts/preview.mjs`
+
+## Verified source surface (2026-10-08)
+
+Source-header scope (`scripts/preview.mjs`):
+
+> Serves the Storyloom screens in a browser. Electron's index.html is left alone. This server adds preview-boot.js only to the copy it sends, so the desktop app still talks to preload.cjs.
+
+
+Named function declarations in `scripts/preview.mjs`: `fileFor`. This lexical list includes private helpers; it is not an export list.

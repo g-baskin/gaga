@@ -4,15 +4,15 @@ title: "publicSettings"
 entity_type: function
 status: developing
 created: 2026-10-06
-updated: 2026-10-07
-path: "main.cjs"
+updated: 2026-10-08
+path: "main/settings.cjs"
 language: js
 depends_on:
   - "[[entities/settings-json]]"
 used_by:
   - "[[entities/ipc-settings-get]]"
   - "[[entities/saveSettings]]"
-last_commit_hash: "eb83d47"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by: []
 tags:
   - entity
@@ -20,14 +20,14 @@ tags:
 related:
   - "[[concepts/secret-storage]]"
 sources:
-  - main.cjs
+  - main/settings.cjs
 ---
 
 # publicSettings
 
 ## Overview
 
-Defined in `main.cjs`.
+Defined inside `createSettings` in `main/settings.cjs` (`publicSettings`). Exported on the factory result (`main/settings.cjs` (`createSettings` return value)); `settings:get` remains registered in `main.cjs` (`registerHandlers`).
 
 ## Signature
 
@@ -37,11 +37,11 @@ const publicSettings = (s) => (
 
 ## Behavior
 
-Projection of settings sent to the page: replaces `apiKeyEnc`/`openrouterKeyEnc` with booleans `hasKey`/`hasOpenrouterKey`.
+Projection of settings sent to the page: replaces encrypted key values with `hasKey`, `hasOpenrouterKey` and `hasFalKey` booleans (`main/settings.cjs` (`publicSettings`)).
 
 ## Changes since 2add52d
 
-In main.cjs. Exposes `hasFalKey`, `falImageModel`, `checkUpdates`.
+In main/settings.cjs. Exposes `hasFalKey`, `falImageModel`, `checkUpdates`.
 
 ## Connections
 
@@ -55,4 +55,4 @@ In main.cjs. Exposes `hasFalKey`, `falImageModel`, `checkUpdates`.
 
 ## Sources
 
-- `main.cjs`
+- `main/settings.cjs`

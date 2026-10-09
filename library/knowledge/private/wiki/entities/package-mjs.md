@@ -1,53 +1,26 @@
 ---
 type: entity
-title: "package.mjs"
+title: "package-mjs"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-07
+updated: 2026-10-08
 path: "package.mjs"
 language: js
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 depends_on: []
 used_by: []
-last_commit_hash: "eb83d47"
 tested_by: []
-tags:
-  - entity
-  - module
-related:
-  - "[[concepts/release-pipeline]]"
-  - "[[entities/dist-mjs]]"
-  - "[[concepts/self-test-harness]]"
+related: ["[[entities/scripts-check-package-mjs]]", "[[entities/dist-mjs]]"]
+tags: [entity, module]
 sources:
   - package.mjs
 ---
 
-# package.mjs
+# package-mjs
 
-**Builds the Mac app; shared by the disk-image and release tooling.**
+`buildApp` packages macOS only, with bundle ID `local.storyloom.app`, version from `readManifest`, and asar enabled. The exact top-level allow-list is `keep`: package.json, main.cjs, preload.cjs, storage.cjs, epub.cjs, updater.cjs, log.cjs and LICENSE. It additionally admits renderer/, ai/ and main/ recursively; `DEV_ONLY` excludes renderer/preview-boot.js even inside renderer.
 
-## Overview
+`RUNTIME_NOTICES` are copied into the app, checked by `checkRuntimeNotices`, and `lockFuses` applies `FUSES` after packaging. Node execution, NODE_OPTIONS and inspector arguments are disabled; cookie encryption, asar integrity validation and loading only from asar are enabled. `dist.mjs` calls `buildApp` for each chip; [[entities/scripts-check-package-mjs]] checks runtime-file reachability separately.
 
-Build/packaging script (`npm run package`). Exports `buildApp({ arch, out, quiet })`, which runs `@electron/packager` for macOS with only the app files (`main.cjs`, `preload.cjs`, `storage.cjs`, `epub.cjs`, `renderer/`, `ai/`), plus `readManifest()` and `root`. Run directly, it builds `Storyloom.app` for this Mac under `releases/`.
-
-`dist.mjs` (`npm run dist`) reuses `buildApp` to build both an Intel (`x64`) and an Apple Silicon (`arm64`) app, ad-hoc signs each with `codesign`, checks the chip with `lipo`, and wraps each in a drag-to-Applications disk image with `hdiutil`: `releases/dist/Storyloom_<version>_Intel_x64.dmg` and `Storyloom_<version>_Apple-Silicon_arm64.dmg`, plus `SHA256SUMS.txt`. The apps are not notarized.
-
-Releases: `scripts/changelog.mjs` moves `CHANGELOG.md`'s Unreleased notes into a version section (`npm run release -- X.Y.Z`), and `.github/workflows/release.yml` builds both disk images on a pushed `vX.Y.Z` tag and publishes a GitHub release using that section as the notes.
-
-## Changes since 2add52d
-
-`keep` now also includes `/updater.cjs` and `/LICENSE` (package.mjs). Packaging steps for both chips live in [[entities/dist-mjs]].
-
-## Connections
-
-- **depends_on:** —
-- **used_by:** —
-- **related:** [[concepts/self-test-harness]]
-
-## History
-
-- **Created / last touched:** commit `a5dac04` by AutomationGod on 2026-10-06 (the first Storyloom commit). Scanned from the working tree, which had uncommitted changes at scan time.
-
-## Sources
-
-- `package.mjs`
+Source: `package.mjs` / `keep`, `DEV_ONLY`, `FUSES`, `buildApp`.

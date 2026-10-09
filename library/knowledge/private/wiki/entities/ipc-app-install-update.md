@@ -4,7 +4,7 @@ title: "IPC app:install-update"
 entity_type: service
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 path: "main.cjs"
 language: js
 depends_on:
@@ -14,7 +14,7 @@ used_by:
   - "[[entities/preload-cjs]]"
   - "[[entities/app-js]]"
   - "[[entities/account-screen]]"
-last_commit_hash: "eb83d47"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by: []
 channel: "app:install-update"
 tags:
@@ -24,6 +24,7 @@ related:
   - "[[entities/ipc-channels]]"
   - "[[concepts/signed-update-channel]]"
 sources:
+  - main/updates.cjs
   - main.cjs
   - preload.cjs
 ---
@@ -32,9 +33,9 @@ sources:
 
 **IPC channel app:install-update (in-app updates).**
 
-IPC channel `app:install-update`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Runs `installUpdate()` (main.cjs): requires phase `ready`; [[entities/installTarget]] then [[entities/startInstall]], then quits. Self-test stops before the swap.
+IPC channel `app:install-update`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Runs `installUpdate()` (`main/updates.cjs`): requires phase `ready`; [[entities/installTarget]] then [[entities/startInstall]], then quits. Self-test stops before the swap.
 
-States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (main.cjs), always with `current` = app version.
+States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (`main/updates.cjs`), always with `current` = app version.
 
 ## Renderer side
 
@@ -54,3 +55,7 @@ States shared with the page: `idle | checking | up-to-date | available | downloa
 
 - `main.cjs`
 - `preload.cjs`
+
+## Ownership evidence
+
+Handler registration remains `main.cjs` (`registerHandlers`); state/operation implementation is `main/updates.cjs` (`installUpdate`). State pushes include the current version (`main/updates.cjs` (`setUpdateState`)).

@@ -33,12 +33,12 @@ Only microphone (audio-only media) for the app's own page; everything else denie
 Imported files are identified by magic bytes, not extension (storage.cjs). Limits: pictures 25 MB, sounds 100 MB, story text 2 MB strict UTF-8, WAV export 1 GB with RIFF/WAVE check. Asset writes use `wx` (never overwrite).
 
 ## Stored data sanitizing
-All JSON is sanitized on read and write; Manuscript text is structured blocks, never HTML. EPUB export rejects `<script`, `on…=` handlers, `javascript:`, and CSS `@import`/non-book `url()` (main.cjs).
+Book and supporting library data pass storage allow-lists on load/save; this is not a claim that every JSON file in the application has the same schema. Manuscript text is structured blocks, never HTML. EPUB export checks page bodies for `<script`, `on…=` handlers and `javascript:`, and rejects CSS `@import`/non-book `url()` (`main/export.cjs`, `exportEpub`). Images are collected only through validated book asset paths, and fonts only from the bundled manifest. These are specific checks, not a general-purpose HTML sanitizer.
 
 ## Secrets
-- API keys (custom service, OpenRouter, fal.ai) are encrypted with Electron `safeStorage` (macOS keychain) and stored base64 in `settings.json`; files written atomically with mode 0600 (main.cjs).
+- API keys (custom service, OpenRouter, fal.ai) are encrypted with Electron `safeStorage` (macOS keychain) and stored base64 in `settings.json`; files replaced through mode-0600 temporary writes (`main/settings.cjs`, `writePrivate`).
 - The ChatGPT sign-in record is encrypted as a whole in `chatgpt.json`.
-- The page only gets `hasKey`/`hasOpenrouterKey`/`hasFalKey` booleans (`publicSettings`, main.cjs).
+- The page only gets `hasKey`/`hasOpenrouterKey`/`hasFalKey` booleans (`publicSettings`, `main/settings.cjs`).
 - Claude Code: Storyloom never reads Claude's credentials; it runs `claude -p` with tools, settings, MCP and slash commands off, in an empty folder, with a minimal environment.
 
 ## AI request limits
@@ -51,6 +51,8 @@ Updates install only if `latest.json` carries an Ed25519 signature from a key in
 `--self-test` uses a temp data folder, mock keychain, fake microphone, and fake service URLs (including a local signed update feed and test key); `useTestServices` throws outside the self-test.
 
 ## Known limits
-The app is ad-hoc signed, not notarized. AI integrations were tested only against local fakes.
+The app is ad-hoc signed, not notarized. Local-fake unit/self-tests and opt-in live OpenRouter tests both exist; their presence is not evidence of a current live-service pass. No provider/authentication, update-install or packaged-app checks were run in this documentation refresh. Apple Silicon packaged-app manual acceptance is still pending for the prepared 0.7.0 release.
+
+`package.mjs` locks Electron fuses to disallow Node/inspector escape hatches and loads the packaged app only from its integrity-checked ASAR. `main.cjs` maps known disk errors to path-free messages at IPC boundaries. Diagnostic logs remain local, but can contain private context; review them before sharing. See [Development and verification](../development/development-and-verification.md) for CI and test boundaries.
 
 Related: [System overview](../architecture/system-overview.md) · [Data folder](../data/data-folder.md)

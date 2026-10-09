@@ -4,49 +4,23 @@ title: "renderer/screens/manuscript.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "renderer/screens/manuscript.js"
 language: js
-depends_on:
-  - "[[entities/app-js]]"
-  - "[[entities/core-js]]"
-  - "[[entities/preload-cjs]]"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
+depends_on: []
 used_by: []
-last_commit_hash: "a5dac04"
 tested_by: []
-tags:
-  - entity
-  - module
-  - screen
-related:
-  - "[[concepts/screen-registry]]"
+related: ["[[entities/app-js]]", "[[entities/core-js]]"]
+tags: [entity, module]
 sources:
   - renderer/screens/manuscript.js
 ---
 
 # renderer/screens/manuscript.js
 
-**Manuscript: chapters + rich-text editor stored as structured blocks (never HTML).**
-
-## Overview
-
-Registered via `registerScreen('manuscript', …)` at renderer/screens/manuscript.js. Header comment: renderer/screens/manuscript.js.
-
-## IPC used
-
-- `api.generateChapter` → [[entities/ipc-ai-chapter]]
-- `api.saveBook` → [[entities/ipc-books-save]]
-
-## Connections
-
-- **depends_on:** [[entities/app-js]], [[entities/core-js]], [[entities/preload-cjs]]
-- **used_by:** —
-- **related:** [[concepts/screen-registry]]
-
-## History
-
-- **Created / last touched:** commit `a5dac04` by AutomationGod on 2026-10-06 (the first Storyloom commit). Scanned from the working tree, which had uncommitted changes at scan time.
+`renderBlock`, `collectRuns` and `parseEditor` translate structured blocks to/from the editing DOM rather than storing HTML. `wireEditor` handles pasted/dropped plain text; `wordsAllowed` enforces chapter limits. `writeWithAi` calls `api.generateChapter`; `layOut` saves page layout and applies a chosen theme. `leave` flushes screen editing state.
 
 ## Sources
 
-- `renderer/screens/manuscript.js`
+- `renderer/screens/manuscript.js` (symbols cited above; manually inspected, not AST-extracted).

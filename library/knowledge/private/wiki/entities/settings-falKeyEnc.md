@@ -4,15 +4,15 @@ title: "settings.falKeyEnc"
 entity_type: config-key
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
-path: "main.cjs"
+updated: 2026-10-08
+path: "main/settings.cjs"
 language: js
 depends_on:
   - "[[entities/settings-json]]"
 used_by:
   - "[[entities/readSettings]]"
   - "[[entities/saveSettings]]"
-last_commit_hash: "ded9f37"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by: []
 key: "falKeyEnc"
 tags:
@@ -22,7 +22,7 @@ related:
   - "[[entities/settings-json]]"
   - "[[entities/fal-cjs]]"
 sources:
-  - main.cjs
+  - main/settings.cjs
 ---
 
 # settings.falKeyEnc
@@ -36,7 +36,7 @@ Encrypted fal.ai key; exposed as `hasFalKey`. Set by `falKey`, cleared by `clear
 
 ## Changes since 2add52d
 
-Read at main.cjs, written at main.cjs, exposed as `hasFalKey` at main.cjs.
+Read at main/settings.cjs, written at main/settings.cjs, exposed as `hasFalKey` at main/settings.cjs.
 
 ## Connections
 
@@ -50,4 +50,8 @@ Read at main.cjs, written at main.cjs, exposed as `hasFalKey` at main.cjs.
 
 ## Sources
 
-- `main.cjs` (`readSettings`, `saveSettingsNow`, `publicSettings`)
+- `main/settings.cjs` (`readSettings`, `saveSettingsNow`, `publicSettings`)
+
+## Source ownership
+
+Implementation moved to `main/settings.cjs` (factory-scoped symbols); IPC registration remains in `main.cjs` / `registerHandlers`. This is a source-location correction, not an inferred behavior change.

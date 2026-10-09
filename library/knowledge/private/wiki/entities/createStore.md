@@ -4,14 +4,14 @@ title: "createStore"
 entity_type: function
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "storage.cjs"
 language: js
 depends_on:
   - "[[entities/sanitizeBook]]"
 used_by:
   - "[[entities/main-cjs]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "798eda21d5a68570997be678147d5566173efa5b"
 tested_by:
   - test/storage.test.cjs
 tags:
@@ -25,6 +25,15 @@ sources:
 ---
 
 # createStore
+
+> [!stale] Prior description retained below
+> The prior signature was createStore(root). This is not the current contract.
+
+> [!contradiction] Verified correction 2026-10-08
+> The signature is createStore(root, { onDamaged, onUnreadableBook } = {}); list caches summaries against mtime/size/inode, bounds concurrent reads, and reports unreadable existing books without deleting them. Evidence: `storage.cjs` / `createStore`, `list`. See [[meta/2026-10-08-contradiction-report]].
+
+## Prior scan / historical description
+
 
 ## Overview
 

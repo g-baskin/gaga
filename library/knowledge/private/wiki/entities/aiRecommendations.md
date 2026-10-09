@@ -4,8 +4,8 @@ title: "aiRecommendations"
 entity_type: function
 status: developing
 created: 2026-10-06
-updated: 2026-10-07
-path: "main.cjs"
+updated: 2026-10-08
+path: "main/ai-services.cjs"
 language: js
 depends_on:
   - "[[entities/readSettings]]"
@@ -14,7 +14,7 @@ depends_on:
   - "[[entities/pickChatGptModel]]"
 used_by:
   - "[[entities/ipc-ai-recommendations]]"
-last_commit_hash: "eb83d47"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by: []
 tags:
   - entity
@@ -22,14 +22,14 @@ tags:
 related:
   - "[[concepts/ai-provider-routing]]"
 sources:
-  - main.cjs
+  - main/ai-services.cjs
 ---
 
 # aiRecommendations
 
 ## Overview
 
-Defined in `main.cjs`.
+Defined in `main/ai-services.cjs`.
 
 ## Signature
 
@@ -43,7 +43,7 @@ Rows `{job, model, fallbacks, reason}` describing which model each job will use 
 
 ## Changes since 2add52d
 
-In main.cjs. Adds rows for fal.ai pictures (main.cjs).
+In main/ai-services.cjs. Adds rows for fal.ai pictures (main/ai-services.cjs).
 
 ## Connections
 
@@ -57,4 +57,8 @@ In main.cjs. Adds rows for fal.ai pictures (main.cjs).
 
 ## Sources
 
-- `main.cjs`
+- `main/ai-services.cjs`
+
+## Source ownership
+
+Implementation moved to `main/ai-services.cjs` (factory-scoped symbols); IPC registration remains in `main.cjs` / `registerHandlers`. This is a source-location correction, not an inferred behavior change.

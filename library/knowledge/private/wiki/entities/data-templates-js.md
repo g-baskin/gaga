@@ -4,7 +4,7 @@ title: "renderer/data/templates.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "renderer/data/templates.js"
 language: js
 depends_on: []
@@ -13,7 +13,7 @@ used_by:
   - "[[entities/manuscript-screen]]"
   - "[[entities/home-screen]]"
   - "[[entities/story-builder-screen]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "798eda21d5a68570997be678147d5566173efa5b"
 tested_by: []
 tags:
   - entity
@@ -45,3 +45,8 @@ Exposes `{ themes, starters, categories, applyTheme, bookFromTemplate }` on `win
 ## Sources
 
 - `renderer/data/templates.js`
+
+## Verified source surface (2026-10-08)
+
+
+Named function declarations in `renderer/data/templates.js`: `decorations`, `stylePage`, `themedPage`, `coverInput`, `pageInput`, `applyTheme`, `bookFromTemplate`. This lexical list includes private helpers; it is not an export list.

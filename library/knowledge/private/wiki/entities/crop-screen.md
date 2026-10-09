@@ -4,52 +4,23 @@ title: "renderer/screens/crop.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-07
+updated: 2026-10-08
 path: "renderer/screens/crop.js"
 language: js
-depends_on:
-  - "[[entities/app-js]]"
-  - "[[entities/core-js]]"
-  - "[[entities/preload-cjs]]"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
+depends_on: []
 used_by: []
-last_commit_hash: "ded9f37"
 tested_by: []
-tags:
-  - entity
-  - module
-  - screen
-related:
-  - "[[concepts/screen-registry]]"
+related: ["[[entities/designer-drawers]]", "[[entities/designer-inspector]]"]
+tags: [entity, module]
 sources:
   - renderer/screens/crop.js
 ---
 
 # renderer/screens/crop.js
 
-**Picture crop dialog (`window.openCropDialog`) and the "Generate a picture" Pictures-drawer extra.**
-
-## Overview
-
-Does not call `registerScreen`; it installs dialog helpers used by other screens. Header comment: renderer/screens/crop.js.
-
-## IPC used
-
-- `api.generateImage` → [[entities/ipc-ai-image]]
-
-## Changes since 2add52d
-
-The Generate dialog shows `aiPictureNote` and disables Generate until pictures are set up (renderer/screens/crop.js); comment names OpenRouter, fal.ai, or own service.
-
-## Connections
-
-- **depends_on:** [[entities/app-js]], [[entities/core-js]], [[entities/preload-cjs]]
-- **used_by:** —
-- **related:** [[concepts/screen-registry]]
-
-## History
-
-- **Created / last touched:** commit `a5dac04` by AutomationGod on 2026-10-06 (the first Storyloom commit). Scanned from the working tree, which had uncommitted changes at scan time.
+`openCropDialog` edits fractional image coordinates with aspect constraints and passes the chosen crop to its callback. `openGenerateDialog` calls `api.generateImage`; the file exposes `window.openCropDialog` and extends `picturesDrawerExtras`, rather than registering its own navigation screen.
 
 ## Sources
 
-- `renderer/screens/crop.js`
+- `renderer/screens/crop.js` (symbols cited above; manually inspected, not AST-extracted).

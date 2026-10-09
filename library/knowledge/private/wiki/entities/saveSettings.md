@@ -4,15 +4,15 @@ title: "saveSettings"
 entity_type: function
 status: developing
 created: 2026-10-06
-updated: 2026-10-07
-path: "main.cjs"
+updated: 2026-10-08
+path: "main/settings.cjs"
 language: js
 depends_on:
   - "[[entities/readSettings]]"
   - "[[entities/settings-json]]"
 used_by:
   - "[[entities/ipc-settings-save]]"
-last_commit_hash: "eb83d47"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by: []
 tags:
   - entity
@@ -21,14 +21,14 @@ related:
   - "[[concepts/secret-storage]]"
   - "[[concepts/atomic-file-writes]]"
 sources:
-  - main.cjs
+  - main/settings.cjs
 ---
 
 # saveSettings
 
 ## Overview
 
-Defined in `main.cjs`.
+Defined in `main/settings.cjs`.
 
 ## Signature
 
@@ -42,7 +42,7 @@ Runs one save at a time (a queue), so overlapping saves can't lose each other's 
 
 ## Changes since 2add52d
 
-In main.cjs. Implemented by `saveSettingsNow`; handles `falKey`/`clearFalKey` and `checkUpdates`.
+In main/settings.cjs. Implemented by `saveSettingsNow`; handles `falKey`/`clearFalKey` and `checkUpdates`.
 
 ## Connections
 
@@ -56,4 +56,8 @@ In main.cjs. Implemented by `saveSettingsNow`; handles `falKey`/`clearFalKey` an
 
 ## Sources
 
-- `main.cjs`
+- `main/settings.cjs`
+
+## Source ownership
+
+Implementation moved to `main/settings.cjs` (factory-scoped symbols); IPC registration remains in `main.cjs` / `registerHandlers`. This is a source-location correction, not an inferred behavior change.

@@ -4,14 +4,14 @@ title: "ai/fal.cjs"
 entity_type: module
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 path: "ai/fal.cjs"
 language: js
 depends_on:
   - "[[entities/model-picker-cjs]]"
 used_by:
-  - "[[entities/main-cjs]]"
-last_commit_hash: "ded9f37"
+  - "[[entities/main-ai-services-cjs]]"
+last_commit_hash: "7d459e2d1140ffc4d9f2ab44379827342ea99b24"
 tested_by:
   - test/ai-services.test.cjs
   - test/model-picker.test.cjs
@@ -25,6 +25,7 @@ related:
   - "[[entities/openrouter-cjs]]"
   - "[[entities/settings-falKeyEnc]]"
 sources:
+  - main/ai-services.cjs
   - ai/fal.cjs
 ---
 
@@ -43,12 +44,12 @@ sources:
 
 ## Changes since 2add52d
 
-Committed in `ded9f37` ("Add fal.ai pictures, live cover preview, and picture-service notes"). Self-test hooks: [[entities/test-url-STORYLOOM_TEST_FAL_RUN]], [[entities/test-url-STORYLOOM_TEST_FAL_API]]; `mediaHostOk` allows 127.0.0.1 only in self-test (main.cjs).
+Committed in `ded9f37` ("Add fal.ai pictures, live cover preview, and picture-service notes"). Self-test hooks: [[entities/test-url-STORYLOOM_TEST_FAL_RUN]], [[entities/test-url-STORYLOOM_TEST_FAL_API]]; `mediaHostOk` allows 127.0.0.1 only in self-test (`main/ai-services.cjs` (`getFal`)).
 
 ## Connections
 
 - **depends_on:** [[entities/model-picker-cjs]]
-- **used_by:** [[entities/main-cjs]] (`getFal`, `generateImage` when `pictures === 'fal'`)
+- **used_by:** [[entities/main-ai-services-cjs]] (`getFal`, `generateImage` when `pictures === 'fal'`)
 - **related:** [[concepts/ai-provider-routing]], [[entities/openrouter-cjs]], [[entities/settings-falKeyEnc]]
 
 ## History
@@ -58,3 +59,20 @@ Committed in `ded9f37` ("Add fal.ai pictures, live cover preview, and picture-se
 ## Sources
 
 - `ai/fal.cjs`
+
+## Verified source surface (2026-10-08)
+
+
+Named function declarations in `ai/fal.cjs`: `createFal`, `key`, `falError`, `getJson`, `cached`, `catalog`, `inputFields`, `allowed`, `body`, `readImage`, `chooseImage`, `editCatalog`, `uploadReference`, `image`, `recommendations`. This lexical list includes private helpers; it is not an export list.
+
+Local dependency evidence (literal import/require statements in `ai/fal.cjs`):
+
+- `./model-picker.cjs` → [[entities/model-picker-cjs]].
+
+## Current responsibility boundary
+
+`image` prefers pickFalEditModel when references exist and lineArt is false; a pinned endpoint receives references only if its schema has image_urls. `uploadReference` supplies URLs, and `readImage` retrieves resulting media under its host checks (`ai/fal.cjs` / `image`, `uploadReference`, `readImage`).
+
+## Ownership evidence
+
+AI client imports and factory calls live in `main/ai-services.cjs` imports, `main/ai-services.cjs` (`getOpenRouter`, `getFal`, `getChatGpt`, `getClaudeCode`); main composes the factory at `main.cjs` (`createAiServices` composition).

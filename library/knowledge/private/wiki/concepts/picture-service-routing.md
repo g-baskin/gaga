@@ -3,7 +3,7 @@ type: concept
 title: "Picture-service routing"
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 complexity: intermediate
 domain: "storyloom"
 tags:
@@ -15,15 +15,16 @@ related:
   - "[[entities/fal-cjs]]"
   - "[[entities/generateImage]]"
 sources:
-  - main.cjs
+  - main/settings.cjs
+  - main/ai-services.cjs
 ---
 
 # Picture-service routing
 
-`settings.pictures` ∈ `PICTURES = ['custom','openrouter','fal']` (main.cjs; [[entities/settings-pictures]]):
+`settings.pictures` ∈ `PICTURES = ['custom','openrouter','fal']` (`main/settings.cjs` (`PICTURES`); [[entities/settings-pictures]]):
 
 - **openrouter:** [[entities/createOpenRouter]] with `orImageModel` or auto-pick.
-- **fal:** [[entities/fal-cjs]] with [[entities/settings-falKeyEnc]]; model from `falImageModel` or `pickFalModel` in [[entities/model-picker-cjs]] (main.cjs).
+- **fal:** [[entities/fal-cjs]] with [[entities/settings-falKeyEnc]]; model from `falImageModel` or `pickFalModel` in [[entities/model-picker-cjs]] (`main/ai-services.cjs` (`generateImage`)).
 - **custom:** the author's own AI service (`baseUrl` + key).
 
 The ChatGPT and Claude plans write only: [[entities/settings-writer]] can pick them, but they never draw. `aiPictureNote` in [[entities/app-js]] (renderer/app.js) tells the user which service draws and disables Generate when none is set up.
@@ -31,3 +32,7 @@ The ChatGPT and Claude plans write only: [[entities/settings-writer]] can pick t
 ## Entities
 
 - [[entities/generateImage]], [[entities/fal-cjs]], [[entities/settings-falKeyEnc]], [[entities/settings-pictures]], [[entities/model-picker-cjs]]
+
+## Ownership evidence
+
+Service implementations are dispatched by `main/ai-services.cjs` (`generateImage`); the renderer note remains `renderer/app.js` (`aiPictureNote`).

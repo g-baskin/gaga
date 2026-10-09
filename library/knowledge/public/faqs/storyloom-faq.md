@@ -16,10 +16,24 @@
 
 **I deleted a book by mistake.** Deleted books go to the macOS Trash.
 
+**How do I back up editable books?** Close Storyloom and copy its entire data folder, including assets and supporting files. PDF, EPUB and WAV are published copies, not editable project backups. Provider connections may need setting up again on another Mac.
+
+**Why didn't a Manuscript edit change my designed page?** Chapters and page text are separate. Use **Lay out into pages** to transfer text and review the replacement prompt. Existing page pictures and layouts are retained.
+
+**Does an EPUB include my read-along?** No. EPUB exports fixed-layout pages, pictures and bundled fonts, not Studio narration or tappable sounds. Use the in-app read-along, or export WAV narration with background music separately.
+
+**Does a Claude or ChatGPT sign-in pay for pictures and voices?** No. Those use separate provider settings and credit. See [Connecting AI](../guides/connecting-ai.md).
+
+**What does “Not saved” mean?** A disk write failed. Resolve the error before quitting; closing or reloading is not proof the last edit was saved. Account → Open log folder shows local diagnostics; review a log before sharing it.
+
 **Can I export MP3?** Not yet — export WAV and convert it in Music or QuickTime Player.
 
 **Can I order printed copies?** Not from Storyloom. Export a print PDF (0.125 in bleed) and use any print service; many need at least 24 pages.
 
 **Is the coloring-book conversion AI?** No, it's a local edge-detection filter; results depend on the picture.
 
-**macOS warns when I open it.** Storyloom isn't notarized by Apple yet; click Open Anyway once in System Settings → Privacy & Security. In-app updates keep working after that.
+**Where do I start?** Follow [Make a book](../guides/making-a-book.md) from Home through Export.
+
+**macOS warns when I open it.** Storyloom isn't notarized by Apple yet; click Open Anyway once in System Settings → Privacy & Security. In-app updates still verify Storyloom's signed update manifest; Gatekeeper approval is not Apple notarization.
+
+Implementation references: `renderer/screens/account.js`, `manuscript.js` (`layOut`), `studio.js`, `export.js` (`buildEpubInput`, `wav`); `storage.cjs`; `main/settings.cjs`, `main/ai-services.cjs`, `main/updates.cjs`; `updater.cjs`.

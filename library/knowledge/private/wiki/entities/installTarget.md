@@ -4,14 +4,14 @@ title: "installTarget"
 entity_type: function
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 path: "updater.cjs"
 language: js
 depends_on:
   - "[[entities/updater-cjs]]"
 used_by:
-  - "[[entities/main-cjs]]"
-last_commit_hash: "eb83d47"
+  - "[[entities/main-updates-cjs]]"
+last_commit_hash: "7d459e2d1140ffc4d9f2ab44379827342ea99b24"
 tested_by:
   - test/updater.test.cjs
 tags:
@@ -22,7 +22,7 @@ related:
   - "[[entities/startInstall]]"
 sources:
   - updater.cjs
-  - main.cjs
+  - main/updates.cjs
 ---
 
 # installTarget
@@ -35,12 +35,12 @@ sources:
 async function installTarget(execPath) // → { ok: true, target } | { ok: false, target?, reason }
 ```
 
-Defined in updater.cjs. Target is three levels above `execPath`; refuses non-`.app` paths ("only work in the installed app"), App Translocation paths (asks the user to move it to Applications), and folders without write access. Called by `installUpdate` (main.cjs); a refusal becomes update phase `failed` with the reason.
+Defined in updater.cjs. Target is three levels above `execPath`; refuses non-`.app` paths ("only work in the installed app"), App Translocation paths (asks the user to move it to Applications), and folders without write access. Called by `installUpdate` (main/updates.cjs); a refusal becomes update phase `failed` with the reason.
 
 ## Connections
 
 - **depends_on:** [[entities/updater-cjs]]
-- **used_by:** [[entities/main-cjs]]
+- **used_by:** [[entities/main-updates-cjs]]
 - **related:** [[concepts/signed-update-channel]], [[entities/startInstall]]
 
 ## History
@@ -50,4 +50,8 @@ Defined in updater.cjs. Target is three levels above `execPath`; refuses non-`.a
 ## Sources
 
 - `updater.cjs`
-- `main.cjs`
+- `main/updates.cjs`
+
+## Ownership evidence
+
+Current caller: `main/updates.cjs` (`installUpdate`). The IPC registrations remain at `main.cjs` (`registerHandlers`).

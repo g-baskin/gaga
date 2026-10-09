@@ -1,49 +1,24 @@
 ---
 type: entity
-title: ".github/workflows/release.yml"
+title: "release-workflow"
 entity_type: ci-workflow
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 path: ".github/workflows/release.yml"
 language: yaml
-depends_on:
-  - "[[entities/dist-mjs]]"
-  - "[[entities/update-manifest-mjs]]"
-  - "[[entities/changelog-mjs]]"
+last_commit_hash: "798eda21d5a68570997be678147d5566173efa5b"
+depends_on: []
 used_by: []
-last_commit_hash: "eb83d47"
 tested_by: []
-status_note: "YAML workflow; documented by hand, not ts-morph"
-tags:
-  - entity
-  - ci-workflow
-related:
-  - "[[concepts/release-pipeline]]"
+related: ["[[entities/lint-workflow]]", "[[entities/update-manifest-mjs]]", "[[entities/dist-mjs]]"]
+tags: [entity, ci-workflow]
 sources:
   - .github/workflows/release.yml
 ---
 
-# .github/workflows/release.yml
+# release-workflow
 
-**GitHub Actions release: tag v1.2.3 → test → build → sign → publish.**
+The `release` job responds to `v*` tags on macos-14. `Check the tag, version, and changelog` requires a strict semantic version and verifies the tag commit is an ancestor of origin/main, then runs the changelog check. It installs from lockfile without npm cache, runs lint and unit tests, builds both chips, signs manifests in a dedicated environment-scoped step, and publishes verified-tag release assets.
 
-## Overview
-
-Triggered by a `v*` tag push. Steps per the header comment and body (.github/workflows/release.yml): tag must be `vX.Y.Z` on `main` and match package.json; [[entities/changelog-mjs]] `check`; unit tests; `npm run dist` ([[entities/dist-mjs]]); **Sign the in-app updates** runs [[entities/update-manifest-mjs]] — the only step given the `STORYLOOM_UPDATE_SIGNING_KEY` secret; `gh release create` uploads both .dmgs, both .app.zips, `latest.json`, and `SHA256SUMS.txt` with display labels.
-
-`7a2e83f` dropped the second `git fetch` of main (relies on `fetch-depth: 0`).
-
-## Connections
-
-- **depends_on:** [[entities/dist-mjs]], [[entities/update-manifest-mjs]], [[entities/changelog-mjs]]
-- **used_by:** —
-- **related:** [[concepts/release-pipeline]]
-
-## History
-
-- Last touched by commit `eb83d47` (AutomationGod). Added in range `2add52d..a7b6898`.
-
-## Sources
-
-- `.github/workflows/release.yml`
+Only the signing step receives the signing-key secret. `gh release create` attaches DMGs, app update ZIPs, latest.json and SHA256SUMS. It does not run the GUI self-test itself: that is a main/PR job in [[entities/lint-workflow]]. No release publication was performed or verified in this scan. Source: `.github/workflows/release.yml` / `jobs.release`.

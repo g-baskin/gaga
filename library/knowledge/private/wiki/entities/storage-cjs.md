@@ -4,13 +4,13 @@ title: "storage.cjs"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "storage.cjs"
 language: js
 depends_on: []
 used_by:
   - "[[entities/main-cjs]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "798eda21d5a68570997be678147d5566173efa5b"
 tested_by: []
 tags:
   - entity
@@ -23,6 +23,15 @@ sources:
 ---
 
 # storage.cjs
+
+> [!stale] Prior description retained below
+> The prior module page exported sanitizeBook, sanitizeElement, sanitizeCrop, sniffAudio, decodeStoryText, LIBRARY and READING_LEVELS. This is not the current contract.
+
+> [!contradiction] Verified correction 2026-10-08
+> module.exports actually contains createStore, sanitizePage, sniffImage, plainFsError, readJsonFile, LENGTHS, BOOK_INK and MAX_CHARACTERS; other helpers are internal. Evidence: `storage.cjs` / `module.exports`. See [[meta/2026-10-08-contradiction-report]].
+
+## Prior scan / historical description
+
 
 **Local book store: sanitizers for every persisted shape and the `createStore(root)` factory.**
 
@@ -45,3 +54,8 @@ Data models: [[entities/book]], [[entities/page]], [[entities/element]], [[entit
 ## Sources
 
 - `storage.cjs`
+
+## Verified source surface (2026-10-08)
+
+
+Named function declarations in `storage.cjs`: `bundledFontKeys`, `plainFsError`, `readJsonFile`, `sanitizeCrop`, `sanitizeElement`, `assertId`, `sanitizePage`, `sanitizeCharacter`, `sanitizeBuilder`, `sanitizeBlock`, `sanitizeManuscript`, `sanitizeAudio`, `isValidIsbn`, `sanitizeIsbn`, `sanitizeBook`, `sanitizeShelves`, `sanitizeProfile`, `sniffImage`, `sniffAudio`, `decodeStoryText`, `readHead`, `createStore`, `writeJson`, `addAsset`, `read`. This lexical list includes private helpers; it is not an export list.

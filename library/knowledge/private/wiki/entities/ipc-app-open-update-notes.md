@@ -4,7 +4,7 @@ title: "IPC app:open-update-notes"
 entity_type: service
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 path: "main.cjs"
 language: js
 depends_on:
@@ -14,7 +14,7 @@ used_by:
   - "[[entities/preload-cjs]]"
   - "[[entities/app-js]]"
   - "[[entities/account-screen]]"
-last_commit_hash: "eb83d47"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by: []
 channel: "app:open-update-notes"
 tags:
@@ -24,6 +24,7 @@ related:
   - "[[entities/ipc-channels]]"
   - "[[concepts/signed-update-channel]]"
 sources:
+  - main/updates.cjs
   - main.cjs
   - preload.cjs
 ---
@@ -32,9 +33,9 @@ sources:
 
 **IPC channel app:open-update-notes (in-app updates).**
 
-IPC channel `app:open-update-notes`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Opens `updateState.notesUrl` (the GitHub release tag page) with `shell.openExternal`; throws if none. Skipped in self-test.
+IPC channel `app:open-update-notes`, registered with [[entities/handle]] at `main.cjs` (trusted-caller check applies). Opens `updates.state().notesUrl` (`main.cjs` (`registerHandlers`)) (the GitHub release tag page) with `shell.openExternal`; throws if none. Skipped in self-test.
 
-States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (main.cjs), always with `current` = app version.
+States shared with the page: `idle | checking | up-to-date | available | downloading | ready | installing | failed` (`main/updates.cjs`), always with `current` = app version.
 
 ## Renderer side
 
@@ -54,3 +55,7 @@ States shared with the page: `idle | checking | up-to-date | available | downloa
 
 - `main.cjs`
 - `preload.cjs`
+
+## Ownership evidence
+
+Handler registration remains `main.cjs` (`registerHandlers`); state/operation implementation is `main/updates.cjs` (`setUpdateState`). State pushes include the current version (`main/updates.cjs` (`setUpdateState`)).

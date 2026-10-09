@@ -4,7 +4,7 @@ title: "page (data model)"
 entity_type: data-model
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "storage.cjs"
 language: js
 depends_on:
@@ -12,7 +12,7 @@ depends_on:
   - "[[entities/crop]]"
 used_by:
   - "[[entities/createStore]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "798eda21d5a68570997be678147d5566173efa5b"
 tested_by:
   - test/storage.test.cjs
 tags:
@@ -25,6 +25,15 @@ sources:
 ---
 
 # page (data model)
+
+> [!stale] Prior description retained below
+> The prior persisted shape omitted imagePrompt and titleFont. This is not the current contract.
+
+> [!contradiction] Verified correction 2026-10-08
+> sanitizePage preserves imagePrompt (up to 2000 characters) and a known titleFont (or empty string), supporting redraw and separate cover-title typography. Evidence: `storage.cjs` / `sanitizePage`. See [[meta/2026-10-08-contradiction-report]].
+
+## Prior scan / historical description
+
 
 Shape enforced by `sanitizePage` (storage.cjs).
 

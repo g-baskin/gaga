@@ -4,16 +4,16 @@ title: "settings.json (AI service settings file)"
 entity_type: config-key
 status: developing
 created: 2026-10-06
-updated: 2026-10-07
-path: "main.cjs"
+updated: 2026-10-08
+path: "main/settings.cjs"
 language: json
 depends_on:
-  - "[[entities/main-cjs]]"
+  - "[[entities/main-settings-cjs]]"
 used_by:
   - "[[entities/readSettings]]"
   - "[[entities/saveSettings]]"
   - "[[entities/publicSettings]]"
-last_commit_hash: "eb83d47"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by: []
 tags:
   - entity
@@ -21,12 +21,13 @@ tags:
 related:
   - "[[concepts/secret-storage]]"
 sources:
-  - main.cjs
+  - main/ai-services.cjs
+  - main/settings.cjs
 ---
 
 # settings.json (AI service settings file)
 
-Stored at `<userData>/settings.json` (main.cjs), written 0600 via temp+rename. Keys:
+Stored at `<userData>/settings.json` (main/settings.cjs), written 0600 via temp+rename. Keys:
 
 - [[entities/settings-baseUrl]]
 - [[entities/settings-model]]
@@ -46,15 +47,15 @@ Stored at `<userData>/settings.json` (main.cjs), written 0600 via temp+rename. K
 - [[entities/settings-claudeModel]]
 - [[entities/settings-claudePath]]
 
-Related file: `<userData>/chatgpt.json` — the whole ChatGPT sign-in record encrypted with safeStorage (main.cjs).
+Related file: `<userData>/chatgpt.json` — the whole ChatGPT sign-in record encrypted with safeStorage (`main/ai-services.cjs` (`getChatGpt`)).
 
 ## Changes since 2add52d
 
-New fields: [[entities/settings-falKeyEnc]], `falImageModel`, [[entities/settings-checkUpdates]] (main.cjs). `pictures` may now be `fal` ([[entities/settings-pictures]]).
+New fields: [[entities/settings-falKeyEnc]], `falImageModel`, [[entities/settings-checkUpdates]] (main/settings.cjs). `pictures` may now be `fal` ([[entities/settings-pictures]]).
 
 ## Connections
 
-- **depends_on:** [[entities/main-cjs]]
+- **depends_on:** [[entities/main-settings-cjs]]
 - **used_by:** [[entities/readSettings]], [[entities/saveSettings]], [[entities/publicSettings]]
 - **related:** [[concepts/secret-storage]]
 
@@ -64,4 +65,12 @@ New fields: [[entities/settings-falKeyEnc]], `falImageModel`, [[entities/setting
 
 ## Sources
 
-- `main.cjs`
+- `main/settings.cjs`
+
+## Source ownership
+
+Implementation moved to `main/settings.cjs` (factory-scoped symbols); IPC registration remains in `main.cjs` / `registerHandlers`. This is a source-location correction, not an inferred behavior change.
+
+## Ownership evidence
+
+Settings ownership: `main/settings.cjs` (`createSettings`, `readSettings`), `main/settings.cjs` (`writePrivate`, `saveSettings`); ChatGPT record storage is wired separately in `main/ai-services.cjs` (`getChatGpt`).

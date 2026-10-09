@@ -4,13 +4,13 @@ title: "epub.cjs"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "epub.cjs"
 language: js
 depends_on: []
 used_by:
-  - "[[entities/main-cjs]]"
-last_commit_hash: "a5dac04"
+  - "[[entities/main-export-cjs]]"
+last_commit_hash: "e298d4b7b6d53117d55efe64e6565c12fe6134b4"
 tested_by: []
 tags:
   - entity
@@ -18,6 +18,7 @@ tags:
 related:
   - "[[entities/exportEpub]]"
 sources:
+  - main/export.cjs
   - epub.cjs
 ---
 
@@ -32,7 +33,7 @@ Implements CRC-32 (epub.cjs), a stored (uncompressed) `zip` with a fixed 1980-01
 ## Connections
 
 - **depends_on:** —
-- **used_by:** [[entities/main-cjs]]
+- **used_by:** [[entities/main-export-cjs]]
 - **related:** [[entities/exportEpub]]
 
 ## History
@@ -42,3 +43,12 @@ Implements CRC-32 (epub.cjs), a stored (uncompressed) `zip` with a fixed 1980-01
 ## Sources
 
 - `epub.cjs`
+
+## Verified source surface (2026-10-08)
+
+
+Named function declarations in `epub.cjs`: `crc32`, `zip`, `unzip`, `buildEpub`, `collectImages`. This lexical list includes private helpers; it is not an export list.
+
+## Ownership evidence
+
+EPUB export helpers are imported by `main/export.cjs` imports.

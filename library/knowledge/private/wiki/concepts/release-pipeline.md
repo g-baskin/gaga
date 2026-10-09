@@ -3,31 +3,22 @@ type: concept
 title: "Release pipeline"
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 complexity: intermediate
-domain: "storyloom"
-tags:
-  - concept
-  - storyloom
-  - release
-related:
-  - "[[concepts/signed-update-channel]]"
-  - "[[entities/dist-mjs]]"
-sources:
-  - .github/workflows/release.yml
+domain: storyloom
+tags: [concept, storyloom]
+related: ["[[entities/package-mjs]]", "[[entities/release-workflow]]", "[[entities/update-manifest-mjs]]"]
+sources: ["package.json", "scripts/changelog.mjs", "package.mjs", "dist.mjs", "scripts/update-manifest.mjs", ".github/workflows/release.yml"]
 ---
 
 # Release pipeline
 
-**Tag → CI build → sign → publish.**
+`package.json` holds the version; `scripts/changelog.mjs` / release command moves Unreleased entries into a dated release and updates the package/lockfile. The documented command is npm run release -- X.Y.Z; tagging and pushing are separate operations.
 
-Driven by `.github/workflows/release.yml` (last touched `eb83d47`), which runs on a pushed version tag:
+`package.mjs` / buildApp admits only its keep set and runtime subdirectories, excludes preview-boot.js, copies runtime notices and locks Electron fuses. `dist.mjs` builds requested chips, ad-hoc signs apps, creates DMGs and app ZIPs, and writes checksums. This does not confer Apple notarization.
 
-1. **Check the tag, version, and changelog** (release.yml): tag must match `package.json`; notes come from [[entities/changelog-mjs]].
-2. **Build the Mac disk images** (release.yml): [[entities/dist-mjs]] builds Intel and Apple Silicon apps via [[entities/package-mjs]], ad-hoc signs, checks the chip, and also makes the per-chip `.app.zip` update archives (`makeUpdateZip`, dist.mjs).
-3. **Sign the in-app updates** (release.yml): [[entities/update-manifest-mjs]] writes a signed `latest.json`; the signing key comes from a CI secret.
-4. **Publish the release** (release.yml): DMGs, `.app.zip` files and `latest.json` go to the GitHub release that [[entities/updater-cjs]] reads.
+`.github/workflows/release.yml` / jobs.release validates a vX.Y.Z tag, checks origin/main ancestry, runs lint/unit tests, builds both chips, signs latest.json through scripts/update-manifest.mjs and publishes assets. The signing script self-verifies with updater.cjs / TRUSTED_KEYS before writing the manifest. `scripts/sha256.mjs` streams archive hashing.
 
-## Entities
+Main/PR checks live in [[entities/lint-workflow]] and [[entities/secret-scan-workflow]]. Workflow source cannot establish the currently enforced remote ruleset or whether a release is published. No tag, publication, download or packaged-app test was performed here.
 
-- [[entities/dist-mjs]], [[entities/package-mjs]], [[entities/changelog-mjs]], [[entities/update-manifest-mjs]]
+See [[entities/package-mjs]], [[entities/dist-mjs]], [[entities/update-manifest-mjs]], [[entities/release-workflow]].

@@ -4,29 +4,29 @@ title: "exportEpub"
 entity_type: function
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
-path: "main.cjs"
+updated: 2026-10-08
+path: "main/export.cjs"
 language: js
 depends_on:
   - "[[entities/buildEpub]]"
   - "[[entities/createStore]]"
 used_by:
   - "[[entities/ipc-books-export-epub]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by: []
 tags:
   - entity
   - function
 related: []
 sources:
-  - main.cjs
+  - main/export.cjs
 ---
 
 # exportEpub
 
 ## Overview
 
-Defined in `main.cjs`. Pictures are gathered with `collectImages` (epub.cjs): a picture that no longer exists is skipped and its references removed, so the export still succeeds.
+Defined in `main/export.cjs`. Pictures are gathered with `collectImages` (epub.cjs): a picture that no longer exists is skipped and its references removed, so the export still succeeds.
 
 ## Signature
 
@@ -50,4 +50,8 @@ Validates renderer-built page bodies (≤500 pages, ≤2 MB each, rejects `<scri
 
 ## Sources
 
-- `main.cjs`
+- `main/export.cjs`
+
+## Source ownership
+
+Implementation moved to `main/export.cjs` (factory-scoped symbols); IPC registration remains in `main.cjs` / `registerHandlers`. This is a source-location correction, not an inferred behavior change.

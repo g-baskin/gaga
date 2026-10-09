@@ -4,7 +4,7 @@ title: "createUpdater"
 entity_type: function
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 path: "updater.cjs"
 language: js
 depends_on:
@@ -13,8 +13,8 @@ depends_on:
   - "[[entities/updater-PLATFORMS]]"
   - "[[entities/TRUSTED_KEYS]]"
 used_by:
-  - "[[entities/main-cjs]]"
-last_commit_hash: "eb83d47"
+  - "[[entities/main-updates-cjs]]"
+last_commit_hash: "7d459e2d1140ffc4d9f2ab44379827342ea99b24"
 tested_by:
   - test/updater.test.cjs
   - selftest/updates.cjs
@@ -25,7 +25,7 @@ related:
   - "[[concepts/signed-update-channel]]"
 sources:
   - updater.cjs
-  - main.cjs
+  - main/updates.cjs
 ---
 
 # createUpdater
@@ -45,12 +45,12 @@ Defined in updater.cjs. Internal `open()` (updater.cjs) fetches with `redirect: 
 - **download(update, { onProgress })** (updater.cjs): streams into a `storyloom-update-*` temp dir (mode 0600), aborts if bytes exceed the signed size, checks size and SHA-256, unpacks with `/usr/bin/ditto`, then `verifyApp`. Removes the temp dir on any failure. Returns `{ appPath, workdir, version }`.
 - **verifyApp** (updater.cjs): exactly one `Storyloom.app`, not a symlink, real path inside workdir; Info.plist `CFBundleIdentifier`, `CFBundleShortVersionString`, `CFBundleExecutable`; `lipo -archs` matches the chip; `codesign --verify --deep --strict`.
 
-The self-test swaps `feedUrl`, `downloadBase`, `allowHost` and `trustedKeys` through `getUpdater()` (main.cjs) using [[entities/test-url-STORYLOOM_TEST_UPDATES]] and [[entities/test-url-STORYLOOM_TEST_UPDATE_KEY]].
+The self-test swaps `feedUrl`, `downloadBase`, `allowHost` and `trustedKeys` through `getUpdater()` (main/updates.cjs) using [[entities/test-url-STORYLOOM_TEST_UPDATES]] and [[entities/test-url-STORYLOOM_TEST_UPDATE_KEY]].
 
 ## Connections
 
 - **depends_on:** [[entities/updater-cjs]], [[entities/verifySignature]], [[entities/updater-PLATFORMS]], [[entities/TRUSTED_KEYS]]
-- **used_by:** [[entities/main-cjs]]
+- **used_by:** [[entities/main-updates-cjs]]
 - **related:** [[concepts/signed-update-channel]]
 
 ## History
@@ -60,4 +60,8 @@ The self-test swaps `feedUrl`, `downloadBase`, `allowHost` and `trustedKeys` thr
 ## Sources
 
 - `updater.cjs`
-- `main.cjs`
+- `main/updates.cjs`
+
+## Ownership evidence
+
+Current caller: `main/updates.cjs` (`getUpdater`). The IPC registrations remain at `main.cjs` (`registerHandlers`).

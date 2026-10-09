@@ -4,14 +4,14 @@ title: "dist.mjs"
 entity_type: script
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 path: "dist.mjs"
 language: js
 depends_on:
   - "[[entities/package-mjs]]"
 used_by:
   - "[[entities/release-workflow]]"
-last_commit_hash: "eb83d47"
+last_commit_hash: "cee7902605e955a437522e21109449a3c2b0e812"
 tested_by: []
 tags:
   - entity
@@ -46,3 +46,13 @@ Outputs in `releases/dist/`: `Storyloom_<v>_Intel_x64.dmg`, `Storyloom_<v>_Apple
 ## Sources
 
 - `dist.mjs`
+
+## Verified source surface (2026-10-08)
+
+
+Named function declarations in `dist.mjs`: `chosenArches`, `makeDmg`, `makeUpdateZip`. This lexical list includes private helpers; it is not an export list.
+
+Local dependency evidence (literal import/require statements in `dist.mjs`):
+
+- `./package.mjs` → [[entities/package-mjs]].
+- `./scripts/sha256.mjs` → [[entities/scripts-sha256-mjs]].

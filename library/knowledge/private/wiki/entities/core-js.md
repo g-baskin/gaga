@@ -4,43 +4,25 @@ title: "renderer/core.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "renderer/core.js"
 language: js
-depends_on:
-  - "[[entities/preload-cjs]]"
-used_by:
-  - "[[entities/app-js]]"
-  - "[[entities/editor-js]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
+depends_on: []
+used_by: []
 tested_by: []
-tags:
-  - entity
-  - module
-related:
-  - "[[entities/renderPage]]"
+related: ["[[entities/preload-cjs]]"]
+tags: [entity, module]
 sources:
   - renderer/core.js
 ---
 
 # renderer/core.js
 
-**Shared renderer helpers and page rendering.**
+`h` and `svg` create DOM nodes; `icon` builds decorative SVGs. `withBusy` disables a button, updates aria-busy/label and restores it after a task. `logError` sends page errors to `api.logError` and uses warnings for errors already shown to the user. `scrollBehavior` respects reduced motion.
 
-## Overview
-
-Binds `const api = window.storyloom` (renderer/core.js). Helpers: `h` DOM builder (renderer/core.js), `svg`, `toast`, `run` (busy wrapper, renderer/core.js), element renderers and [[entities/renderPage]] / `scaledPage` (renderer/core.js).
-
-## Connections
-
-- **depends_on:** [[entities/preload-cjs]]
-- **used_by:** [[entities/app-js]], [[entities/editor-js]]
-- **related:** [[entities/renderPage]]
-
-## History
-
-- **Created / last touched:** commit `a5dac04` by AutomationGod on 2026-10-06 (the first Storyloom commit). Scanned from the working tree, which had uncommitted changes at scan time.
+`renderElement`/`renderPage` share rendering with thumbnails and exports. `fitPageText` chooses a fitting display font size without changing the saved page font size; font loading invalidates fit measurements. `BOOK_INK` is shared by convention with storage.cjs.
 
 ## Sources
 
-- `renderer/core.js`
+- `renderer/core.js` (symbols cited above; manually inspected, not AST-extracted).

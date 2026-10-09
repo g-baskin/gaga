@@ -4,13 +4,13 @@ title: "STORYLOOM_TEST_CHATGPT_AUTH"
 entity_type: env-var
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "main.cjs"
 language: js
 depends_on:
   - "[[entities/useTestServices]]"
 used_by: []
-last_commit_hash: "a5dac04"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by: []
 tags:
   - entity
@@ -18,12 +18,13 @@ tags:
 related:
   - "[[concepts/self-test-harness]]"
 sources:
+  - main/ai-services.cjs
   - main.cjs
 ---
 
 # STORYLOOM_TEST_CHATGPT_AUTH
 
-testUrls key overriding the ChatGPT auth base and the allowed sign-in URL prefix (main.cjs).
+testUrls key overriding the ChatGPT auth base and the allowed sign-in URL prefix (`main/ai-services.cjs`).
 
 ## Connections
 
@@ -38,3 +39,7 @@ testUrls key overriding the ChatGPT auth base and the allowed sign-in URL prefix
 ## Sources
 
 - `main.cjs`
+
+## Ownership evidence
+
+The guarded map/setter remains in `main.cjs` (`testUrls`, `testUrl`, `useTestServices`). AI client overrides: `main/ai-services.cjs` (`getOpenRouter`, `getFal`, `getChatGpt`).

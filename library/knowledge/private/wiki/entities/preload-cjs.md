@@ -4,49 +4,25 @@ title: "preload.cjs"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-07
+updated: 2026-10-08
 path: "preload.cjs"
 language: js
+last_commit_hash: "798eda21d5a68570997be678147d5566173efa5b"
 depends_on: []
-used_by:
-  - "[[entities/core-js]]"
-last_commit_hash: "eb83d47"
+used_by: []
 tested_by: []
-tags:
-  - entity
-  - module
-related:
-  - "[[concepts/signed-update-channel]]"
-  - "[[concepts/ipc-trust-boundary]]"
-  - "[[concepts/soft-error-ipc]]"
+related: ["[[entities/ipc-channels]]", "[[entities/window-storyloom-api]]"]
+tags: [entity, module]
 sources:
   - preload.cjs
 ---
 
 # preload.cjs
 
-**Context-bridge preload exposing `window.storyloom`.**
+`contextBridge.exposeInMainWorld` exposes only the named `storyloom` methods. `call` invokes IPC; `soft` unwraps `{ ok }` or throws `{ error }`; `saveSettings` separately unwraps `{ settings }`.
 
-## Overview
-
-Exposes `window.storyloom` via `contextBridge.exposeInMainWorld` (preload.cjs). Every method is a thin `ipcRenderer.invoke` wrapper (`call`, preload.cjs); `soft` unwraps `{ ok } / { error }` envelopes into a resolved value or a thrown `Error` (preload.cjs). `saveSettings` unwraps `{ settings } / { error }` the same way (preload.cjs). Two event subscriptions: `onBeforeClose` (`app:before-close`) and `onMenuAction` (`menu:action`, filtered to undo/redo) (preload.cjs).
-
-The full method→channel map is [[entities/window-storyloom-api]].
-
-## Changes since 2add52d
-
-Adds `updateState`, `checkForUpdate(manual)`, `downloadUpdate`, `installUpdate`, `openUpdateNotes`, and the push listener `onUpdateState` (preload.cjs). `openLink` names now include `fal-keys` and `source` (preload.cjs). See [[entities/ipc-app-update-state]].
-
-## Connections
-
-- **depends_on:** —
-- **used_by:** [[entities/core-js]]
-- **related:** [[concepts/ipc-trust-boundary]], [[concepts/soft-error-ipc]]
-
-## History
-
-- **Created / last touched:** commit `a5dac04` by AutomationGod on 2026-10-06 (the first Storyloom commit). Scanned from the working tree, which had uncommitted changes at scan time.
+The bridge includes `scenePrompts`, `logError` and `openLogs`, as well as update actions. Event subscriptions are `onBeforeClose`, `onMenuAction` (undo/redo only) and `onUpdateState`. The authoritative current map is [[entities/ipc-channels]]; the prior two-subscription description is incomplete.
 
 ## Sources
 
-- `preload.cjs`
+- `preload.cjs` (symbols cited above; manually inspected, not AST-extracted).

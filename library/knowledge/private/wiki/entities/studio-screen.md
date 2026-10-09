@@ -4,51 +4,23 @@ title: "renderer/screens/studio.js"
 entity_type: module
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "renderer/screens/studio.js"
 language: js
-depends_on:
-  - "[[entities/app-js]]"
-  - "[[entities/core-js]]"
-  - "[[entities/preload-cjs]]"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
+depends_on: []
 used_by: []
-last_commit_hash: "a5dac04"
 tested_by: []
-tags:
-  - entity
-  - module
-  - screen
-related:
-  - "[[concepts/screen-registry]]"
+related: ["[[entities/app-js]]"]
+tags: [entity, module]
 sources:
   - renderer/screens/studio.js
 ---
 
 # renderer/screens/studio.js
 
-**Studio: per-page narration (mic, import, AI voice), background music, read-along.**
-
-## Overview
-
-Registered via `registerScreen('studio', …)` at renderer/screens/studio.js. Header comment: renderer/screens/studio.js.
-
-## IPC used
-
-- `api.generateSpeech` → [[entities/ipc-ai-speech]]
-- `api.importAudio` → [[entities/ipc-books-import-audio]]
-- `api.listAudio` → [[entities/ipc-books-list-audio]]
-- `api.saveRecording` → [[entities/ipc-books-save-recording]]
-
-## Connections
-
-- **depends_on:** [[entities/app-js]], [[entities/core-js]], [[entities/preload-cjs]]
-- **used_by:** —
-- **related:** [[concepts/screen-registry]]
-
-## History
-
-- **Created / last touched:** commit `a5dac04` by AutomationGod on 2026-10-06 (the first Storyloom commit). Scanned from the working tree, which had uncommitted changes at scan time.
+`startRecording` captures microphone audio as WebM; `recordInto` saves it through `api.saveRecording`. `narrationPanel` supports imported, recorded and AI-generated page narration; `musicPanel` configures background audio and `interactivePanel` adds sound buttons. `openReadAlong` plays pages with narration/music; `stopEverything` runs on leaving Studio to stop owned audio resources.
 
 ## Sources
 
-- `renderer/screens/studio.js`
+- `renderer/screens/studio.js` (symbols cited above; manually inspected, not AST-extracted).

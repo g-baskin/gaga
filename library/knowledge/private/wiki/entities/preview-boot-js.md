@@ -4,13 +4,13 @@ title: "renderer/preview-boot.js"
 entity_type: module
 status: developing
 created: 2026-10-07
-updated: 2026-10-07
+updated: 2026-10-08
 path: "renderer/preview-boot.js"
 language: js
 depends_on: []
 used_by:
   - "[[entities/preview-mjs]]"
-last_commit_hash: "eb83d47"
+last_commit_hash: "798eda21d5a68570997be678147d5566173efa5b"
 tested_by: []
 tags:
   - entity
@@ -42,3 +42,8 @@ Sets `data-preview="1"` on `<html>` and defines an in-memory `window.storyloom` 
 ## Sources
 
 - `renderer/preview-boot.js`
+
+## Verified source surface (2026-10-08)
+
+
+Named function declarations in `renderer/preview-boot.js`: `shape`, `page`, `makeBook`, `story`. This lexical list includes private helpers; it is not an export list.

@@ -4,14 +4,14 @@ title: "generateChapter"
 entity_type: function
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
-path: "main.cjs"
+updated: 2026-10-08
+path: "main/ai-services.cjs"
 language: js
 depends_on:
   - "[[entities/chatJson]]"
 used_by:
   - "[[entities/ipc-ai-chapter]]"
-last_commit_hash: "a5dac04"
+last_commit_hash: "0d1673a94e233fba0ee45ab31db8ed52bde8eb27"
 tested_by: []
 tags:
   - entity
@@ -19,14 +19,14 @@ tags:
 related:
   - "[[entities/manuscript]]"
 sources:
-  - main.cjs
+  - main/ai-services.cjs
 ---
 
 # generateChapter
 
 ## Overview
 
-Defined in `main.cjs`.
+Defined in `main/ai-services.cjs`.
 
 ## Signature
 
@@ -50,4 +50,8 @@ Writes/rewrites one manuscript chapter; word limit clamped 5–2000 (default 120
 
 ## Sources
 
-- `main.cjs`
+- `main/ai-services.cjs`
+
+## Source ownership
+
+Implementation moved to `main/ai-services.cjs` (factory-scoped symbols); IPC registration remains in `main.cjs` / `registerHandlers`. This is a source-location correction, not an inferred behavior change.

@@ -3,7 +3,7 @@ type: concept
 title: "AI provider routing"
 status: developing
 created: 2026-10-06
-updated: 2026-10-07
+updated: 2026-10-08
 complexity: intermediate
 domain: "storyloom"
 tags:
@@ -16,12 +16,14 @@ related:
   - "[[entities/createOpenRouter]]"
   - "[[entities/createChatGpt]]"
   - "[[entities/createClaudeCode]]"
-sources: []
+sources:
+  - main/ai-services.cjs
+  - main/settings.cjs
 ---
 
 # AI provider routing
 
-Writing can use own service / OpenRouter / ChatGPT plan / Claude Code ([[entities/settings-writer]]); pictures use own service, OpenRouter, or fal.ai (`ai/fal.cjs`); voices only own service or OpenRouter (`PICTURES` / `VOICES` in main.cjs). The ChatGPT plan can't draw here: OpenAI's Sign in with ChatGPT for other apps doesn't support image generation yet. [[entities/writeText]] dispatches; [[entities/settings-tier]] feeds the model picker; pinned models override auto-pick.
+Writing can use own service / OpenRouter / ChatGPT plan / Claude Code ([[entities/settings-writer]]); pictures use own service, OpenRouter, or fal.ai (`ai/fal.cjs`); voices only own service or OpenRouter (`PICTURES` / `VOICES` in `main/settings.cjs` (`PICTURES`, `VOICES`)). The ChatGPT plan can't draw here: OpenAI's Sign in with ChatGPT for other apps doesn't support image generation yet. [[entities/writeText]] dispatches; [[entities/settings-tier]] feeds the model picker; pinned models override auto-pick.
 
 ## Entities
 
@@ -34,3 +36,7 @@ Writing can use own service / OpenRouter / ChatGPT plan / Claude Code ([[entitie
 ## Changes since 2add52d
 
 Picture routing now has its own page: [[concepts/picture-service-routing]].
+
+## Ownership evidence
+
+Writing dispatch: `main/ai-services.cjs` (`writeText`); picture dispatch: `main/ai-services.cjs` (`generateImage`); voice dispatch: `main/ai-services.cjs` (`generateSpeech`).

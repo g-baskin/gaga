@@ -4,14 +4,14 @@ title: "createChatGpt"
 entity_type: function
 status: developing
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-08
 path: "ai/chatgpt.cjs"
 language: js
 depends_on: []
 used_by:
   - "[[entities/writeText]]"
-  - "[[entities/main-cjs]]"
-last_commit_hash: "a5dac04"
+  - "[[entities/main-ai-services-cjs]]"
+last_commit_hash: "7d459e2d1140ffc4d9f2ab44379827342ea99b24"
 tested_by: []
 tags:
   - entity
@@ -20,6 +20,7 @@ related:
   - "[[concepts/secret-storage]]"
   - "[[concepts/ai-provider-routing]]"
 sources:
+  - main/ai-services.cjs
   - ai/chatgpt.cjs
 ---
 
@@ -42,7 +43,7 @@ Returns `{ signIn, cancelSignIn, signOut, status, models, respond, markWelcomed 
 ## Connections
 
 - **depends_on:** —
-- **used_by:** [[entities/writeText]], [[entities/main-cjs]]
+- **used_by:** [[entities/writeText]], [[entities/main-ai-services-cjs]]
 - **related:** [[concepts/secret-storage]], [[concepts/ai-provider-routing]]
 
 ## History
@@ -52,3 +53,7 @@ Returns `{ signIn, cancelSignIn, signOut, status, models, respond, markWelcomed 
 ## Sources
 
 - `ai/chatgpt.cjs`
+
+## Ownership evidence
+
+AI client imports and factory calls live in `main/ai-services.cjs` imports, `main/ai-services.cjs` (`getOpenRouter`, `getFal`, `getChatGpt`, `getClaudeCode`); main composes the factory at `main.cjs` (`createAiServices` composition).

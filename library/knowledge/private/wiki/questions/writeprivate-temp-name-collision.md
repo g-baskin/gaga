@@ -29,3 +29,7 @@ Original finding: `writePrivate` names its temp file `${file}.${process.pid}.tmp
 ## Confidence
 
 Verified: fixed in code and covered by the self-test.
+
+## Current source location (2026-10-08)
+
+The fix remains in `main/settings.cjs` / `writePrivate` and `saveSettings`; `selftest/ai-services.cjs` still contains `concurrentSaves`. This scan inspected the code only; it did not re-run that check.
