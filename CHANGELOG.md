@@ -8,6 +8,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- Leaving Studio while recording asks whether to save the take, discard it, or keep recording. Leaving while a take is saving waits for it, and closing the window saves it.
+- The read-along shows the narration's elapsed time and length, with a slider to jump within the page and a Restart page button.
+
+### Fixed
+
+- Studio releases the microphone when recording setup fails or you leave while permission is pending, prevents duplicate recording sessions, and keeps late recording results from affecting another book.
+- Read-along resumes paused narration instead of restarting it, stops sound buttons when turning pages, and reports playback failures instead of silently skipping narration. Late playback errors no longer interrupt a newer preview or page.
+
 ## [0.7.0] - 2026-10-08
 
 ### Changed

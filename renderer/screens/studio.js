@@ -11,7 +11,7 @@
   ];
   const SOUND_SIZE = 90;
 
-  const ui = { host: null, tab: 'narration', recorder: null, preview: null, busy: false };
+  const ui = { host: null, tab: 'narration', recorder: null, preview: null, previewButton: null, busy: false };
 
   // ---------- audio helpers ----------
   const audioSet = new Set(); // Every Audio the Studio or player started, so leaving can stop them all.
@@ -22,7 +22,13 @@
   }
   function stopAudio(audio) {
     if (!audio) return;
+    audio.onended = null;
+    audio.onerror = null;
+    audio.ontimeupdate = null;
+    audio.onloadedmetadata = null;
     audio.pause();
+    audio.removeAttribute('src');
+    audio.load();
     audioSet.delete(audio);
   }
   const playingCount = () => [...audioSet].filter((a) => !a.paused && !a.ended).length;
@@ -45,43 +51,75 @@
   const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 
   // Microphone recording to WebM with a live level reading.
-  async function startRecording(onTick) {
+  async function startRecording(onTick, isCurrent, onError) {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    if (!isCurrent()) { stream.getTracks().forEach((t) => t.stop()); return null; }
     const chunks = [];
-    const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-    recorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
-    const ctxA = new AudioContext();
-    const analyser = ctxA.createAnalyser();
-    analyser.fftSize = 512;
-    ctxA.createMediaStreamSource(stream).connect(analyser);
-    const buf = new Uint8Array(analyser.fftSize);
-    const started = performance.now();
-    const timer = setInterval(() => {
-      analyser.getByteTimeDomainData(buf);
-      let peak = 0;
-      for (const v of buf) peak = Math.max(peak, Math.abs(v - 128) / 128);
-      onTick((performance.now() - started) / 1000, peak);
-    }, 100);
+    let recorder, ctxA, source, analyser, timer;
+    let released = false;
+    let stopping = false;
+    let finish;
+    // Resolve cancellation as null, including cancellation while stop() is collecting the final chunk.
+    const result = new Promise((resolve) => { finish = resolve; });
     const release = () => {
+      if (released) return;
+      released = true;
       clearInterval(timer);
       stream.getTracks().forEach((t) => t.stop());
-      ctxA.close().catch(() => {});
+      source?.disconnect();
+      analyser?.disconnect();
+      ctxA?.close().catch(() => {});
     };
-    recorder.start(250);
-    return {
-      elapsed: () => (performance.now() - started) / 1000,
-      stop: () => new Promise((resolve) => {
-        recorder.onstop = async () => { release(); resolve(new Uint8Array(await new Blob(chunks, { type: 'audio/webm' }).arrayBuffer())); };
-        recorder.stop();
-      }),
-      cancel: () => { recorder.onstop = null; if (recorder.state !== 'inactive') recorder.stop(); release(); },
+    const cancel = () => {
+      if (recorder) {
+        recorder.onstop = recorder.ondataavailable = recorder.onerror = null;
+        try { if (recorder.state !== 'inactive') recorder.stop(); }
+        catch { /* A failed recorder still needs its microphone and pending stop released. */ }
+        finally { release(); finish(null); }
+      } else { release(); finish(null); }
     };
+    const fail = (error) => { cancel(); onError(error); };
+    const started = performance.now();
+    try {
+      recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+      recorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+      recorder.onerror = (e) => fail(e.error || new Error('Recording stopped unexpectedly. Please try again.'));
+      recorder.onstop = async () => {
+        release();
+        try { finish(new Uint8Array(await new Blob(chunks, { type: 'audio/webm' }).arrayBuffer())); }
+        catch (error) { fail(error); }
+      };
+      ctxA = new AudioContext();
+      analyser = ctxA.createAnalyser();
+      analyser.fftSize = 512;
+      source = ctxA.createMediaStreamSource(stream);
+      source.connect(analyser);
+      const buf = new Uint8Array(analyser.fftSize);
+      recorder.start(250);
+      timer = setInterval(() => {
+        analyser.getByteTimeDomainData(buf);
+        let peak = 0;
+        for (const v of buf) peak = Math.max(peak, Math.abs(v - 128) / 128);
+        onTick((performance.now() - started) / 1000, peak);
+      }, 100);
+      return {
+        elapsed: () => (performance.now() - started) / 1000,
+        stop: () => {
+          if (!stopping && recorder.state !== 'inactive') {
+            stopping = true;
+            try { recorder.stop(); } catch (error) { fail(error); }
+          }
+          return result;
+        },
+        cancel,
+      };
+    } catch (error) { cancel(); throw error; }
   }
 
   function stopEverything() {
     if (ui.recorder) { ui.recorder.cancel(); ui.recorder = null; }
+    stopPreview();
     for (const audio of [...audioSet]) stopAudio(audio);
-    ui.preview = null;
   }
 
   // ---------- helpers on the book ----------
@@ -112,7 +150,7 @@
 
   function draw() {
     const host = ui.host;
-    if (!host || !book()) return;
+    if (!host || !book() || ui.recorder) return;
     const b = book();
     const page = currentPage();
     const narr = audioOf().narration;
@@ -127,9 +165,12 @@
     const header = h('div', { class: 'studio-header' },
       h('div', {}, h('h1', {}, 'Studio'), h('p', { class: 'muted' }, `Page ${state.pageIndex + 1} of ${b.pages.length}`)),
       h('div', { class: 'studio-header-actions' },
-        h('button', { class: 'btn primary', id: 'studio-readalong', onclick: () => { stopEverything(); draw(); window.openReadAlong(book(), state.pageIndex); } }, '▶ Play read-along')));
+        h('button', { class: 'btn primary', id: 'studio-readalong', onclick: () => {
+          if (ui.recorder) return toast('Stop recording before playing the read-along');
+          stopEverything(); draw(); window.openReadAlong(book(), state.pageIndex);
+        } }, '▶ Play read-along')));
     const tabs = h('div', { class: 'segmented studio-tabs', role: 'tablist' }, [['narration', 'Narration'], ['music', 'Music'], ['interactive', 'Interactive']].map(([id, label]) =>
-      h('button', { class: `studio-tab${ui.tab === id ? ' active' : ''}`, 'data-studio-tab': id, role: 'tab', 'aria-selected': String(ui.tab === id), onclick: () => { if (ui.recorder) return; ui.tab = id; draw(); } }, label)));
+      h('button', { class: `studio-tab${ui.tab === id ? ' active' : ''}`, 'data-studio-tab': id, role: 'tab', 'aria-selected': String(ui.tab === id), onclick: () => { if (ui.recorder) return; stopPreview(); ui.tab = id; draw(); } }, label)));
     const panel = ui.tab === 'music' ? musicPanel() : ui.tab === 'interactive' ? interactivePanel(page) : narrationPanel(page);
     host.replaceChildren(h('div', { class: 'studio' },
       strip,
@@ -142,7 +183,12 @@
     });
   }
 
-  function stopPreview() { if (ui.preview) { stopAudio(ui.preview); ui.preview = null; } }
+  function stopPreview() {
+    if (ui.preview) stopAudio(ui.preview);
+    if (ui.previewButton) ui.previewButton.textContent = ui.previewButton.dataset.idle;
+    ui.preview = null;
+    ui.previewButton = null;
+  }
   function togglePreview(name, button, { volume = 1, loop = false } = {}) {
     if (ui.preview && ui.preview.dataset.name === name) { stopPreview(); if (button) button.textContent = button.dataset.idle; return; }
     stopPreview();
@@ -151,41 +197,107 @@
     audio.volume = volume;
     audio.loop = loop;
     ui.preview = audio;
+    ui.previewButton = button;
     if (button) { button.dataset.idle ||= button.textContent; button.textContent = '❚❚ Pause'; }
-    audio.onended = () => { if (ui.preview === audio) stopPreview(); if (button) button.textContent = button.dataset.idle; };
-    audio.play().catch((e) => { toast(cleanError(e)); stopPreview(); });
+    audio.onended = () => { if (ui.preview === audio) stopPreview(); };
+    const failed = () => {
+      if (ui.preview !== audio) return;
+      stopPreview();
+      toast('Couldn’t play this audio. Try again or replace the file.');
+    };
+    audio.onerror = failed;
+    audio.play().catch(failed);
     return audio;
   }
 
-  // Records a clip with a live timer/meter inside `slot`; resolves the saved asset name and duration (or null).
+  // Records a clip with a live timer/meter inside `slot`, then calls onSaved(name, duration) once it is saved.
+  // The session in ui.recorder moves through 'starting' (waiting for the microphone), 'recording', and 'saving'.
   async function recordInto(slot, onSaved) {
+    if (ui.recorder || !slot.isConnected) return;
+    const b = book();
     const time = h('span', { class: 'studio-rec-time' }, '0:00');
     const level = h('span', { class: 'studio-meter-fill' });
     const stop = h('button', { class: 'btn danger-fill', id: 'studio-stop' }, '■ Stop');
     let rec;
-    try {
-      rec = await startRecording((t, peak) => { time.textContent = fmt(t); level.style.width = `${Math.min(100, Math.round(peak * 160))}%`; });
-    } catch (error) {
-      toast(`Couldn’t use the microphone: ${cleanError(error)}`);
-      return;
-    }
-    ui.recorder = rec;
-    slot.replaceChildren(h('div', { class: 'studio-recording', 'data-recording': 'true' },
-      h('span', { class: 'studio-rec-dot', 'aria-hidden': 'true' }), time, h('span', { class: 'studio-meter' }, level), stop));
-    stop.onclick = async () => {
-      stop.disabled = true;
-      stop.textContent = 'Saving…';
-      const elapsed = rec.elapsed();
-      const bytes = await rec.stop();
+    let cancelled = false;
+    const session = { phase: 'starting', saving: null, cancel: () => { cancelled = true; rec?.cancel(); } };
+    const isCurrent = () => !cancelled && ui.recorder === session && book() === b && slot.isConnected;
+    const failed = (error) => {
+      if (!isCurrent()) return;
+      session.cancel();
       ui.recorder = null;
-      const name = await run(() => api.saveRecording(book().id, bytes));
-      if (name) {
-        const duration = await durationOf(book().id, name, elapsed);
-        ui.audioNames = [...new Set([...(ui.audioNames || []), name])];
-        onSaved(name, duration);
-      }
+      toast(`Couldn’t record audio: ${cleanError(error)}`);
       draw();
     };
+    // Reserve the recorder before the permission prompt, so repeated clicks cannot open more streams.
+    ui.recorder = session;
+    try {
+      rec = await startRecording((t, peak) => { time.textContent = fmt(t); level.style.width = `${Math.min(100, Math.round(peak * 160))}%`; }, isCurrent, failed);
+    } catch (error) { failed(error); return; }
+    if (!rec || !isCurrent()) {
+      session.cancel();
+      if (ui.recorder === session) ui.recorder = null;
+      return;
+    }
+    slot.replaceChildren(h('div', { class: 'studio-recording', 'data-recording': 'true' },
+      h('span', { class: 'studio-rec-dot', 'aria-hidden': 'true' }), time, h('span', { class: 'studio-meter' }, level), stop));
+    session.phase = 'recording';
+    // Stops and saves the take; repeated calls share one save. `quick` skips reading the file's length
+    // (it can take seconds) and uses the timer instead, for when the window is closing.
+    session.save = ({ quick = false } = {}) => {
+      session.saving ||= (async () => {
+        session.phase = 'saving';
+        stop.disabled = true;
+        stop.textContent = 'Saving…';
+        try {
+          const elapsed = rec.elapsed();
+          const bytes = await rec.stop();
+          if (!bytes || !isCurrent()) return;
+          const name = await api.saveRecording(b.id, bytes);
+          if (!isCurrent()) return;
+          const duration = quick ? elapsed : await durationOf(b.id, name, elapsed);
+          if (!isCurrent()) return;
+          ui.audioNames = [...new Set([...(ui.audioNames || []), name])];
+          onSaved(name, duration);
+        } catch (error) { failed(error); }
+        finally {
+          session.cancel();
+          if (ui.recorder === session) { ui.recorder = null; draw(); }
+        }
+      })();
+      return session.saving;
+    };
+    stop.onclick = () => session.save();
+  }
+
+  // Runs before any navigation away from Studio (and before the window closes) so a take is never dropped
+  // by surprise. Resolves false to stay. Waiting for the microphone is not a take yet, so leaving cancels it.
+  let leavePrompt = null;
+  async function beforeLeave({ closing = false } = {}) {
+    const session = ui.recorder;
+    if (!session || session.phase === 'starting') return true;
+    // The window gives only a few seconds before it closes, too short for a question: keep the take.
+    if (closing) { await session.save({ quick: true }); return true; }
+    if (session.phase === 'saving') { await session.saving; return true; }
+    leavePrompt ||= askToLeave(session).finally(() => { leavePrompt = null; });
+    return leavePrompt;
+  }
+  async function askToLeave(session) {
+    const choice = await new Promise((resolve) => {
+      const pick = (value, close) => { resolve(value); close(); };
+      const dialog = modal('You’re still recording', (close) => h('div', { class: 'form confirm-dialog', 'data-leave-recording': '' },
+        h('p', {}, 'Save this recording before you leave Studio?'),
+        h('div', { class: 'form-actions' },
+          h('button', { type: 'button', class: 'btn ghost', 'data-leave-choice': 'stay', onclick: () => pick('stay', close) }, 'Keep recording'),
+          h('button', { type: 'button', class: 'btn ghost danger', 'data-leave-choice': 'discard', onclick: () => pick('discard', close) }, 'Discard'),
+          h('button', { type: 'button', class: 'btn primary', 'data-leave-choice': 'save', onclick: () => pick('save', close) }, 'Save and leave'))),
+        () => resolve('stay'));
+      dialog.addEventListener('close', () => resolve('stay')); // Esc closes the dialog without calling onClose.
+    });
+    if (ui.recorder !== session) return true; // It finished or failed while the question was open.
+    if (choice === 'stay') return false;
+    if (choice === 'save') await session.save();
+    return true; // 'discard': leave() cancels the session.
   }
 
   // ---------- narration ----------
@@ -361,7 +473,7 @@
       h('ul', { class: 'studio-sound-list' }, list));
   }
 
-  registerScreen('studio', { label: 'Studio', scope: 'book', render, leave: () => { stopEverything(); ui.host = null; } });
+  registerScreen('studio', { label: 'Studio', scope: 'book', render, beforeLeave, leave: () => { stopEverything(); ui.host = null; } });
 
   // ---------- read-along player ----------
   window.openReadAlong = function openReadAlong(theBook, startIndex = 0) {
@@ -372,25 +484,79 @@
     let narration = null;
     let timer = null;
     let music = null;
+    let closed = false;
+    let playback = 0;
+    let remaining = 4000;
+    let timerStarted = 0;
     const sounds = new Set();
     const narr = b.audio?.narration || {};
 
     const stage = h('div', { class: 'studio-ra-stage' });
     const counter = h('span', { class: 'studio-ra-count' });
     const playBtn = h('button', { class: 'btn primary', id: 'readalong-play', onclick: () => (playing ? pause() : play()) }, '▶ Play');
+    const restartBtn = h('button', { class: 'btn ghost studio-ra-restart', id: 'readalong-restart', onclick: () => go(index) }, '↺ Restart page');
     const prev = h('button', { class: 'btn ghost studio-ra-nav', id: 'readalong-prev', 'aria-label': 'Previous page', onclick: () => go(index - 1) }, '‹');
     const next = h('button', { class: 'btn ghost studio-ra-nav', id: 'readalong-next', 'aria-label': 'Next page', onclick: () => go(index + 1) }, '›');
-    const dialog = h('dialog', { class: 'studio-readalong', 'aria-label': `Read-along: ${b.title}` },
+    // Timeline for the page's narration: elapsed time, a slider to jump within it, and its length.
+    const seek = h('input', { type: 'range', class: 'studio-ra-seek', id: 'readalong-seek', min: '0', max: '0', step: '0.1', value: '0',
+      'aria-label': 'Narration position', oninput: () => seekTo(Number(seek.value)) });
+    const elapsedLabel = h('span', { class: 'studio-ra-time', id: 'readalong-elapsed' }, '0:00');
+    const totalLabel = h('span', { class: 'studio-ra-time', id: 'readalong-duration' }, '0:00');
+    const timeline = h('div', { class: 'studio-ra-timeline' }, elapsedLabel, seek, totalLabel);
+    const noNarration = h('span', { class: 'studio-ra-none', id: 'readalong-no-narration' }, 'No narration on this page');
+    const dialog = h('dialog', { class: 'studio-readalong', 'data-playing': 'false', 'aria-label': `Read-along: ${b.title}` },
       h('header', { class: 'studio-ra-bar' },
         h('strong', {}, b.title || 'Read-along'), counter,
         h('button', { class: 'icon-btn studio-ra-close', id: 'readalong-close', 'aria-label': 'Close', onclick: () => dialog.close() }, '×')),
       h('div', { class: 'studio-ra-body' }, prev, stage, next),
-      h('footer', { class: 'studio-ra-foot' }, playBtn, h('span', { class: 'muted small-print' }, 'Arrow keys turn pages · Tap ♪ buttons to hear them · Esc closes')));
+      h('footer', { class: 'studio-ra-foot' },
+        h('div', { class: 'studio-ra-controls' }, playBtn, restartBtn, timeline, noNarration),
+        h('span', { class: 'muted small-print' }, 'Arrow keys turn pages · Tap ♪ buttons to hear them · Esc closes')));
 
-    const stopPageAudio = () => {
-      clearTimeout(timer); timer = null;
-      if (narration) { stopAudio(narration); narration = null; }
+    const stopSounds = () => {
+      for (const audio of sounds) stopAudio(audio);
+      sounds.clear();
     };
+    const stopPageAudio = () => {
+      ++playback; // Invalidate callbacks from an earlier page or play attempt.
+      clearTimeout(timer); timer = null;
+      remaining = 4000;
+      if (narration) { stopAudio(narration); narration = null; }
+      stopSounds();
+      updateTimeline();
+    };
+    // The page's narration audio, made on first use (playing or seeking) and kept until the page changes.
+    function pageNarration() {
+      const n = narr[b.pages[index].id];
+      if (!n) return null;
+      if (!narration) {
+        narration = makeAudio(b.id, n.file);
+        narration.ontimeupdate = updateTimeline;
+        narration.onloadedmetadata = updateTimeline;
+      }
+      return narration;
+    }
+    function updateTimeline() {
+      const n = narr[b.pages[index].id];
+      timeline.hidden = !n;
+      noNarration.hidden = Boolean(n);
+      if (!n) return;
+      // Saved durations are measured when the clip is added; recorded WebM files often report no length of their own.
+      const total = Number.isFinite(narration?.duration) && narration.duration > 0 ? narration.duration : n.duration || 0;
+      const at = Math.min(total, narration?.currentTime || 0);
+      seek.max = String(total);
+      seek.value = String(at);
+      seek.disabled = !total;
+      seek.setAttribute('aria-valuetext', `${fmt(at)} of ${fmt(total)}`);
+      elapsedLabel.textContent = fmt(at);
+      totalLabel.textContent = fmt(total);
+    }
+    function seekTo(seconds) {
+      const audio = pageNarration();
+      if (!audio || closed) return;
+      audio.currentTime = seconds;
+      updateTimeline();
+    }
     function draw() {
       const page = b.pages[index];
       dialog.dataset.page = String(index);
@@ -400,63 +566,103 @@
       const w = Math.max(200, window.innerWidth - 200);
       const hgt = Math.max(200, window.innerHeight - 160);
       stage.replaceChildren(scaledPage(page, b, w, hgt));
+      updateTimeline();
     }
     function startPage() {
-      stopPageAudio();
-      if (!playing) return;
-      const n = narr[b.pages[index].id];
-      if (n) {
-        narration = makeAudio(b.id, n.file);
-        narration.onended = () => advance();
-        narration.play().catch(() => { timer = setTimeout(advance, 4000); });
-      } else timer = setTimeout(advance, 4000);
+      if (!playing || closed) return;
+      const attempt = ++playback;
+      const active = () => !closed && playing && playback === attempt;
+      const audio = pageNarration();
+      if (audio) {
+        const failed = () => {
+          if (!active() || narration !== audio) return;
+          pause();
+          stopAudio(audio); narration = null;
+          updateTimeline();
+          toast('Couldn’t play this page’s narration. Try Play again or turn the page.');
+        };
+        audio.onended = () => { if (active() && narration === audio) advance(); };
+        audio.onerror = failed;
+        audio.play().catch(failed);
+      } else {
+        timerStarted = performance.now();
+        timer = setTimeout(() => { if (active()) advance(); }, remaining);
+      }
     }
     function advance() {
+      if (closed || !playing) return;
       if (index < b.pages.length - 1) go(index + 1);
-      else pause();
+      else { pause(); stopPageAudio(); }
     }
     function go(i) {
-      if (i < 0 || i >= b.pages.length) return;
+      if (closed || i < 0 || i >= b.pages.length) return;
+      stopPageAudio();
       index = i; draw(); startPage();
     }
     function play() {
+      if (closed || playing) return;
       playing = true;
       playBtn.textContent = '❚❚ Pause';
       dialog.dataset.playing = 'true';
+      startPage();
       if (b.audio?.music && !music) {
         music = makeAudio(b.id, b.audio.music.file);
         music.volume = b.audio.music.volume;
         music.loop = b.audio.music.loop;
-        music.play().catch(() => {});
-      } else music?.play().catch(() => {});
-      startPage();
+      }
+      if (music) {
+        const audio = music;
+        const failed = () => {
+          if (closed || !playing || music !== audio || !audio.onerror) return;
+          stopAudio(audio); music = null;
+          toast('Couldn’t play the background music. Narration can continue.');
+        };
+        // Pause clears this handler: an interrupted play request is not a failed file.
+        audio.onerror = failed;
+        audio.play().catch(() => { if (audio.onerror === failed) failed(); });
+      }
     }
     function pause() {
+      ++playback;
       playing = false;
       playBtn.textContent = '▶ Play';
       dialog.dataset.playing = 'false';
-      stopPageAudio();
-      music?.pause();
+      if (timer !== null) remaining = Math.max(0, remaining - (performance.now() - timerStarted));
+      clearTimeout(timer); timer = null;
+      narration?.pause();
+      if (music) { music.onerror = null; music.pause(); }
+      stopSounds();
     }
     stage.addEventListener('click', (e) => {
       const el = e.target.closest('.el-sound');
       if (!el || !el.dataset.sound) return;
+      if (closed) return;
+      stopSounds();
       const audio = makeAudio(b.id, el.dataset.sound);
       sounds.add(audio);
-      audio.onended = () => { sounds.delete(audio); audioSet.delete(audio); };
-      audio.play().then(() => { dialog.dataset.lastSound = el.dataset.sound; }).catch((err) => toast(cleanError(err)));
-      dialog.dataset.lastSound = el.dataset.sound;
+      audio.onended = () => { sounds.delete(audio); stopAudio(audio); };
+      const failed = () => {
+        if (closed || !sounds.has(audio)) return;
+        sounds.delete(audio); stopAudio(audio);
+        toast('Couldn’t play this sound. Try again or replace its audio in Studio.');
+      };
+      audio.onerror = failed;
+      audio.play().then(() => {
+        if (!closed && sounds.has(audio)) dialog.dataset.lastSound = el.dataset.sound;
+      }).catch(failed);
     });
     dialog.addEventListener('keydown', (e) => {
+      if (e.target === seek) return; // Arrow keys move the slider there, not the page.
       if (e.key === 'ArrowRight') { e.preventDefault(); go(index + 1); }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); go(index - 1); }
     });
     const onResize = () => draw();
     window.addEventListener('resize', onResize);
     dialog.addEventListener('close', () => {
+      closed = true;
       pause();
+      stopPageAudio();
       if (music) { stopAudio(music); music = null; }
-      for (const a of sounds) stopAudio(a);
       window.removeEventListener('resize', onResize);
       dialog.remove();
     });

@@ -37,6 +37,8 @@ function saveNow() {
 }
 api.onBeforeClose(async () => {
   try {
+    // Lets a screen finish work it would otherwise lose (Studio saves a take still recording).
+    try { await screens.get(state.screen)?.beforeLeave?.({ closing: true }); } catch (error) { logError(error); }
     if (state.screen === 'designer') stopEditing();
     await saveNow();
   } finally {
@@ -56,10 +58,12 @@ const BOOK_TABS = [
 const SCREEN_SCOPE = Object.fromEntries([...APP_NAV.map(([n]) => [n, 'app']), ...BOOK_TABS.map(([n]) => [n, 'book'])]);
 const NOT_BUILT = 'This part of Storyloom isn’t built yet.';
 
-// def: { label?, scope?: 'app' | 'book', render(root, params), leave?() }
+// def: { label?, scope?: 'app' | 'book', render(root, params), beforeLeave?({ closing }), leave?() }
+// beforeLeave may ask the user something; resolving false cancels the navigation. With closing: true the
+// window is about to close, so it must not ask and should finish quickly.
 function registerScreen(name, def) {
   if (typeof name !== 'string' || !def || typeof def.render !== 'function') throw new Error('registerScreen needs a name and a render function');
-  screens.set(name, { label: def.label || name, scope: def.scope || SCREEN_SCOPE[name] || 'app', render: def.render, leave: def.leave });
+  screens.set(name, { label: def.label || name, scope: def.scope || SCREEN_SCOPE[name] || 'app', render: def.render, beforeLeave: def.beforeLeave, leave: def.leave });
   // A screen that registers late (or is replaced) shows up immediately if it is the one on display.
   if (state.screen === name && document.getElementById('screen')) navigate(name, state.params);
 }
@@ -68,6 +72,8 @@ const screenScope = (name) => screens.get(name)?.scope || SCREEN_SCOPE[name] || 
 let navSeq = 0;
 // Shows a screen. params.bookId opens that book first (book screens need an open book).
 async function navigate(name, params = {}) {
+  const guard = screens.get(state.screen)?.beforeLeave;
+  if (guard && !(await guard({ closing: false }))) return;
   const seq = ++navSeq;
   const previous = screens.get(state.screen);
   if (state.screen === 'designer') stopEditing();

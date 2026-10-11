@@ -78,5 +78,13 @@
 .studio-ra-stage .el-sound { pointer-events: auto; cursor: pointer; }
 .studio-ra-nav { justify-self: center; width: 48px; height: 48px; padding: 0; font-size: var(--text-3xl); color: var(--on-dark); border-color: var(--on-dark-line); }
 .studio-ra-nav:hover:not(:disabled) { background: var(--on-dark-hover) !important; }
-.studio-ra-foot { display: flex; align-items: center; justify-content: center; gap: var(--space-16); padding: var(--space-16) var(--space-20) var(--space-20); }
+.studio-ra-foot { display: flex; flex-direction: column; align-items: center; gap: var(--space-8); padding: var(--space-16) var(--space-20) var(--space-20); }
 .studio-ra-foot .muted { color: var(--on-dark-muted); margin: 0; }
+.studio-ra-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-16); width: min(100%, 760px); }
+.studio-ra-restart.btn.ghost { background: transparent; color: var(--on-dark); border-color: var(--on-dark-line); }
+.studio-ra-restart:hover:not(:disabled) { background: var(--on-dark-hover) !important; }
+.studio-ra-timeline { flex: 1 1 280px; display: flex; align-items: center; gap: var(--space-10); min-width: 0; }
+.studio-ra-timeline[hidden], .studio-ra-none[hidden] { display: none; }
+.studio-ra-seek { flex: 1; min-width: 0; accent-color: var(--on-dark); }
+.studio-ra-time { min-width: 4ch; font-variant-numeric: tabular-nums; color: var(--on-dark-muted); }
+.studio-ra-none { flex: 1 1 280px; color: var(--on-dark-muted); text-align: center; }
